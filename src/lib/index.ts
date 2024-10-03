@@ -1,24 +1,21 @@
 import { writable } from 'svelte/store';
 import { themes } from './themes';
-import { mode } from 'mode-watcher';
 
-type Config = {
-	style: string;
+export type StyleConfig = {
 	theme: string;
 	radius: number;
 	font: string;
 	mode: 'light' | 'dark';
 };
 
-export const config = writable<Config>({
-	style: 'rose',
+export const config = writable<StyleConfig>({
 	theme: 'neutral',
 	radius: 0.5,
 	font: 'Roboto, sans-serif',
 	mode: 'light'
 });
 
-export function updateTheme(config: Config) {
+export function updateTheme(config: StyleConfig) {
 	const isBrowser = typeof document !== 'undefined';
 	if (!isBrowser) return;
 

@@ -2,12 +2,11 @@
 	import { themes } from '$lib/themes';
 	import { config } from '$lib';
 
-	import Button from '$lib/components/ui/button/button.svelte';
-	import Input from '$lib/components/ui/input/input.svelte';
-	import { cn } from '$lib/components/utils';
+	import { cn } from '$lib/components/shadcn/utils';
 	import { mode, toggleMode } from 'mode-watcher';
 	import Sun from 'lucide-svelte/icons/sun';
 	import Moon from 'lucide-svelte/icons/moon';
+	import { Button } from '$lib/components/shadcn/ui/button';
 
 	const RADIUSES = [0, 0.25, 0.5, 0.75, 1.0];
 	const FONTS = ['Roboto, sans-serif', 'Arial, sans-serif', 'Courier, monospace'];

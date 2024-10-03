@@ -1,0 +1,81 @@
+<script lang="ts">
+	import * as Table from '$lib/components/ui/table';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { formDataStore, handleFormValueChange } from '$lib/google-forms/store';
+	import { SUBMIT_KEY_PREFIX } from '$lib/google-forms/constants';
+
+	export let description: string | null = null;
+	export let randomizeOrder: boolean = false;
+	export let oneAnswerPerColumn: boolean = false;
+
+	export let columns: string[];
+	export let rows: string[];
+
+	$: rows = randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
+
+	function handleCheckboxGridItemChange(submitId, column) {
+		let currentValues = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`] || [];
+		console.log('Current values:', currentValues);
+
+		if (currentValues.includes(column)) {
+			console.log('already selected -> remove');
+			currentValues = currentValues.filter((value) => value !== column);
+		} else {
+			console.log('not selected -> add');
+			currentValues = [...currentValues, column];
+		}
+
+		// if (oneAnswerPerColumn) {
+		// 	const columnValues = [];
+		// 	console.log('columnValues', columnValues);
+		// 	for (let i = 0; i < rows.length; i++) {
+		// 		const row = rows[i];
+		// 		console.log('row', row);
+		// 		const rowValue = $formDataStore[`${SUBMIT_KEY_PREFIX}${row.submitId}`];
+		// 		columnValues.push(rowValue);
+		// 	}
+
+		// 	if (columnValues.flat().includes(column)) {
+		// 		console.log('cannot select');
+		// 		currentValues = currentValues.filter((value) => value !== column);
+		// 	} else {
+		// 		console.log('can select');
+		// 	}
+		// }
+
+		handleFormValueChange(currentValues, submitId);
+
+		const test = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`];
+		console.log('test', test);
+	}
+</script>
+
+{#if description}
+	<p class="text-sm text-gray-500">{description}</p>
+{/if}
+
+<Table.Root>
+	<Table.Header>
+		<Table.Row>
+			<Table.Head></Table.Head>
+			{#each columns as column}
+				<Table.Head>{column}</Table.Head>
+			{/each}
+		</Table.Row>
+	</Table.Header>
+	<Table.Body>
+		{#each rows as row}
+			<Table.Row>
+				<Table.Cell class="font-medium">{row.title}</Table.Cell>
+				{#each columns as column}
+					<Table.Cell>
+						<Checkbox
+							on:click={(e) => handleCheckboxGridItemChange(row.submitId, column)}
+							value={column}
+						/>
+					</Table.Cell>
+				{/each}
+			</Table.Row>
+		{/each}
+	</Table.Body>
+</Table.Root>

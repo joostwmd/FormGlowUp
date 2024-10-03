@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { cn } from '$lib/components/utils';
+	import { cn } from '$lib/components/shadcn/utils';
 	import { config, updateTheme } from '$lib';
 	import { themes } from '$lib/themes';
 	import { ModeWatcher, mode } from 'mode-watcher';
@@ -11,12 +11,10 @@
 	$: updateTheme($config);
 </script>
 
-<ModeWatcher defaultMode="dark" />
-
 <div
 	class={cn(`theme-${$config.theme}`, 'w-full', className)}
-	data-style={$config.style}
 	style="--radius: {$config.radius}rem; font-family: {$config.font};"
 >
+	<ModeWatcher defaultMode="dark" />
 	<slot />
 </div>
