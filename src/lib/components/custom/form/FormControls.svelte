@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Button from '../ui/button/button.svelte';
+	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 
 	export let totalPages: number;
 	export let currentPage: number;
 
-	export let handleOnSumit: () => void;
+	export let handleOnSubmit: () => void;
 	export let handleOnNext: () => void;
 	export let handleOnPrevious: () => void;
 </script>
@@ -17,7 +17,7 @@
 	{/if}
 
 	{#if currentPage === totalPages - 1}
-		<Button on:click={handleOnSumit}>Submit</Button>
+		<Button on:click={handleOnSubmit}>Submit</Button>
 	{:else}
 		<Button on:click={handleOnNext}>Next</Button>
 	{/if}

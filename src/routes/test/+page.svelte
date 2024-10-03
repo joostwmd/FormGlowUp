@@ -1,4 +1,5 @@
 <script>
+	import FormControls from '$lib/components/custom/form/FormControls.svelte';
 	import FormProgress from '$lib/components/custom/form/FormProgress.svelte';
 	import RadioGrid from '$lib/components/custom/form/RadioGrid.svelte';
 	import RadioGroup from '$lib/components/custom/form/RadioGroup.svelte';
@@ -23,6 +24,18 @@
 	];
 
 	let currentStep = 0;
+
+	function handleOnNext() {
+		currentStep++;
+	}
+
+	function handleOnPrevious() {
+		currentStep--;
+	}
+
+	function handleOnSubmit() {
+		alert('Form submitted!');
+	}
 </script>
 
 <div class="flex h-screen w-screen flex-col items-center justify-center space-y-12 px-12 py-4">
@@ -36,4 +49,12 @@
 	<RadioGroup submitId={'test4'} options={['Option 1', 'Option 2', 'Option 3']} />
 
 	<RadioGrid columns={['Col 1', 'Col 2']} rows={testRows} />
+
+	<FormControls
+		totalPages={12}
+		currentPage={currentStep}
+		{handleOnNext}
+		{handleOnPrevious}
+		{handleOnSubmit}
+	/>
 </div>
