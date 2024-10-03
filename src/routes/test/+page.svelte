@@ -1,4 +1,5 @@
 <script>
+	import FormProgress from '$lib/components/custom/form/FormProgress.svelte';
 	import RadioGrid from '$lib/components/custom/form/RadioGrid.svelte';
 	import RadioGroup from '$lib/components/custom/form/RadioGroup.svelte';
 	import SliderInput from '$lib/components/custom/form/SliderInput.svelte';
@@ -20,9 +21,12 @@
 			title: 'Option 3'
 		}
 	];
+
+	let currentStep = 0;
 </script>
 
 <div class="flex h-screen w-screen flex-col items-center justify-center space-y-12 px-12 py-4">
+	<FormProgress totalPages={12} currentPage={currentStep} />
 	<TextInput submitId={'test'} />
 
 	<SliderInput submitId={'test2'} minValue={0} maxValue={10} />

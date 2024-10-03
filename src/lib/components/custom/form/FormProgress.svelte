@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Progress from '../ui/progress/progress.svelte';
+	import Progress from '$lib/components/shadcn/ui/progress/progress.svelte';
 
 	export let totalPages: number;
 	export let currentPage: number;
