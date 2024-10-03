@@ -1,5 +1,7 @@
 import { writable } from 'svelte/store';
 import { themes } from './themes';
+import { DEFAULT_MODE } from './form/constants';
+import { TEST_THEME_CONFIG } from './form/test-data';
 
 export type StyleConfig = {
 	theme: string;
@@ -8,20 +10,13 @@ export type StyleConfig = {
 	mode: 'light' | 'dark';
 };
 
-export const config = writable<StyleConfig>({
-	theme: 'neutral',
-	radius: 0.5,
-	font: 'Roboto, sans-serif',
-	mode: 'light'
-});
+export const config = writable<StyleConfig>(TEST_THEME_CONFIG);
 
 export function updateTheme(config: StyleConfig) {
 	const isBrowser = typeof document !== 'undefined';
 	if (!isBrowser) return;
 
-	//console.log('activeTheme', activeTheme);
 	document.body.classList.forEach((className) => {
-		console.log('className test', className);
 		if (className.match(/^theme.*/)) {
 			document.body.classList.remove(className);
 		}

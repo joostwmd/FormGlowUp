@@ -40,3 +40,5 @@ export const YEAR_SUFFIX = '_year';
 export const HOUR_SUFFIX = '_hour';
 export const MINUTE_SUFFIX = '_minute';
 export const SECOND_SUFFIX = '_second';
+
+export const DEFAULT_MODE = 'light';

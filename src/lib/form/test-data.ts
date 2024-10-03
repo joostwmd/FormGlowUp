@@ -1,3 +1,5 @@
+import { DEFAULT_MODE } from './constants';
+
 export const FORM_DATA_TEST = {
 	formItems: [
 		[
@@ -34,3 +36,10 @@ export const FORM_DATA_TEST = {
 
 export const TEST_RADIUSES = [0, 0.25, 0.5, 0.75, 1.0];
 export const TEST_FONTS = ['Roboto, sans-serif', 'Arial, sans-serif', 'Courier, monospace'];
+
+export const TEST_THEME_CONFIG = {
+	theme: 'neutral',
+	radius: 0.25,
+	font: TEST_FONTS[0],
+	mode: DEFAULT_MODE
+};

@@ -152,7 +152,7 @@
 
 "@internationalized/date@^3.5.0", "@internationalized/date@^3.5.1", "@internationalized/date@^3.5.6":
   version "3.5.6"
-  resolved "https://registry.yarnpkg.com/@internationalized/date/-/date-3.5.6.tgz#0833c2fa75efb3573f4e3bf10e3895f1019e87dd"
+  resolved "https://registry.npmjs.org/@internationalized/date/-/date-3.5.6.tgz"
   integrity sha512-jLxQjefH9VI5P9UQuqB6qNKnvFt1Ky1TPIzHGsIlCi7sZZoMR8SdYbBGRvM0y+Jtb+ez4ieBzmiAUcpmPYpyOw==
   dependencies:
     "@swc/helpers" "^0.5.0"
@@ -473,7 +473,16 @@ binary-extensions@^2.0.0:
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.3.0.tgz"
   integrity sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==
 
-bits-ui@^0.21.12, bits-ui@^0.21.16:
+bits-ui@^0.21.12, bits-ui@^0.21.7:
+  version "0.21.16"
+  resolved "https://registry.npmjs.org/bits-ui/-/bits-ui-0.21.16.tgz"
+  integrity sha512-XFZ7/bK7j/K+5iktxX/ZpmoFHjYjpPzP5EOO/4bWiaFg5TG1iMcfjDhlBTQnJxD6BoVoHuqeZPHZvaTgF4Iv3Q==
+  dependencies:
+    "@internationalized/date" "^3.5.1"
+    "@melt-ui/svelte" "0.76.2"
+    nanoid "^5.0.5"
+
+bits-ui@^0.21.16:
   version "0.21.16"
   resolved "https://registry.yarnpkg.com/bits-ui/-/bits-ui-0.21.16.tgz#cec1a93d79b25555e89747999630af93fab6b6e1"
   integrity sha512-XFZ7/bK7j/K+5iktxX/ZpmoFHjYjpPzP5EOO/4bWiaFg5TG1iMcfjDhlBTQnJxD6BoVoHuqeZPHZvaTgF4Iv3Q==
@@ -545,7 +554,7 @@ clsx@^2.1.1:
 
 cmdk-sv@^0.0.18:
   version "0.0.18"
-  resolved "https://registry.yarnpkg.com/cmdk-sv/-/cmdk-sv-0.0.18.tgz#1805fa7f2db3a1c8b01c4a35bbc1775b776148f8"
+  resolved "https://registry.npmjs.org/cmdk-sv/-/cmdk-sv-0.0.18.tgz"
   integrity sha512-istixiQSy9Ez/mQ4VXWB69btqNyDZckbd1XFEwR46Vw+n5zjdmvoWAcOTj0uX3FZXtw9ikwLVmfoW2nwwMClRg==
   dependencies:
     bits-ui "^0.21.12"
@@ -921,7 +930,7 @@ lru-cache@^10.2.0:
 
 lucide-svelte@^0.447.0:
   version "0.447.0"
-  resolved "https://registry.yarnpkg.com/lucide-svelte/-/lucide-svelte-0.447.0.tgz#733504d1182b8b8c6ad233479b14b8a6656f7e98"
+  resolved "https://registry.npmjs.org/lucide-svelte/-/lucide-svelte-0.447.0.tgz"
   integrity sha512-DDCVy79q9H1IAGmrbGDG4GZmCZK+5elK3Fxzu0RzbHKr2Khg7EMc8S6C12bzWcnfW263raqo3grthEjB5gxAjw==
 
 magic-string@^0.30.10, magic-string@^0.30.4, magic-string@^0.30.5:
@@ -1334,6 +1343,11 @@ svelte-hmr@^0.16.0:
   resolved "https://registry.npmjs.org/svelte-hmr/-/svelte-hmr-0.16.0.tgz"
   integrity sha512-Gyc7cOS3VJzLlfj7wKS0ZnzDVdv3Pn2IuVeJPk9m2skfhcu5bq3wtIZyQGggr7/Iim5rH5cncyQft/kRLupcnA==
 
+svelte-radix@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/svelte-radix/-/svelte-radix-1.1.1.tgz"
+  integrity sha512-TCbV7fzlJ2aEUB0nu2EodVA+r1eYj526IYpmGUTV32Z0bIrCUvx3K8xX3tcxR5dDFA5ZBU1Hxr4RYC4TDFEQ4A==
+
 svelte@^4.2.7:
   version "4.2.19"
   resolved "https://registry.npmjs.org/svelte/-/svelte-4.2.19.tgz"
@@ -1460,6 +1474,13 @@ util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+
+vaul-svelte@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/vaul-svelte/-/vaul-svelte-0.3.2.tgz#9087230bdf5f5e3dad08855f5f697f51c972ca26"
+  integrity sha512-X4OGWttSTVUl417qGDsSFgOvIx24DoiMRY/jaP9z0v9FL8LQQJ0RQ1ZM0QpdyQPRlNd24ewjNQHh5EgYDtfNpw==
+  dependencies:
+    bits-ui "^0.21.7"
 
 vite@^5.0.3:
   version "5.4.8"
