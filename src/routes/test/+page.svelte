@@ -1,4 +1,6 @@
 <script>
+	import CheckboxGrid from '$lib/components/custom/form/CheckboxGrid.svelte';
+	import CheckboxGroup from '$lib/components/custom/form/CheckboxGroup.svelte';
 	import DateInput from '$lib/components/custom/form/DateInput.svelte';
 	import Dropdown from '$lib/components/custom/form/Dropdown.svelte';
 	import FormControls from '$lib/components/custom/form/FormControls.svelte';
@@ -55,6 +57,10 @@
 	<Dropdown options={['Option 1', 'Option 2', 'Option 3']} submitId={'test6'} />
 
 	<DateInput submitId={'test7'} />
+
+	<CheckboxGroup options={['Option 1', 'Option 2', 'Option 3']} submitId={'test8'} />
+
+	<CheckboxGrid columns={['Col 1', 'Col 2']} rows={testRows} />
 
 	<FormControls
 		totalPages={12}

@@ -1,23 +1,18 @@
 <script lang="ts">
-	import { Checkbox } from '../ui/checkbox';
-	import Input from '../ui/input/input.svelte';
-	import { Label } from '../ui/label';
+	import Checkbox from '$lib/components/shadcn/ui/checkbox/checkbox.svelte';
+	import Input from '$lib/components/shadcn/ui/input/input.svelte';
+	import Label from '$lib/components/shadcn/ui/label/label.svelte';
 	import {
 		OTHER_OPTION_VALUE,
 		OTHER_RESPONSE_SUFFIX,
 		SUBMIT_KEY_PREFIX
 	} from '$lib/form/constants';
 	import { formDataStore, handleFormValueChange } from '$lib/form/store';
-	import { shuffleArray } from '$lib/form/utils/client-utils';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;
 	export let options: string[];
 	export let submitId: string;
-
-	$: if (randomizeOrder) {
-		options = shuffleArray([...options]);
-	}
 
 	function handleCheckboxChange(option: string) {
 		const currentValues = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`] || [];

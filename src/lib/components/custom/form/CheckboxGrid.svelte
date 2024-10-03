@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table';
-	import { Checkbox } from '$lib/components/ui/checkbox';
+	import * as Table from '$lib/components/shadcn/ui/table';
+	import Checkbox from '$lib/components/shadcn/ui/checkbox/checkbox.svelte';
 	import { formDataStore, handleFormValueChange } from '$lib/form/store';
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 
