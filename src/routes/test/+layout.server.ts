@@ -2,10 +2,10 @@ import type { StyleConfig } from '$lib';
 
 export async function load({ params }) {
 	const formStyleTest: StyleConfig = {
-		theme: 'red',
+		theme: 'blue',
 		radius: 0.25,
 		font: 'Roboto, sans-serif',
-		mode: 'dark'
+		mode: 'light'
 	};
 
 	return {
