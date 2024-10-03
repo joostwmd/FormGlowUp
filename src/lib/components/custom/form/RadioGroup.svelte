@@ -4,8 +4,8 @@
 		OTHER_OPTION_VALUE,
 		OTHER_RESPONSE_SUFFIX,
 		SUBMIT_KEY_PREFIX
-	} from '$lib/google-forms/constants';
-	import { formDataStore } from '$lib/google-forms/store';
+	} from '$lib/form/constants';
+	import { formDataStore } from '$lib/form/store';
 	import Input from '../ui/input/input.svelte';
 	import { Label } from '../ui/label';
 

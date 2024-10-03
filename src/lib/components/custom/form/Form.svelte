@@ -24,7 +24,7 @@
 		SCALE_QUESTION_ITEM,
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
-	} from '$lib/google-forms/constants';
+	} from '$lib/form/constants';
 	import Button from '../ui/button/button.svelte';
 
 	export let canSubmit: boolean = false;

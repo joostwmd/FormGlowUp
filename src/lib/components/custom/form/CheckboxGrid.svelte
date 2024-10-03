@@ -1,8 +1,8 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table';
 	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { formDataStore, handleFormValueChange } from '$lib/google-forms/store';
-	import { SUBMIT_KEY_PREFIX } from '$lib/google-forms/constants';
+	import { formDataStore, handleFormValueChange } from '$lib/form/store';
+	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;

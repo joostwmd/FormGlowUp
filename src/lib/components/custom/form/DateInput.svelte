@@ -5,8 +5,8 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '../ui/button';
 	import { cn } from '$lib/utils';
-	import { handleFormValueChange } from '$lib/google-forms/store';
-	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/google-forms/constants';
+	import { handleFormValueChange } from '$lib/form/store';
+	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/form/constants';
 	import TimeInput from './TimeInput.svelte';
 
 	export let description: string | null = null;

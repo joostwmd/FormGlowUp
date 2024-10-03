@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { Input } from '$lib/components/ui/input';
+	import Input from '$lib/components/shadcn/ui/input/input.svelte';
 	import {
 		HOUR_SUFFIX,
 		MINUTE_SUFFIX,
 		SECOND_SUFFIX,
 		SUBMIT_KEY_PREFIX
-	} from '$lib/google-forms/constants';
-	import { formDataStore } from '$lib/google-forms/store';
+	} from '$lib/form/constants';
+	import { formDataStore } from '$lib/form/store';
 
 	export let description: string | null = null;
 	export let isDurationInput: boolean;

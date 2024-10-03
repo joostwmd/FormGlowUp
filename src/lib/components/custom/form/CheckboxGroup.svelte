@@ -6,9 +6,9 @@
 		OTHER_OPTION_VALUE,
 		OTHER_RESPONSE_SUFFIX,
 		SUBMIT_KEY_PREFIX
-	} from '$lib/google-forms/constants';
-	import { formDataStore, handleFormValueChange } from '$lib/google-forms/store';
-	import { shuffleArray } from '$lib/google-forms/utils/client-utils';
+	} from '$lib/form/constants';
+	import { formDataStore, handleFormValueChange } from '$lib/form/store';
+	import { shuffleArray } from '$lib/form/utils/client-utils';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;

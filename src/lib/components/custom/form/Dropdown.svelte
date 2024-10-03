@@ -6,8 +6,8 @@
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '../ui/button';
-	import { formDataStore } from '$lib/google-forms/store';
-	import { SUBMIT_KEY_PREFIX } from '$lib/google-forms/constants';
+	import { formDataStore } from '$lib/form/store';
+	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;
