@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/components/shadcn/utils';
 	import Check from 'lucide-svelte/icons/check';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { Button } from '../ui/button';
+	import * as Command from '$lib/components/shadcn/ui/command/index.js';
+	import * as Popover from '$lib/components/shadcn/ui/popover/index.js';
+	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { formDataStore } from '$lib/form/store';
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 

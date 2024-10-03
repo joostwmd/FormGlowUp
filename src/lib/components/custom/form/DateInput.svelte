@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Calendar } from '$lib/components/ui/calendar';
+	import Calendar from '$lib/components/shadcn/ui/calendar/calendar.svelte';
 	import CalendarIcon from 'lucide-svelte/icons/calendar';
 	import { type DateValue, DateFormatter, getLocalTimeZone } from '@internationalized/date';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { Button } from '../ui/button';
-	import { cn } from '$lib/utils';
+	import * as Popover from '$lib/components/shadcn/ui/popover/index.js';
+	import Button from '$lib/components/shadcn/ui/button/button.svelte';
+	import { cn } from '$lib/components/shadcn/utils';
 	import { handleFormValueChange } from '$lib/form/store';
 	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/form/constants';
 	import TimeInput from './TimeInput.svelte';
