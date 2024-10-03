@@ -1,15 +1,15 @@
 <script lang="ts">
-	import CheckboxGrid from '$lib/components/form/CheckboxGrid.svelte';
-	import CheckboxGroup from '$lib/components/form/CheckboxGroup.svelte';
-	import DateInput from '$lib/components/form/DateInput.svelte';
-	import Dropdown from '$lib/components/form/Dropdown.svelte';
-	import FormControls from '$lib/components/form/FormControls.svelte';
-	import FormProgress from '$lib/components/form/FormProgress.svelte';
-	import RadioGrid from '$lib/components/form/RadioGrid.svelte';
-	import RadioGroup from '$lib/components/form/RadioGroup.svelte';
-	import SliderInput from '$lib/components/form/SliderInput.svelte';
-	import TextInput from '$lib/components/form/TextInput.svelte';
-	import TimeInput from '$lib/components/form/TimeInput.svelte';
+	import CheckboxGrid from '$lib/components/custom/form/CheckboxGrid.svelte';
+	import CheckboxGroup from '$lib/components/custom/form/CheckboxGroup.svelte';
+	import DateInput from '$lib/components/custom/form/DateInput.svelte';
+	import Dropdown from '$lib/components/custom/form/Dropdown.svelte';
+	import FormControls from '$lib/components/custom/form/FormControls.svelte';
+	import FormProgress from '$lib/components/custom/form/FormProgress.svelte';
+	import RadioGrid from '$lib/components/custom/form/RadioGrid.svelte';
+	import RadioGroup from '$lib/components/custom/form/RadioGroup.svelte';
+	import SliderInput from '$lib/components/custom/form/SliderInput.svelte';
+	import TextInput from '$lib/components/custom/form/TextInput.svelte';
+	import TimeInput from '$lib/components/custom/form/TimeInput.svelte';
 	import {
 		ADDITIONAL_TITLE_ITEM,
 		CHECKBOX_GRID_QUESTION_ITEM,
@@ -25,7 +25,6 @@
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
 	} from '$lib/form/constants';
-	import Button from '../ui/button/button.svelte';
 
 	export let canSubmit: boolean = false;
 	export let form: any;
@@ -39,7 +38,7 @@
 		currentPage--;
 	}
 
-	function handleOnSumit() {
+	function handleOnSubmit() {
 		if (canSubmit) {
 			console.log('submit');
 		} else {
@@ -128,7 +127,7 @@
 			{currentPage}
 			{handleOnNext}
 			{handleOnPrevious}
-			{handleOnSumit}
+			{handleOnSubmit}
 		/>
 	</div>
 </div>
