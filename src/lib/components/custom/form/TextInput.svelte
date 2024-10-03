@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { handleFormValueChange } from '$lib/google-forms/store';
-	import Input from '../ui/input/input.svelte';
+	import { Input } from '$lib/components/shadcn/ui/input';
+	import { handleFormValueChange } from '$lib/form/store';
 
 	export let submitId: string;
 	export let description: string | null = null;

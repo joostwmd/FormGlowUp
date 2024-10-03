@@ -1,7 +1,7 @@
 <script>
-	import Button from '$lib/components/shadcn/ui/button/button.svelte';
+	import TextInput from '$lib/components/custom/form/TextInput.svelte';
 </script>
 
-<h1>test</h1>
-
-<Button>test</Button>
+<div class="flex h-screen w-screen flex-col items-center justify-center px-12 py-4">
+	<TextInput submitId={'test'} />
+</div>
