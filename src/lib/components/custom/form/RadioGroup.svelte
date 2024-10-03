@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as RadioGroup from '$lib/components/ui/radio-group';
+	import * as RadioGroup from '$lib/components/shadcn/ui/radio-group/index';
 	import {
 		OTHER_OPTION_VALUE,
 		OTHER_RESPONSE_SUFFIX,
 		SUBMIT_KEY_PREFIX
 	} from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/store';
-	import Input from '../ui/input/input.svelte';
-	import { Label } from '../ui/label';
+	import Input from '$lib/components/shadcn/ui/input/input.svelte';
+	import Label from '$lib/components/shadcn/ui/label/label.svelte';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;
