@@ -55,7 +55,7 @@
 						Customization
 					</div>
 				</Card.Title>
-				<Card.Description>Customize your settings here.</Card.Description>
+				<Card.Description>Style the form to your liking here.</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				<ThemeCustomizer />
@@ -75,7 +75,9 @@
 						End
 					</div>
 				</Card.Title>
-				<Card.Description>You have completed the setup.</Card.Description>
+				<Card.Description
+					>Leave a nive thank you message for the people that filled out your form</Card.Description
+				>
 			</Card.Header>
 			<Card.Content>
 				<CheckoutScreenCustomizer />
