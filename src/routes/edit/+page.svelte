@@ -7,5 +7,7 @@
 <div class="flex h-full w-full flex-col items-center justify-center">
 	<ThemeCustomizer />
 
-	<Form form={FORM_DATA_TEST} />
+	<div class="mt-24">
+		<Form form={FORM_DATA_TEST} />
+	</div>
 </div>

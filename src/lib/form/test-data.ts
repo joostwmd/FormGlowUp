@@ -35,7 +35,20 @@ export const FORM_DATA_TEST = {
 };
 
 export const TEST_RADIUSES = [0, 0.25, 0.5, 0.75, 1.0];
-export const TEST_FONTS = ['Roboto, sans-serif', 'Arial, sans-serif', 'Courier, monospace'];
+export const TEST_FONTS = [
+	{
+		display: 'Roboto',
+		value: 'Roboto, sans-serif'
+	},
+	{
+		display: 'Arial',
+		value: 'Arial, sans-serif'
+	},
+	{
+		display: 'Courier',
+		value: 'Courier, monospace'
+	}
+];
 
 export const TEST_THEME_CONFIG = {
 	theme: 'neutral',
