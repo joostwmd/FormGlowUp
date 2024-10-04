@@ -48,7 +48,7 @@
 </script>
 
 <div class="flex w-full flex-col items-center">
-	<div class="flex w-full max-w-96 flex-col items-start space-y-4 px-4">
+	<div class="flex w-full flex-col items-start space-y-4 px-4">
 		<FormProgress totalPages={form.formItems.length} {currentPage} />
 
 		{#each form.formItems[currentPage] as item}

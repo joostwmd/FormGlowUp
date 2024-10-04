@@ -8,7 +8,7 @@
 	import LoadingScreenCustomizer from './LoadingScreenCustomizer.svelte';
 </script>
 
-<Accordion.Root class="w-full sm:max-w-[70%]">
+<Accordion.Root class="w-full">
 	<Accordion.Item value="customization">
 		<Accordion.Trigger>
 			<div class="flex items-center">
