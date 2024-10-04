@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
 import { themes } from './themes';
-import { DEFAULT_MODE } from './form/constants';
 import { TEST_THEME_CONFIG } from './form/test-data';
 
 export type StyleConfig = {
@@ -8,6 +7,7 @@ export type StyleConfig = {
 	radius: number;
 	font: string;
 	mode: 'light' | 'dark';
+	loader: string;
 };
 
 export const config = writable<StyleConfig>(TEST_THEME_CONFIG);

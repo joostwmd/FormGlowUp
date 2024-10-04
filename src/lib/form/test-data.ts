@@ -1,4 +1,4 @@
-import { DEFAULT_MODE } from './constants';
+import { DEFAULT_LOADER, DEFAULT_MODE } from './constants';
 
 export const FORM_DATA_TEST = {
 	formItems: [
@@ -54,5 +54,6 @@ export const TEST_THEME_CONFIG = {
 	theme: 'neutral',
 	radius: 0.25,
 	font: TEST_FONTS[0],
-	mode: DEFAULT_MODE
+	mode: DEFAULT_MODE,
+	loader: DEFAULT_LOADER
 };

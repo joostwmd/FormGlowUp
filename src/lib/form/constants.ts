@@ -42,3 +42,19 @@ export const MINUTE_SUFFIX = '_minute';
 export const SECOND_SUFFIX = '_second';
 
 export const DEFAULT_MODE = 'light';
+export const DEFAULT_LOADER = 'SPIRAL';
+
+export const LOADERS = [
+	{
+		display: 'Spiral',
+		value: 'SPIRAL'
+	},
+	{
+		display: 'Zoomies',
+		value: 'ZOOMIES'
+	},
+	{
+		display: 'Grid',
+		value: 'GRID'
+	}
+];
