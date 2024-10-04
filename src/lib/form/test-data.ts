@@ -51,9 +51,10 @@ export const TEST_FONTS = [
 ];
 
 export const TEST_THEME_CONFIG = {
-	theme: 'neutral',
-	radius: 0.25,
-	font: TEST_FONTS[0],
+	theme: 'rose',
+	radius: 1,
+	font: TEST_FONTS[2].value,
 	mode: DEFAULT_MODE,
-	loader: DEFAULT_LOADER
+	loader: DEFAULT_LOADER,
+	endText: 'Thank you for your submission!'
 };

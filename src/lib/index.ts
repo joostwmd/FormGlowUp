@@ -8,6 +8,7 @@ export type StyleConfig = {
 	font: string;
 	mode: 'light' | 'dark';
 	loader: string;
+	endText: string;
 };
 
 export const config = writable<StyleConfig>(TEST_THEME_CONFIG);

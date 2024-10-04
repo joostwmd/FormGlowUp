@@ -1,9 +1,7 @@
 <script lang="ts">
-	import Loader from '../Loader.svelte';
-
-	export let variant: string;
+	export let text: string;
 </script>
 
 <div class="flex h-full w-full flex-col items-center justify-center">
-	<Loader {variant} />
+	<h1>{text}</h1>
 </div>

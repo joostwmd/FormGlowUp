@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Input from '../shadcn/ui/input/input.svelte';
+	import { config } from '$lib';
 </script>
 
 <div class="flex flex-col space-y-4 md:space-y-6">
@@ -8,6 +9,6 @@
 	</div>
 
 	<div class="w-full px-4">
-		<Input />
+		<Input bind:value={$config.endText} />
 	</div>
 </div>

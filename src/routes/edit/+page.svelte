@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Customizer from '$lib/components/custom/Customizer.svelte';
 	import Form from '$lib/components/custom/form/Form.svelte';
-	import ThemeCustomizer from '$lib/components/custom/ThemeCustomizer.svelte';
 	import { FORM_DATA_TEST } from '$lib/form/test-data';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
@@ -12,7 +11,7 @@
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 </script>
 
-<div class="h-full w-full bg-muted/40 p-4">
+<div class="h-full min-h-screen w-full bg-muted/40 p-4">
 	<div class="mb-4 flex w-full items-center justify-between">
 		<h1>Logo</h1>
 
