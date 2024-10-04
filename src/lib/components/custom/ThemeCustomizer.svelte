@@ -29,24 +29,6 @@
 </script>
 
 <div class="flex flex-col space-y-4 md:space-y-6">
-	<div class="flex items-start">
-		<div class="space-y-1 pr-2">
-			<div class="font-semibold leading-none tracking-tight">Customize</div>
-			<div class="text-xs text-muted-foreground">Give your Form a personal look</div>
-		</div>
-		<Button
-			variant="ghost"
-			size="icon"
-			class="ml-auto rounded-[0.5rem]"
-			on:click={() => {
-				config.update((prev) => ({ ...prev, radius: 0.5, theme: 'zinc' }));
-			}}
-		>
-			<Reset />
-			<span class="sr-only"> Reset </span>
-		</Button>
-	</div>
-
 	<div class="flex flex-1 flex-col space-y-4 md:space-y-6">
 		<div class="space-y-1">
 			<Label class="text-xs">Color</Label>
