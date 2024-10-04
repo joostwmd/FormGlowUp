@@ -10,14 +10,18 @@
 	}
 </script>
 
-<div class="grid grid-cols-2 gap-4">
-	{#each LOADERS as loader}
-		<button on:click={() => selectLoader(loader.value)} class="">
-			<Card.Root class={cn($config.loader === loader.value && 'border-2 border-primary')}>
-				<Card.Content>
-					<Loader variant={loader.value} />
-				</Card.Content>
-			</Card.Root>
-		</button>
-	{/each}
+<div class="flex flex-col space-y-4 md:space-y-6">
+	<div class="text-xs text-muted-foreground">Choose Loading Animation</div>
+
+	<div class="grid grid-cols-2 gap-4">
+		{#each LOADERS as loader}
+			<button on:click={() => selectLoader(loader.value)} class="">
+				<Card.Root class={cn($config.loader === loader.value && 'border-2 border-primary')}>
+					<Card.Content>
+						<Loader variant={loader.value} />
+					</Card.Content>
+				</Card.Root>
+			</button>
+		{/each}
+	</div>
 </div>
