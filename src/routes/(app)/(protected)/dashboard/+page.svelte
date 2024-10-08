@@ -20,7 +20,7 @@
 	};
 </script>
 
-<NewFormCard />
+<NewFormCard userId={data.session.user?.id} session={data.session} />
 
 {#each data.forms as form}
 	<FormCard formData={form} />

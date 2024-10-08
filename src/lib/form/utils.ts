@@ -1,39 +1,201 @@
-export async function fetchFormItems(id: string, userToken: string) {
-	const apiUrl = `https://forms.googleapis.com/v1/forms/${id}`;
+export async function fetchFormItems() {
+	const test = await fetch('/api/get-form');
+	const data = await test.json();
+	console.log(data);
 
-	let formData;
-	let htmlData;
+	return data;
+}
 
-	try {
-		const response = await fetch(apiUrl, {
-			headers: {
-				Authorization: `Bearer ${userToken}`
+import {
+	ADDITIONAL_TITLE_ITEM,
+	CHECKBOX_GRID_QUESTION_ITEM,
+	CHECKBOX_QUESTION_ITEM,
+	DATE_QUESTION_ITEM,
+	DROPDOWN_QUESTION_ITEM,
+	IMAGE_ITEM,
+	OTHER_OPTION_VALUE,
+	PAGEBREAK_ITEM,
+	PARAGRAPH_QUESTION_ITEM,
+	QUESTION_ITEM_TYPES,
+	RADIO_GRID_QUESTION_ITEM,
+	RADIO_QUESTION_ITEM,
+	SCALE_QUESTION_ITEM,
+	TEXT_QUESTION_ITEM,
+	TIME_QUESTION_ITEM
+} from '$lib/form/constants';
+import { formStructureStore } from '$lib/form/store';
+
+function extractSubmitIds(htmlString: string) {
+	const ids = htmlString.match(/\b\d{9,10}\b/g) || [];
+	return ids.length === 1 ? ids : ids.slice(1);
+}
+
+function parseItemData(data: any, type: string) {
+	const choiceQuestion = data.questionItem?.question?.choiceQuestion;
+	const scaleQuestion = data.questionItem?.question?.scaleQuestion;
+	const dateQuestion = data.questionItem?.question?.dateQuestion;
+	const timeQuestion = data.questionItem?.question?.timeQuestion;
+	const imageItem = data.imageItem?.image;
+
+	switch (type) {
+		case RADIO_QUESTION_ITEM:
+		case CHECKBOX_QUESTION_ITEM:
+		case DROPDOWN_QUESTION_ITEM:
+			return {
+				isRequired: data.questionItem?.question?.required,
+				description: data.description,
+				shuffleOptions: choiceQuestion.shuffle,
+				options: choiceQuestion.options.map((option: any) =>
+					option.isOther ? OTHER_OPTION_VALUE : option.value
+				)
+			};
+		case SCALE_QUESTION_ITEM:
+			return {
+				isRequired: data.questionItem?.question?.required,
+				description: data.description,
+				minLabel: scaleQuestion.lowLabel,
+				maxLabel: scaleQuestion.highLabel,
+				minValue: scaleQuestion.low,
+				maxValue: scaleQuestion.high
+			};
+		case CHECKBOX_GRID_QUESTION_ITEM:
+		case RADIO_GRID_QUESTION_ITEM:
+			return {
+				description: data.description,
+				columns: data.questionGroupItem.grid.columns.options.map((option: any) => option.value),
+				rows: data.questionGroupItem.questions.map((question: any) => ({
+					isRequired: question.required,
+					title: question.rowQuestion.title
+				}))
+			};
+		case DATE_QUESTION_ITEM:
+			return {
+				isRequired: dateQuestion.required,
+				description: data.description,
+				yearIncluded: dateQuestion.includeYear,
+				timeIncluded: dateQuestion.includeTime
+			};
+		case TIME_QUESTION_ITEM:
+			return {
+				isRequired: timeQuestion.required,
+				description: data.description,
+				isDuration: timeQuestion.duration
+			};
+		case IMAGE_ITEM:
+			return {
+				imageUrl: imageItem.contentUri,
+				properties: imageItem.properties,
+				title: data.title
+			};
+		default:
+			return {};
+	}
+}
+
+function findItemType(item: any) {
+	if (item.textItem) return ADDITIONAL_TITLE_ITEM;
+	if (item.imageItem) return IMAGE_ITEM;
+	if (item.pageBreakItem) return PAGEBREAK_ITEM;
+
+	const questionItem = item.questionItem?.question;
+	if (questionItem) {
+		if (questionItem.textQuestion)
+			return questionItem.textQuestion.paragraph ? PARAGRAPH_QUESTION_ITEM : TEXT_QUESTION_ITEM;
+		if (questionItem.choiceQuestion) {
+			switch (questionItem.choiceQuestion.type) {
+				case 'RADIO':
+					return RADIO_QUESTION_ITEM;
+				case 'CHECKBOX':
+					return CHECKBOX_QUESTION_ITEM;
+				case 'DROP_DOWN':
+					return DROPDOWN_QUESTION_ITEM;
 			}
-		});
-
-		if (!response.ok) {
-			throw new Error(`Error fetching form data: ${response.statusText}`);
 		}
-
-		formData = await response.json();
-	} catch (error) {
-		console.error('Error fetching form data:', error);
-		//return json({ error: 'Failed to fetch form data' }, { status: 500 });
+		if (questionItem.scaleQuestion) return SCALE_QUESTION_ITEM;
+		if (questionItem.dateQuestion) return DATE_QUESTION_ITEM;
+		if (questionItem.timeQuestion) return TIME_QUESTION_ITEM;
 	}
 
-	try {
-		const responderUrl = formData.responderUri;
-		const response = await fetch(responderUrl);
+	const questionGroupItem = item.questionGroupItem?.grid.columns.type;
+	if (questionGroupItem) {
+		switch (questionGroupItem) {
+			case 'RADIO':
+				return RADIO_GRID_QUESTION_ITEM;
+			case 'CHECKBOX':
+				return CHECKBOX_GRID_QUESTION_ITEM;
+		}
+	}
 
-		if (!response.ok) {
-			throw new Error(`Error fetching HTML data: ${response.statusText}`);
+	return '';
+}
+
+function parseFormData(data: any, submitIds: string[]) {
+	let submitIdIndex = 0;
+	const pages: any[] = [];
+	let currentPage: any[] = [];
+
+	data.items.forEach((item: any) => {
+		const type = findItemType(item);
+		const itemData = parseItemData(item, type);
+
+		if (QUESTION_ITEM_TYPES.includes(type)) {
+			if (type === RADIO_GRID_QUESTION_ITEM || type === CHECKBOX_GRID_QUESTION_ITEM) {
+				itemData.rows.forEach((row: any) => {
+					row.submitId = submitIds[submitIdIndex++];
+				});
+			} else {
+				itemData.submitId = submitIds[submitIdIndex++];
+			}
 		}
 
-		htmlData = await response.text();
-	} catch (error) {
-		console.error('Error fetching HTML data:', error);
-		//return json({ error: 'Failed to fetch HTML data' }, { status: 500 });
+		if (type === PAGEBREAK_ITEM) {
+			pages.push(currentPage);
+			currentPage = [];
+		} else {
+			currentPage.push({
+				title: item.title,
+				type: type,
+				data: itemData
+			});
+		}
+	});
+
+	// Push the last page if it has items
+	if (currentPage.length > 0) {
+		pages.push(currentPage);
 	}
-	console.log({ html: htmlData, formData: formData });
-	//return json({ html: htmlData, formData: formData });
+
+	const form = {
+		formInfo: {
+			title: data.info.title,
+			description: data.info.description,
+			documentTitle: data.info.documentTitle
+		},
+		formItems: pages
+	};
+
+	return form;
+}
+
+export async function constructFormStructure(html: string, formData: any) {
+	const submitIds = extractSubmitIds(html);
+	const form = parseFormData(formData, submitIds);
+
+	formStructureStore.set(form);
+	return form;
+}
+
+export function shuffleArray(array: any[]) {
+	const shuffledArray = [...array];
+	for (let i = shuffledArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+	}
+	return shuffledArray;
+}
+
+export function extractFormId(url: string): string | null {
+	const editUrlPattern = /\/d\/([a-zA-Z0-9_-]+)\/edit/;
+	const match = url.match(editUrlPattern);
+	return match ? match[1] : null;
 }

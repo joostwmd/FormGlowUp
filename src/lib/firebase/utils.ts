@@ -99,6 +99,37 @@ export async function getUserById(userId: string) {
 	}
 }
 
+export async function getAccessTokens(userId: string) {
+	try {
+		// Reference the collection
+		const accountCollectionRef = collection(db, 'accounts');
+		console.log('Collection reference:', accountCollectionRef);
+
+		// Construct the query
+		const q = query(accountCollectionRef, where('userId', '==', userId));
+		console.log('Query:', q);
+
+		// Execute the query
+		const querySnapshot = await getDocs(q);
+		console.log('Query snapshot:', querySnapshot);
+
+		// Check if the query returned any documents
+		if (querySnapshot.empty) {
+			console.log('No documents found for user ID:', userId);
+			return null;
+		}
+
+		// Log the document data
+		const accountDoc = querySnapshot.docs[0];
+		const accountData = accountDoc.data();
+		return accountData.access_token;
+		return accountDoc.data();
+	} catch (e) {
+		console.log('Error getting user:', e);
+		return null;
+	}
+}
+
 export async function createUser(userId: string) {
 	try {
 		const userRef = doc(db, `users/${userId}`);
