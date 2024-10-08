@@ -34,6 +34,7 @@
 		"bits-ui": "^0.21.16",
 		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.18",
+		"firebase": "^10.14.0",
 		"firebase-admin": "^12.6.0",
 		"lucide-svelte": "^0.447.0",
 		"mode-watcher": "^0.4.1",

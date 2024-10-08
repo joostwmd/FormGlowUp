@@ -8,7 +8,7 @@ import {
 	AUTH_FIREBASE_PRIVATE_KEY
 } from '$env/static/private';
 
-const firestore = initFirestore({
+export const firestore = initFirestore({
 	credential: cert({
 		projectId: AUTH_FIREBASE_PROJECT_ID,
 		clientEmail: AUTH_FIREBASE_CLIENT_EMAIL,
