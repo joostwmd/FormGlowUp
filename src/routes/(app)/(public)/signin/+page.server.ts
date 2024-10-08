@@ -7,7 +7,7 @@ export const actions: Actions = { default: signIn };
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const session = await locals.auth();
-
+	console.log('session', session);
 	if (session) {
 		throw redirect(302, '/dashboard');
 	}

@@ -36,7 +36,7 @@
 		"cmdk-sv": "^0.0.18",
 		"firebase": "^10.14.0",
 		"firebase-admin": "^12.6.0",
-		"lucide-svelte": "^0.447.0",
+		"lucide-svelte": "^0.451.0",
 		"mode-watcher": "^0.4.1",
 		"svelte-radix": "^1.1.1",
 		"tailwind-merge": "^2.5.2",
