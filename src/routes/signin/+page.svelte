@@ -1,7 +1,10 @@
 <script lang="ts">
-	import { Button } from '$lib/components/shadcn/ui/button';
+	import Button from '$lib/components/shadcn/ui/button/button.svelte';
+	import { SignIn } from '@auth/sveltekit/components';
 </script>
 
-<div class="flex h-full w-full flex-col items-center justify-center">
-	<Button class="mb-4">SignIn</Button>
-</div>
+<SignIn provider="google" signInPage="signin" class="w-full">
+	<div slot="submitButton">
+		<Button>Sign in with Google</Button>
+	</div>
+</SignIn>
