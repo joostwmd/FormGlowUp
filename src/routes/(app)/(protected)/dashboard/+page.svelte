@@ -23,7 +23,7 @@
 <NewFormCard />
 
 {#each data.forms as form}
-	<FormCard />
+	<FormCard formData={form} />
 {/each}
 
 <Button on:click={() => signOut()} class="mb-4">SignOut</Button>

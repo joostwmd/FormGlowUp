@@ -6,6 +6,16 @@
 	import SendIcon from 'lucide-svelte/icons/send';
 	import EllipsisVerticalIcon from 'lucide-svelte/icons/ellipsis-vertical';
 	import { Button } from '../shadcn/ui/button';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+
+	export let formData: any;
+	console.log(formData);
+
+	async function handleEditClick() {
+		console.log($page);
+		await goto(`${$page.url.origin}/form/${formData.uid}/edit`);
+	}
 </script>
 
 <Card.Root class="sm:col-span-2">
@@ -27,7 +37,7 @@
 		</div>
 
 		<div class="flex justify-between">
-			<Button variant="outline">
+			<Button variant="outline" on:click={handleEditClick}>
 				<PaintbrushIcon class="mr-2 h-4 w-4" />
 				Edit
 			</Button>
