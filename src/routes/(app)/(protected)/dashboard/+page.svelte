@@ -5,6 +5,7 @@
 	import { createForm } from '$lib/firebase/utils';
 	import type { LayoutServerData } from '../$types';
 	import FormCard from '$lib/components/custom/FormCard.svelte';
+	import NewFormCard from '$lib/components/custom/NewFormCard.svelte';
 
 	export let data: LayoutServerData & PageServerData;
 
@@ -19,19 +20,10 @@
 	};
 </script>
 
+<NewFormCard />
+
 {#each data.forms as form}
 	<FormCard />
 {/each}
-
-<Button
-	on:click={() =>
-		createForm(
-			data.session.user?.id,
-			testFormData.googleFormId,
-			testFormData.formInfo,
-			testFormData.formItems
-		)}
-	class="mb-4">Test Create Form</Button
->
 
 <Button on:click={() => signOut()} class="mb-4">SignOut</Button>
