@@ -4,6 +4,7 @@
 	import Zoomies from './loaders/Zoomies.svelte';
 
 	export let variant: string;
+	export let color: string = 'white';
 </script>
 
 <div class="flex h-24 w-full flex-col items-center justify-center">

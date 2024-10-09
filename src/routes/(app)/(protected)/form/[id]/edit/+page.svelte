@@ -9,7 +9,7 @@
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
-	import { formStyleStore } from '$lib/form/stores';
+	import { formStyleStore, formStructureStore } from '$lib/form/stores';
 	export let data: any;
 
 	let form: any;
@@ -17,6 +17,7 @@
 
 	onMount(() => {
 		$formStyleStore = data.formData.formStyle;
+		$formStructureStore = JSON.parse(data.formData.formStructure);
 		isMounted = true;
 	});
 
@@ -89,7 +90,7 @@
 						</Card.Header>
 
 						<Card.Content>
-							<Form formStructure={JSON.parse(data.formData.formStructure)} />
+							<Form formStructure={$formStructureStore} />
 						</Card.Content>
 					</Card.Root>
 				</ThemeWrapper>

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { formStyleStore } from '$lib/form/stores';
-	$: color = $formStyleStore.mode === 'dark' ? 'white' : 'black';
+	export let color: string = 'black';
 </script>
 
 <l-spiral size="40" speed="0.9" {color}></l-spiral>
