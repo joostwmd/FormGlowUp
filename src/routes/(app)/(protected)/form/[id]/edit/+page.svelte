@@ -3,7 +3,7 @@
 	import Form from '$lib/components/custom/form/Form.svelte';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import { FORM_DATA_TEST } from '$lib/form/test-data';
-	import { constructFormStructure, fetchFormItems } from '$lib/form/utils';
+	import { constructFormStructure } from '$lib/form/utils';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
 	import { onMount } from 'svelte';
@@ -11,23 +11,26 @@
 	import ShareIcon from 'lucide-svelte/icons/share';
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import { updateForm } from '$lib/firebase/utils';
+	import { parse } from 'svelte/compiler';
 
 	export let data: any;
-	console.log('edit ts', data.form.formData.items);
+
+	console.log('edit', data.formData);
+
 	let form: any;
 	onMount(async () => {
 		const { html, formData } = data.form;
 		form = await constructFormStructure(html, formData);
 	});
 
-	async function refetchForm() {
-		const { html, formData } = await fetchFormItems(fetch);
-		form = await constructFormStructure(html, formData);
-	}
+	// async function refetchForm() {
+	// 	const { html, formData } = await fetchFormItems(fetch);
+	// 	form = await constructFormStructure(html, formData);
+	// }
 
-	async function handleUpdateForm() {
-		const res = await updateForm(data.session.user.id, data.formId);
-	}
+	// async function handleUpdateForm() {
+	// 	const res = await updateForm(data.session.user.id, data.formId);
+	// }
 </script>
 
 <div class="h-full min-h-screen w-full bg-muted/40 p-4">
@@ -87,7 +90,8 @@
 				</Card.Header>
 
 				<Card.Content>
-					<Form form={{ formItems: [data.form.formData.items] }} />
+					<!-- <Form form={{ formItems: [data.form.formData.items] }} /> -->
+					<Form formStructure={JSON.parse(data.formData.formStructure)} />
 				</Card.Content>
 			</Card.Root>
 		</div>

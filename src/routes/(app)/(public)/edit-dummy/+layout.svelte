@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { config, updateTheme } from '$lib';
+	import { styleConfig, updateTheme } from '$lib';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 
 	$: {
-		updateTheme($config);
+		updateTheme($styleConfig);
 	}
 </script>
 
-<ThemeWrapper styleConfig={$config}>
+<ThemeWrapper styleConfig={$styleConfig}>
 	<slot />
 </ThemeWrapper>

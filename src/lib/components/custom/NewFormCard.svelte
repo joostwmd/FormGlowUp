@@ -2,7 +2,14 @@
 	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import { createForm, getAccessTokens } from '$lib/firebase/utils';
-	import { constructFormStructure, extractFormId, fetchFormItems } from '$lib/form/utils';
+	import { DEFAULT_END_TEXT, DEFAULT_LOADER } from '$lib/form/constants';
+	import {
+		constructFormInfoData,
+		constructFormItemsData,
+		constructFormStructure,
+		extractFormId,
+		fetchFormData
+	} from '$lib/form/utils';
 	import Button from '../shadcn/ui/button/button.svelte';
 	import Input from '../shadcn/ui/input/input.svelte';
 
@@ -30,13 +37,16 @@
 		const accessToken = await getAccessTokens(userId);
 		console.log('accessToken', accessToken);
 
-		// const est = await fetchFormItems(formId, accessToken);
-		// console.log('est', est);
+		const { htmlData, formData } = await fetchFormData(fetch);
+		const formInfo = await constructFormInfoData(formData);
+		const formItems = await constructFormItemsData(htmlData, formData);
+		const formStructure = {
+			loader: DEFAULT_LOADER,
+			endText: DEFAULT_END_TEXT,
+			items: formItems
+		};
 
-		const { html, formData } = await fetchFormItems();
-		const form = await constructFormStructure(html, formData);
-
-		const res = await createForm(userId, formId, form.formInfo, JSON.stringify(form.formItems));
+		const res = await createForm(userId, formId, formInfo, JSON.stringify(formStructure));
 
 		if (res.success) {
 			await goto(`/form/${res.uid}/edit`);

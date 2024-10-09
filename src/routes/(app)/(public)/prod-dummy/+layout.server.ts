@@ -1,9 +1,7 @@
-import type { StyleConfig } from '$lib';
-import { DEFAULT_MODE } from '$lib/form/constants.js';
-import { TEST_FONTS, TEST_THEME_CONFIG } from '$lib/form/test-data.js';
+import { DEFAULT_SYTLE_CONFIG } from '$lib/form/constants.js';
 
 export async function load({ params }) {
 	return {
-		formStyleTest: TEST_THEME_CONFIG
+		formStyleTest: DEFAULT_SYTLE_CONFIG
 	};
 }

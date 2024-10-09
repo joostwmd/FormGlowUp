@@ -10,10 +10,8 @@
 	import { page } from '$app/stores';
 
 	export let formData: any;
-	console.log(formData);
 
 	async function handleEditClick() {
-		console.log($page);
 		await goto(`${$page.url.origin}/form/${formData.uid}/edit`);
 	}
 </script>

@@ -9,6 +9,7 @@ import {
 	where
 } from 'firebase/firestore';
 import { db } from './index';
+import { DEFAULT_SYTLE_CONFIG } from '$lib/form/constants';
 
 export async function getFormsOfUserById(userId: string) {
 	try {
@@ -52,7 +53,7 @@ export async function createForm(
 	userId: string,
 	googleFormId: string,
 	formInfo: object,
-	formItems: string
+	formStructure: string
 ) {
 	try {
 		const newFormRef = doc(collection(db, `users/${userId}/forms`));
@@ -61,7 +62,8 @@ export async function createForm(
 			uid: newFormRef.id,
 			public: false,
 			formInfo,
-			formItems
+			formStructure,
+			formStyle: DEFAULT_SYTLE_CONFIG
 		});
 
 		return { success: true, uid: newFormRef.id };
@@ -111,25 +113,20 @@ export async function getAccessTokens(userId: string) {
 		const accountCollectionRef = collection(db, 'accounts');
 		console.log('Collection reference:', accountCollectionRef);
 
-		// Construct the query
 		const q = query(accountCollectionRef, where('userId', '==', userId));
 		console.log('Query:', q);
 
-		// Execute the query
 		const querySnapshot = await getDocs(q);
 		console.log('Query snapshot:', querySnapshot);
 
-		// Check if the query returned any documents
 		if (querySnapshot.empty) {
 			console.log('No documents found for user ID:', userId);
 			return null;
 		}
 
-		// Log the document data
 		const accountDoc = querySnapshot.docs[0];
 		const accountData = accountDoc.data();
 		return accountData.access_token;
-		return accountDoc.data();
 	} catch (e) {
 		console.log('Error getting user:', e);
 		return null;

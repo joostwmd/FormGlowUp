@@ -29,7 +29,6 @@ export async function GET({ fetch }) {
 		return json({ error: 'Failed to fetch form data' }, { status: 500 });
 	}
 
-	// Second fetch to get HTML data
 	try {
 		const responderUrl = formData.responderUri;
 		const response = await fetch(responderUrl);
@@ -45,5 +44,5 @@ export async function GET({ fetch }) {
 		return json({ error: 'Failed to fetch HTML data' }, { status: 500 });
 	}
 
-	return json({ html: htmlData, formData: formData });
+	return json({ htmlData: htmlData, formData: formData });
 }

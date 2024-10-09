@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { config } from '$lib';
-	import { TEST_FONTS, TEST_RADIUSES } from '$lib/form/test-data';
+	import { styleConfig } from '$lib';
 	import { themes } from '$lib/themes';
 	import Button from '../shadcn/ui/button/button.svelte';
 	import Label from '../shadcn/ui/label/label.svelte';
@@ -14,11 +13,11 @@
 	import Sun from 'lucide-svelte/icons/sun';
 	import Moon from 'lucide-svelte/icons/moon';
 	import Reset from 'svelte-radix/Reset.svelte';
+	import { FONTS, RADIUSES } from '$lib/form/constants';
 
 	let open = false;
-	let value = TEST_FONTS[0].value;
-	$: selectedValue =
-		TEST_FONTS.find((option) => option.value === value)?.display ?? 'No FONT Selected';
+	let value = FONTS[0].value;
+	$: selectedValue = FONTS.find((option) => option.value === value)?.display ?? 'No FONT Selected';
 	// rest of the form with the keyboard.
 	function closeAndFocusTrigger(triggerId: string) {
 		open = false;
@@ -36,8 +35,8 @@
 			size="icon"
 			class="ml-auto rounded-[0.5rem]"
 			on:click={() => {
-				$config.radius = 0.5;
-				$config.theme = 'zinc';
+				$styleConfig.radius = 0.5;
+				$styleConfig.theme = 'zinc';
 			}}
 		>
 			<Reset />
@@ -49,12 +48,12 @@
 			<Label class="text-xs">Color</Label>
 			<div class="grid grid-cols-3 gap-2">
 				{#each themes as theme (theme.name)}
-					{@const isActive = $config.theme === theme.name}
+					{@const isActive = $styleConfig.theme === theme.name}
 					<Button
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							config.update((prev) => ({ ...prev, theme: theme.name }));
+							styleConfig.update((prev) => ({ ...prev, theme: theme.name }));
 						}}
 						class={cn('justify-start', isActive && 'border-2 border-primary')}
 						style="--theme-primary: hsl({theme.activeColor[$mode ?? 'dark']})"
@@ -75,14 +74,14 @@
 		<div class="space-y-1.5">
 			<Label class="text-xs">Radius</Label>
 			<div class="grid grid-cols-5 gap-2">
-				{#each TEST_RADIUSES as radius}
+				{#each RADIUSES as radius}
 					<Button
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							config.update((prev) => ({ ...prev, radius }));
+							styleConfig.update((prev) => ({ ...prev, radius }));
 						}}
-						class={cn($config.radius === radius && 'border-2 border-primary')}
+						class={cn($styleConfig.radius === radius && 'border-2 border-primary')}
 					>
 						{radius}
 					</Button>
@@ -96,8 +95,8 @@
 				<Button
 					variant="outline"
 					size="sm"
-					on:click={() => config.update((prev) => ({ ...prev, mode: 'light' }))}
-					class={cn($config.mode === 'light' && 'border-2 border-primary')}
+					on:click={() => styleConfig.update((prev) => ({ ...prev, mode: 'light' }))}
+					class={cn($styleConfig.mode === 'light' && 'border-2 border-primary')}
 				>
 					<Sun class="mr-1 -translate-x-1" />
 					Light
@@ -105,8 +104,8 @@
 				<Button
 					variant="outline"
 					size="sm"
-					on:click={() => config.update((prev) => ({ ...prev, mode: 'dark' }))}
-					class={cn($config.mode === 'dark' && 'border-2 border-primary')}
+					on:click={() => styleConfig.update((prev) => ({ ...prev, mode: 'dark' }))}
+					class={cn($styleConfig.mode === 'dark' && 'border-2 border-primary')}
 				>
 					<Moon class="mr-1 -translate-x-1" />
 					Dark
@@ -132,12 +131,12 @@
 				<Popover.Content class="w-80 p-0">
 					<Command.Root>
 						<Command.Group>
-							{#each TEST_FONTS as option}
+							{#each FONTS as option}
 								<Command.Item
 									value={option.value}
 									onSelect={(currentValue) => {
 										value = currentValue;
-										config.update((prev) => ({ ...prev, font: currentValue }));
+										styleConfig.update((prev) => ({ ...prev, font: currentValue }));
 										closeAndFocusTrigger(ids.trigger);
 									}}
 								>

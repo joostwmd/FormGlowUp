@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { config } from '$lib';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import EndScreen from './EndScreen.svelte';
 
@@ -32,7 +31,7 @@
 
 	export let isPreview: boolean = false;
 	export let canSubmit: boolean = true;
-	export let form: any;
+	export let formStructure: { loader: string; endText: string; items: any[] };
 
 	let currentPage: number = 0;
 	let isLoading: boolean = true;
@@ -44,7 +43,7 @@
 	}, 1000);
 
 	function handleOnNext() {
-		if (isPreview && currentPage === form.formItems.length - 1) {
+		if (isPreview && currentPage === formStructure.items.length - 1) {
 			isSubmitted = true;
 		} else {
 			currentPage++;
@@ -70,19 +69,19 @@
 		}
 	}
 
-	console.log('form', form.formItems);
+	//console.log('form', form.formItems);
 </script>
 
 {#if isLoading}
-	<LoadingScreen variant={$config.loader} />
+	<LoadingScreen variant={formStructure.loader} />
 {:else if isSubmitted}
-	<EndScreen text={$config.endText} />
+	<EndScreen text={formStructure.endText} />
 {:else}
 	<div class="flex w-full flex-col items-center">
 		<div class="flex w-full flex-col items-start space-y-4 px-4">
-			<FormProgress totalPages={form.formItems.length} {currentPage} />
+			<FormProgress totalPages={formStructure.items.length} {currentPage} />
 
-			{#each form.formItems[currentPage] as item}
+			{#each formStructure.items[currentPage] as item}
 				{#if QUESTION_ITEM_TYPES.includes(item.type)}
 					{#if item.type === TEXT_QUESTION_ITEM}
 						<TextInput submitId={item.data.submitId} description={item.data.description} />
@@ -154,7 +153,7 @@
 			{/each}
 
 			<FormControls
-				totalPages={form.formItems.length}
+				totalPages={formStructure.items.length}
 				{currentPage}
 				{handleOnNext}
 				{handleOnPrevious}

@@ -9,8 +9,6 @@
 
 	export let data: LayoutServerData & PageServerData;
 
-	console.log(data);
-
 	const testFormData = {
 		googleFormId: 'test google form id',
 		formInfo: {

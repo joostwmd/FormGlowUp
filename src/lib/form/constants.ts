@@ -1,3 +1,5 @@
+import type { StyleConfig } from '$lib';
+
 export const OTHER_OPTION_VALUE = '__other_option__';
 
 export const TEXT_QUESTION_ITEM = 'TEXT_QUESTION';
@@ -43,6 +45,30 @@ export const SECOND_SUFFIX = '_second';
 
 export const DEFAULT_MODE = 'light';
 export const DEFAULT_LOADER = 'SPIRAL';
+export const DEFAULT_END_TEXT = 'Thank you for your submission!';
+
+export const RADIUSES = [0, 0.25, 0.5, 0.75, 1.0];
+export const FONTS = [
+	{
+		display: 'Roboto',
+		value: 'Roboto, sans-serif'
+	},
+	{
+		display: 'Arial',
+		value: 'Arial, sans-serif'
+	},
+	{
+		display: 'Courier',
+		value: 'Courier, monospace'
+	}
+];
+
+export const DEFAULT_SYTLE_CONFIG: StyleConfig = {
+	theme: 'green',
+	radius: 0,
+	font: FONTS[0].value,
+	mode: DEFAULT_MODE
+};
 
 export const LOADERS = [
 	{

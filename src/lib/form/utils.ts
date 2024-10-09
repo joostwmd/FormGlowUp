@@ -1,7 +1,6 @@
-export async function fetchFormItems(fetch) {
+export async function fetchFormData(fetch: any) {
 	const res = await fetch('/api/get-form');
 	const data = await res.json();
-
 	return data;
 }
 
@@ -143,6 +142,7 @@ function parseFormData(data: any, submitIds: string[]) {
 					row.submitId = submitIds[submitIdIndex++];
 				});
 			} else {
+				// @ts-ignore
 				itemData.submitId = submitIds[submitIdIndex++];
 			}
 		}
@@ -174,6 +174,63 @@ function parseFormData(data: any, submitIds: string[]) {
 	};
 
 	return form;
+}
+
+function parseFormItemsData(formData: any, submitIds: string[]) {
+	let submitIdIndex = 0;
+	let currentPage: any[] = [];
+	const pages: any[] = [];
+
+	formData.items.forEach((item: any) => {
+		const type = findItemType(item);
+		const itemData = parseItemData(item, type);
+
+		if (QUESTION_ITEM_TYPES.includes(type)) {
+			if (type === RADIO_GRID_QUESTION_ITEM || type === CHECKBOX_GRID_QUESTION_ITEM) {
+				itemData.rows.forEach((row: any) => {
+					row.submitId = submitIds[submitIdIndex++];
+				});
+			} else {
+				// @ts-ignore
+				itemData.submitId = submitIds[submitIdIndex++];
+			}
+		}
+
+		if (type === PAGEBREAK_ITEM) {
+			pages.push(currentPage);
+			currentPage = [];
+		} else {
+			currentPage.push({
+				title: item.title,
+				type: type,
+				data: itemData
+			});
+		}
+	});
+
+	if (currentPage.length > 0) {
+		pages.push(currentPage);
+	}
+
+	return pages;
+}
+
+export async function constructFormItemsData(htmlData: string, formData: any) {
+	const submitIds = extractSubmitIds(htmlData);
+	const formItems = parseFormItemsData(formData, submitIds);
+	return formItems;
+}
+
+export async function constructFormInfoData(formData: any) {
+	const formInfo = {
+		formId: formData.formId,
+		responderUri: formData.responderUri,
+		title: formData.info.title,
+		description: formData.info.description,
+		documentTitle: formData.info.documentTitle
+	};
+
+	return formInfo;
 }
 
 export async function constructFormStructure(html: string, formData: any) {

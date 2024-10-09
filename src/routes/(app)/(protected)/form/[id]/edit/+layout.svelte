@@ -1,20 +1,22 @@
 <script lang="ts">
-	import { config, updateTheme } from '$lib';
+	import { styleConfig, updateTheme } from '$lib';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
 
 	export let data: any;
-	console.log('layout ts', data);
+
+	console.log('formStyle', data.formData.formStyle);
 
 	onMount(() => {
-		updateTheme(data.formStyle);
+		//updateTheme(data.formData.formStyle);
+		$styleConfig = data.formData.formStyle;
 	});
 
 	$: {
-		updateTheme($config);
+		updateTheme($styleConfig);
 	}
 </script>
 
-<ThemeWrapper styleConfig={$config}>
+<ThemeWrapper styleConfig={$styleConfig}>
 	<slot />
 </ThemeWrapper>

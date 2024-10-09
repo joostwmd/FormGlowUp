@@ -1,19 +1,17 @@
 import { writable } from 'svelte/store';
 import { themes } from './themes';
-import { TEST_THEME_CONFIG } from './form/test-data';
+import { DEFAULT_SYTLE_CONFIG } from './form/constants';
 
 export type StyleConfig = {
 	theme: string;
 	radius: number;
 	font: string;
 	mode: 'light' | 'dark';
-	loader: string;
-	endText: string;
 };
 
-export const config = writable<StyleConfig>(TEST_THEME_CONFIG);
+export const styleConfig = writable<StyleConfig>(DEFAULT_SYTLE_CONFIG);
 
-export function updateTheme(config: StyleConfig) {
+export function updateTheme(styleConfig: StyleConfig) {
 	const isBrowser = typeof document !== 'undefined';
 	if (!isBrowser) return;
 
@@ -23,12 +21,12 @@ export function updateTheme(config: StyleConfig) {
 		}
 	});
 
-	document.body.classList.add(`theme-${config.theme}`);
+	document.body.classList.add(`theme-${styleConfig.theme}`);
 
-	const theme = themes.find((theme) => theme.name === config.theme);
+	const theme = themes.find((theme) => theme.name === styleConfig.theme);
 	if (!theme) return;
 
-	const cssVars = theme.cssVars[config.mode];
+	const cssVars = theme.cssVars[styleConfig.mode];
 
 	for (const [key, value] of Object.entries(cssVars)) {
 		document.documentElement.style.setProperty(`--${key}`, value);

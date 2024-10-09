@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { config } from '$lib';
-
+	import type { StyleConfig } from '$lib';
 	import { cn } from '$lib/components/shadcn/utils';
 	import { DEFAULT_MODE } from '$lib/form/constants';
 	import { ModeWatcher } from 'mode-watcher';
 
-	export let styleConfig: any;
+	export let styleConfig: StyleConfig;
 </script>
 
 <div
-	class={cn(`theme-${$config.theme}`, 'w-full')}
+	class={cn(`theme-${styleConfig.theme}`, 'w-full')}
 	style="--radius: {styleConfig.radius}rem; font-family: {styleConfig.font};"
 >
-	<ModeWatcher defaultMode={DEFAULT_MODE} />
+	<ModeWatcher defaultMode={styleConfig.mode} />
 	<slot />
 </div>
