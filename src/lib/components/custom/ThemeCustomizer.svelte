@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { styleConfig } from '$lib';
-	import { themes } from '$lib/themes';
+	import { formStyleStore } from '$lib/form/stores';
+	import { themes } from '$lib/components/shadcn/themes';
 	import Button from '../shadcn/ui/button/button.svelte';
 	import Label from '../shadcn/ui/label/label.svelte';
 	import { cn } from '../shadcn/utils';
@@ -35,8 +35,8 @@
 			size="icon"
 			class="ml-auto rounded-[0.5rem]"
 			on:click={() => {
-				$styleConfig.radius = 0.5;
-				$styleConfig.theme = 'zinc';
+				$formStyleStore.radius = 0.5;
+				$formStyleStore.theme = 'zinc';
 			}}
 		>
 			<Reset />
@@ -48,12 +48,12 @@
 			<Label class="text-xs">Color</Label>
 			<div class="grid grid-cols-3 gap-2">
 				{#each themes as theme (theme.name)}
-					{@const isActive = $styleConfig.theme === theme.name}
+					{@const isActive = $formStyleStore.theme === theme.name}
 					<Button
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							styleConfig.update((prev) => ({ ...prev, theme: theme.name }));
+							formStyleStore.update((prev) => ({ ...prev, theme: theme.name }));
 						}}
 						class={cn('justify-start', isActive && 'border-2 border-primary')}
 						style="--theme-primary: hsl({theme.activeColor[$mode ?? 'dark']})"
@@ -79,9 +79,9 @@
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							styleConfig.update((prev) => ({ ...prev, radius }));
+							formStyleStore.update((prev) => ({ ...prev, radius }));
 						}}
-						class={cn($styleConfig.radius === radius && 'border-2 border-primary')}
+						class={cn($formStyleStore.radius === radius && 'border-2 border-primary')}
 					>
 						{radius}
 					</Button>
@@ -95,8 +95,8 @@
 				<Button
 					variant="outline"
 					size="sm"
-					on:click={() => styleConfig.update((prev) => ({ ...prev, mode: 'light' }))}
-					class={cn($styleConfig.mode === 'light' && 'border-2 border-primary')}
+					on:click={() => formStyleStore.update((prev) => ({ ...prev, mode: 'light' }))}
+					class={cn($formStyleStore.mode === 'light' && 'border-2 border-primary')}
 				>
 					<Sun class="mr-1 -translate-x-1" />
 					Light
@@ -104,8 +104,8 @@
 				<Button
 					variant="outline"
 					size="sm"
-					on:click={() => styleConfig.update((prev) => ({ ...prev, mode: 'dark' }))}
-					class={cn($styleConfig.mode === 'dark' && 'border-2 border-primary')}
+					on:click={() => formStyleStore.update((prev) => ({ ...prev, mode: 'dark' }))}
+					class={cn($formStyleStore.mode === 'dark' && 'border-2 border-primary')}
 				>
 					<Moon class="mr-1 -translate-x-1" />
 					Dark
@@ -136,7 +136,7 @@
 									value={option.value}
 									onSelect={(currentValue) => {
 										value = currentValue;
-										styleConfig.update((prev) => ({ ...prev, font: currentValue }));
+										formStyleStore.update((prev) => ({ ...prev, font: currentValue }));
 										closeAndFocusTrigger(ids.trigger);
 									}}
 								>

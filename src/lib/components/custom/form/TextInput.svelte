@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Input } from '$lib/components/shadcn/ui/input';
-	import { handleFormValueChange } from '$lib/form/store';
+	import { handleFormValueChange } from '$lib/form/utils';
 
 	export let submitId: string;
 	export let description: string | null = null;

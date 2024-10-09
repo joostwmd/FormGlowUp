@@ -6,7 +6,8 @@
 	import * as Command from '$lib/components/shadcn/ui/command/index.js';
 	import * as Popover from '$lib/components/shadcn/ui/popover/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
-	import { formDataStore } from '$lib/form/store';
+	import { formDataStore } from '$lib/form/stores';
+
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 
 	export let description: string | null = null;

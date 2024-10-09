@@ -7,7 +7,8 @@
 		OTHER_RESPONSE_SUFFIX,
 		SUBMIT_KEY_PREFIX
 	} from '$lib/form/constants';
-	import { formDataStore, handleFormValueChange } from '$lib/form/store';
+	import { formDataStore } from '$lib/form/stores';
+	import { handleFormValueChange } from '$lib/form/utils';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;

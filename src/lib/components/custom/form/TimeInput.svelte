@@ -6,7 +6,7 @@
 		SECOND_SUFFIX,
 		SUBMIT_KEY_PREFIX
 	} from '$lib/form/constants';
-	import { formDataStore } from '$lib/form/store';
+	import { formDataStore } from '$lib/form/stores';
 
 	export let description: string | null = null;
 	export let isDurationInput: boolean;

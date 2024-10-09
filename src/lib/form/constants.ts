@@ -1,5 +1,3 @@
-import type { StyleConfig } from '$lib';
-
 export const OTHER_OPTION_VALUE = '__other_option__';
 
 export const TEXT_QUESTION_ITEM = 'TEXT_QUESTION';
@@ -63,7 +61,7 @@ export const FONTS = [
 	}
 ];
 
-export const DEFAULT_SYTLE_CONFIG: StyleConfig = {
+export const DEFAULT_SYTLE_CONFIG = {
 	theme: 'green',
 	radius: 0,
 	font: FONTS[0].value,

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import * as Table from '$lib/components/shadcn/ui/table';
 	import * as RadioGroup from '$lib/components/shadcn/ui/radio-group';
-	import { formDataStore, handleFormValueChange } from '$lib/form/store';
+	import { formDataStore } from '$lib/form/stores';
+	import { handleFormValueChange } from '$lib/form/utils';
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 
 	export let description: string | null = null;

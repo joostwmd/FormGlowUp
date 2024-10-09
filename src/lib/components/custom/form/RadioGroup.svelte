@@ -5,7 +5,8 @@
 		OTHER_RESPONSE_SUFFIX,
 		SUBMIT_KEY_PREFIX
 	} from '$lib/form/constants';
-	import { formDataStore } from '$lib/form/store';
+	import { formDataStore } from '$lib/form/stores';
+	import { handleFormValueChange } from '$lib/form/utils';
 	import Input from '$lib/components/shadcn/ui/input/input.svelte';
 	import Label from '$lib/components/shadcn/ui/label/label.svelte';
 

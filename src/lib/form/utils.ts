@@ -1,9 +1,3 @@
-export async function fetchFormData(fetch: any) {
-	const res = await fetch('/api/get-form');
-	const data = await res.json();
-	return data;
-}
-
 import {
 	ADDITIONAL_TITLE_ITEM,
 	CHECKBOX_GRID_QUESTION_ITEM,
@@ -18,10 +12,17 @@ import {
 	RADIO_GRID_QUESTION_ITEM,
 	RADIO_QUESTION_ITEM,
 	SCALE_QUESTION_ITEM,
+	SUBMIT_KEY_PREFIX,
 	TEXT_QUESTION_ITEM,
 	TIME_QUESTION_ITEM
 } from '$lib/form/constants';
-import { formStructureStore } from '$lib/form/store';
+import { formDataStore } from './stores';
+
+export async function fetchFormData(fetch: any) {
+	const res = await fetch('/api/get-form');
+	const data = await res.json();
+	return data;
+}
 
 function extractSubmitIds(htmlString: string) {
 	const ids = htmlString.match(/\b\d{9,10}\b/g) || [];
@@ -236,22 +237,19 @@ export async function constructFormInfoData(formData: any) {
 export async function constructFormStructure(html: string, formData: any) {
 	const submitIds = extractSubmitIds(html);
 	const form = parseFormData(formData, submitIds);
-
-	formStructureStore.set(form);
 	return form;
-}
-
-export function shuffleArray(array: any[]) {
-	const shuffledArray = [...array];
-	for (let i = shuffledArray.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-	}
-	return shuffledArray;
 }
 
 export function extractFormId(url: string): string | null {
 	const editUrlPattern = /\/d\/([a-zA-Z0-9_-]+)\/edit/;
 	const match = url.match(editUrlPattern);
 	return match ? match[1] : null;
+}
+
+export function handleFormValueChange(value: string, submitId: string) {
+	const entryId = SUBMIT_KEY_PREFIX + submitId;
+	formDataStore.update((currentData) => {
+		currentData[entryId] = value;
+		return currentData;
+	});
 }

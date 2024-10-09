@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { updateTheme, type StyleConfig } from '$lib';
-	import { cn } from '$lib/components/shadcn/utils';
+	import { cn, updateTheme } from '$lib/components/shadcn/utils';
 	import { DEFAULT_MODE } from '$lib/form/constants';
+	import type { TFormStyle } from '$lib/form/stores';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
 
-	export let styleConfig: StyleConfig;
+	export let styleConfig: TFormStyle;
 	let themeWrapperElement: HTMLElement;
 
 	$: {
@@ -20,6 +20,6 @@
 	class={cn(`theme-${styleConfig.theme}`, 'w-full')}
 	style="--radius: {styleConfig.radius}rem; font-family: {styleConfig.font};"
 >
-	<ModeWatcher defaultMode={'dark'} />
+	<ModeWatcher defaultMode={styleConfig.mode} />
 	<slot />
 </div>
