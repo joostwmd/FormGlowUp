@@ -8,14 +8,6 @@
 	import NewFormCard from '$lib/components/custom/NewFormCard.svelte';
 
 	export let data: LayoutServerData & PageServerData;
-
-	const testFormData = {
-		googleFormId: 'test google form id',
-		formInfo: {
-			title: 'test title'
-		},
-		formItems: 'JSON.stringify(data.forms)'
-	};
 </script>
 
 <NewFormCard userId={data.session.user?.id} session={data.session} />

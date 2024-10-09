@@ -1,5 +1,5 @@
 // src/routes/signin/+page.server.ts
-import { signIn } from '$lib/auth';
+import { signIn } from '$lib/firebase/auth';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 

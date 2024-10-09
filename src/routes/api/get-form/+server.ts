@@ -5,8 +5,12 @@ const userToken =
 
 const id = '1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc';
 
-export async function GET({ fetch }) {
-	const apiUrl = `https://forms.googleapis.com/v1/forms/${id}`;
+export async function POST({ request, fetch }) {
+	const { accessToken, formId } = await request.json();
+
+	console.log('api server', accessToken, formId);
+
+	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 
 	let formData;
 	let htmlData;
@@ -15,7 +19,7 @@ export async function GET({ fetch }) {
 	try {
 		const response = await fetch(apiUrl, {
 			headers: {
-				Authorization: `Bearer ${userToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		});
 
@@ -32,7 +36,6 @@ export async function GET({ fetch }) {
 	try {
 		const responderUrl = formData.responderUri;
 		const response = await fetch(responderUrl);
-		//console.log('res', response);
 		if (!response.ok) {
 			throw new Error(`Error fetching HTML data: ${response.statusText}`);
 		}

@@ -6,18 +6,18 @@
 	import {
 		constructFormInfoData,
 		constructFormItemsData,
-		constructFormStructure,
 		extractFormId,
 		fetchFormData
 	} from '$lib/form/utils';
 	import Button from '../shadcn/ui/button/button.svelte';
 	import Input from '../shadcn/ui/input/input.svelte';
+	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 
 	export let userId: any;
-	export let session: any;
 
+	let isCreating: boolean = false;
 	let editUrl: string =
-		'https://docs.google.com/forms/d/1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc/edit';
+		'https://docs.google.com/forms/d/1qJwjEP7NVbhzhTB1jaU4muQMwZov3m1RWJAf7iqHX_A/edit';
 
 	async function handleCreateForm() {
 		if (!userId) {
@@ -31,28 +31,29 @@
 			console.error('no form id');
 			return;
 		}
-		console.log('formId', formId);
-		console.log('session', session);
 
-		const accessToken = await getAccessTokens(userId);
-		console.log('accessToken', accessToken);
+		isCreating = true;
 
-		const { htmlData, formData } = await fetchFormData(fetch);
+		const { htmlData, formData } = await fetchFormData(userId, formId);
 		const formInfo = await constructFormInfoData(formData);
 		const formItems = await constructFormItemsData(htmlData, formData);
+		console.log('formItems', formItems);
+
 		const formStructure = {
 			loader: DEFAULT_LOADER,
 			endText: DEFAULT_END_TEXT,
-			items: formItems
+			pages: formItems
 		};
 
-		const res = await createForm(userId, formId, formInfo, JSON.stringify(formStructure));
+		const res = await createForm(userId, formId, formInfo, formStructure);
 
 		if (res.success) {
 			await goto(`/form/${res.uid}/edit`);
 		} else {
 			console.error('error creating form');
 		}
+
+		isCreating = false;
 	}
 </script>
 
@@ -63,6 +64,13 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col items-center">
 		<Input placeholder="Edit Url of your Google form" bind:value={editUrl} />
-		<Button on:click={handleCreateForm} class="mt-4">BetterForm</Button>
+		<Button class="mt-4" disabled={isCreating || !editUrl} on:click={handleCreateForm}>
+			{#if isCreating}
+				<LoaderCircle class="mr-1 h-4 w-4 animate-spin" />
+				Enhances Form
+			{:else}
+				Better Form
+			{/if}
+		</Button>
 	</Card.Content>
 </Card.Root>

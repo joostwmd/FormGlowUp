@@ -53,7 +53,7 @@ export async function createForm(
 	userId: string,
 	googleFormId: string,
 	formInfo: object,
-	formStructure: string
+	formStructure: object
 ) {
 	try {
 		const newFormRef = doc(collection(db, `users/${userId}/forms`));
@@ -77,17 +77,23 @@ export async function updateForm(
 	userId: string,
 	uid: string,
 	formInfo: object,
-	formItems: string,
+	formStructure: object,
 	formStyle: object
 ) {
 	try {
 		const formRef = doc(db, `users/${userId}/forms/${uid}`);
-		await setDoc(formRef, { formInfo, formItems, formStyle }, { merge: true });
+		await setDoc(formRef, { formInfo, formStructure, formStyle }, { merge: true });
 
-		return { success: true };
-	} catch (e) {
+		const updatedDoc = await getDoc(formRef);
+
+		if (!updatedDoc.exists()) {
+			throw new Error('Document does not exist after update');
+		}
+
+		return { success: true, data: updatedDoc.data() };
+	} catch (e: any) {
 		console.error('Error updating document: ', e);
-		return { success: false };
+		return { success: false, error: e.message };
 	}
 }
 

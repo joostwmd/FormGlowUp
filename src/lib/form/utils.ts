@@ -1,3 +1,4 @@
+import { getAccessTokens } from '$lib/firebase/utils';
 import {
 	ADDITIONAL_TITLE_ITEM,
 	CHECKBOX_GRID_QUESTION_ITEM,
@@ -18,8 +19,17 @@ import {
 } from '$lib/form/constants';
 import { formDataStore } from './stores';
 
-export async function fetchFormData(fetch: any) {
-	const res = await fetch('/api/get-form');
+export async function fetchFormData(userId: string, formId: string) {
+	const accessToken = await getAccessTokens(userId);
+
+	const res = await fetch('/api/get-form', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ accessToken, formId })
+	});
+
 	const data = await res.json();
 	return data;
 }
@@ -29,6 +39,18 @@ function extractSubmitIds(htmlString: string) {
 	return ids.length === 1 ? ids : ids.slice(1);
 }
 
+function replaceUndefinedWithNull(obj: any): any {
+	if (Array.isArray(obj)) {
+		return obj.map(replaceUndefinedWithNull);
+	} else if (obj !== null && typeof obj === 'object') {
+		return Object.fromEntries(
+			Object.entries(obj).map(([key, value]) => [key, replaceUndefinedWithNull(value)])
+		);
+	} else {
+		return obj === undefined ? null : obj;
+	}
+}
+
 function parseItemData(data: any, type: string) {
 	const choiceQuestion = data.questionItem?.question?.choiceQuestion;
 	const scaleQuestion = data.questionItem?.question?.scaleQuestion;
@@ -36,59 +58,69 @@ function parseItemData(data: any, type: string) {
 	const timeQuestion = data.questionItem?.question?.timeQuestion;
 	const imageItem = data.imageItem?.image;
 
+	let result;
+
 	switch (type) {
 		case RADIO_QUESTION_ITEM:
 		case CHECKBOX_QUESTION_ITEM:
 		case DROPDOWN_QUESTION_ITEM:
-			return {
+			result = {
 				isRequired: data.questionItem?.question?.required,
 				description: data.description,
-				shuffleOptions: choiceQuestion.shuffle,
-				options: choiceQuestion.options.map((option: any) =>
+				shuffleOptions: choiceQuestion?.shuffle,
+				options: choiceQuestion?.options.map((option: any) =>
 					option.isOther ? OTHER_OPTION_VALUE : option.value
 				)
 			};
+			break;
 		case SCALE_QUESTION_ITEM:
-			return {
+			result = {
 				isRequired: data.questionItem?.question?.required,
 				description: data.description,
-				minLabel: scaleQuestion.lowLabel,
-				maxLabel: scaleQuestion.highLabel,
-				minValue: scaleQuestion.low,
-				maxValue: scaleQuestion.high
+				minLabel: scaleQuestion?.lowLabel,
+				maxLabel: scaleQuestion?.highLabel,
+				minValue: scaleQuestion?.low,
+				maxValue: scaleQuestion?.high
 			};
+			break;
 		case CHECKBOX_GRID_QUESTION_ITEM:
 		case RADIO_GRID_QUESTION_ITEM:
-			return {
+			result = {
 				description: data.description,
-				columns: data.questionGroupItem.grid.columns.options.map((option: any) => option.value),
-				rows: data.questionGroupItem.questions.map((question: any) => ({
+				columns: data.questionGroupItem?.grid?.columns?.options.map((option: any) => option.value),
+				rows: data.questionGroupItem?.questions.map((question: any) => ({
 					isRequired: question.required,
 					title: question.rowQuestion.title
 				}))
 			};
+			break;
 		case DATE_QUESTION_ITEM:
-			return {
-				isRequired: dateQuestion.required,
+			result = {
+				isRequired: dateQuestion?.required,
 				description: data.description,
-				yearIncluded: dateQuestion.includeYear,
-				timeIncluded: dateQuestion.includeTime
+				yearIncluded: dateQuestion?.includeYear,
+				timeIncluded: dateQuestion?.includeTime
 			};
+			break;
 		case TIME_QUESTION_ITEM:
-			return {
-				isRequired: timeQuestion.required,
+			result = {
+				isRequired: timeQuestion?.required,
 				description: data.description,
-				isDuration: timeQuestion.duration
+				isDuration: timeQuestion?.duration
 			};
+			break;
 		case IMAGE_ITEM:
-			return {
-				imageUrl: imageItem.contentUri,
-				properties: imageItem.properties,
+			result = {
+				imageUrl: imageItem?.contentUri,
+				properties: imageItem?.properties,
 				title: data.title
 			};
+			break;
 		default:
-			return {};
+			result = {};
 	}
+
+	return replaceUndefinedWithNull(result);
 }
 
 function findItemType(item: any) {
@@ -153,14 +185,13 @@ function parseFormData(data: any, submitIds: string[]) {
 			currentPage = [];
 		} else {
 			currentPage.push({
-				title: item.title,
+				title: item.title ?? null,
 				type: type,
 				data: itemData
 			});
 		}
 	});
 
-	// Push the last page if it has items
 	if (currentPage.length > 0) {
 		pages.push(currentPage);
 	}
@@ -176,11 +207,11 @@ function parseFormData(data: any, submitIds: string[]) {
 
 	return form;
 }
-
 function parseFormItemsData(formData: any, submitIds: string[]) {
 	let submitIdIndex = 0;
 	let currentPage: any[] = [];
-	const pages: any[] = [];
+	const pages: { [key: number]: any[] } = {};
+	let currentPageNumber = 1;
 
 	formData.items.forEach((item: any) => {
 		const type = findItemType(item);
@@ -198,11 +229,12 @@ function parseFormItemsData(formData: any, submitIds: string[]) {
 		}
 
 		if (type === PAGEBREAK_ITEM) {
-			pages.push(currentPage);
+			pages[currentPageNumber] = currentPage;
 			currentPage = [];
+			currentPageNumber++;
 		} else {
 			currentPage.push({
-				title: item.title,
+				title: item.title ?? null,
 				type: type,
 				data: itemData
 			});
@@ -210,7 +242,7 @@ function parseFormItemsData(formData: any, submitIds: string[]) {
 	});
 
 	if (currentPage.length > 0) {
-		pages.push(currentPage);
+		pages[currentPageNumber] = currentPage;
 	}
 
 	return pages;

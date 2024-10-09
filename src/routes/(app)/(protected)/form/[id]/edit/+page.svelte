@@ -9,47 +9,63 @@
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
-	import { formStyleStore, formStructureStore } from '$lib/form/stores';
+	import {
+		formStyleStore,
+		formStructureStore,
+		formInfoStore,
+		formStateStore
+	} from '$lib/form/stores';
+	import { constructFormInfoData, constructFormItemsData, fetchFormData } from '$lib/form/utils';
+	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
 	export let data: any;
-
-	let form: any;
 	let isMounted: boolean = false;
 
 	onMount(() => {
 		$formStyleStore = data.formData.formStyle;
-		$formStructureStore = JSON.parse(data.formData.formStructure);
+		//$formStructureStore = JSON.parse(data.formData.formStructure);
+		$formStructureStore = data.formData.formStructure;
+		$formInfoStore = data.formData.formInfo;
+		$formStateStore = {
+			formInfo: data.formData.formInfo,
+			//formStructure: JSON.parse(data.formData.formStructure),
+			formStructure: data.formData.formStructure,
+			formStyle: data.formData.formStyle
+		};
 		isMounted = true;
 	});
 
-	// async function refetchForm() {
-	// 	const { html, formData } = await fetchFormItems(fetch);
-	// 	form = await constructFormStructure(html, formData);
-	// }
+	async function refetchForm() {
+		if (!data.session.user.id) {
+			console.error('no user id');
+			return;
+		}
 
-	// async function handleUpdateForm() {
-	// 	const res = await updateForm(data.session.user.id, data.formId);
-	// }
+		const userId = data.session.user.id;
+		const formId = data.formData.formInfo.formId;
+
+		const { htmlData, formData } = await fetchFormData(userId, formId);
+
+		const formInfo = await constructFormInfoData(formData);
+		$formInfoStore = formInfo;
+		const formItems = await constructFormItemsData(htmlData, formData);
+		$formStructureStore.items = formItems;
+	}
 </script>
 
 {#if isMounted}
 	<div class="h-full w-full bg-muted/40 p-4">
 		<div class="mb-4 flex w-full items-center justify-end">
 			<div class="w-fit space-x-1">
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<Button variant="outline"><RefreshIcon class="mr-1 h-4 w-4" />Update</Button>
-					</Tooltip.Trigger>
-					<Tooltip.Content>
-						<p>Update the form with the latest changes</p>
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<UpdateFormButton userId={data.session.user.id} formId={data.uid} />
 
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<Button variant="outline"><SaveIcon class="mr-1 h-4 w-4" />Save</Button>
+						<Button on:click={refetchForm} variant="outline"
+							><RefreshIcon class="mr-1 h-4 w-4" />Refresh</Button
+						>
 					</Tooltip.Trigger>
 					<Tooltip.Content>
-						<p>Save the current state of the form</p>
+						<p>Update the form with the latest changes</p>
 					</Tooltip.Content>
 				</Tooltip.Root>
 

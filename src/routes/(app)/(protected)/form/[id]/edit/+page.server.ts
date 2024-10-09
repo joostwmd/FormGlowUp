@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	return {
-		formId: uid,
+		uid: uid,
 		formData: formDoc
 	};
 };

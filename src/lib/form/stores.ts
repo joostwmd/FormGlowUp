@@ -12,7 +12,7 @@ export const formStyleStore = writable<TFormStyle>();
 export type TFormStrucutre = {
 	loader: string;
 	endText: string;
-	items: object[];
+	pages: object;
 };
 
 export const formStructureStore = writable<TFormStrucutre>();
@@ -29,7 +29,30 @@ export const formInfoStore = writable<TFormInfoStore>();
 
 //for submit
 export type TFormDataStore = {
-	[key: string]: any; // Adjust the type according to your form structure
+	[key: string]: any;
 };
 
 export const formDataStore = writable<TFormDataStore>({});
+
+export type TFormState = {
+	formInfo: TFormInfoStore;
+	formStyle: TFormStyle;
+	formStructure: string;
+};
+
+export const formStateStore = writable<TFormState>({
+	formInfo: {
+		description: '',
+		documentTitle: '',
+		formId: '',
+		responderUri: '',
+		title: ''
+	},
+	formStyle: {
+		theme: '',
+		radius: 0,
+		font: '',
+		mode: 'light'
+	},
+	formStructure: ''
+});

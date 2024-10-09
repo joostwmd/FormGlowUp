@@ -28,10 +28,11 @@
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
 	} from '$lib/form/constants';
+	import type { TFormStrucutre } from '$lib/form/stores';
 
 	export let isPreview: boolean = false;
 	export let canSubmit: boolean = true;
-	export let formStructure: { loader: string; endText: string; items: any[] };
+	export let formStructure: TFormStrucutre;
 
 	let currentPage: number = 0;
 	let isLoading: boolean = true;
@@ -43,7 +44,7 @@
 	}, 1000);
 
 	function handleOnNext() {
-		if (isPreview && currentPage === formStructure.items.length - 1) {
+		if (isPreview && currentPage === Object.keys(formStructure.pages).length - 1) {
 			isSubmitted = true;
 		} else {
 			currentPage++;
@@ -68,8 +69,6 @@
 			console.log('cannot submit');
 		}
 	}
-
-	//console.log('form', form.formItems);
 </script>
 
 {#if isLoading}
@@ -79,9 +78,9 @@
 {:else}
 	<div class="flex w-full flex-col items-center">
 		<div class="flex w-full flex-col items-start space-y-4 px-4">
-			<FormProgress totalPages={formStructure.items.length} {currentPage} />
+			<FormProgress totalPages={Object.keys(formStructure.pages).length} {currentPage} />
 
-			{#each formStructure.items[currentPage] as item}
+			{#each Object.values(formStructure.pages)[currentPage] as item}
 				{#if QUESTION_ITEM_TYPES.includes(item.type)}
 					{#if item.type === TEXT_QUESTION_ITEM}
 						<TextInput submitId={item.data.submitId} description={item.data.description} />
@@ -153,7 +152,7 @@
 			{/each}
 
 			<FormControls
-				totalPages={formStructure.items.length}
+				totalPages={Object.keys(formStructure.pages).length}
 				{currentPage}
 				{handleOnNext}
 				{handleOnPrevious}
