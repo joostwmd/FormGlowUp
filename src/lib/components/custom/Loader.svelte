@@ -4,15 +4,15 @@
 	import Zoomies from './loaders/Zoomies.svelte';
 
 	export let variant: string;
-	export let color: string = 'white';
+	export let color: string = 'black';
 </script>
 
 <div class="flex h-24 w-full flex-col items-center justify-center">
 	{#if variant === 'SPIRAL'}
-		<Spiral />
+		<Spiral {color} />
 	{:else if variant === 'ZOOMIES'}
-		<Zoomies />
+		<Zoomies {color} />
 	{:else if variant === 'GRID'}
-		<Grid />
+		<Grid {color} />
 	{/if}
 </div>
