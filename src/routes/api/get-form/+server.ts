@@ -1,12 +1,11 @@
 import { json } from '@sveltejs/kit';
 
 const userToken =
-	'ya29.a0AcM612z6GeL2GEAZLXwkIOFfDzsy3nRkfP0XSYSNkh2o83jv6bKWAa7_2fl78Oi6k8CiJvpU6DWJznPVPGV-WjDUEI1aFOHp_lqo8xb3ZDZQG5dIyblx3lsuPIJWSjJ2PPlAVvt7_2fnWWiNZ7KB527OU6CG_SCzwx3jZNDEaCgYKAWwSARISFQHGX2Mi2Sr5IU0LgEbMv20nSHLGYg0175';
+	'ya29.a0AcM612yVPdxgbTf_x7nOgmzuxJNRvy0Q4m5wiFAl2IElS58zO2gashAXAfMLkh7SpQXgC4XWEKvUbbZN5TDNphqtFRhvevc7OQbwfQyMe-E1KYAV_rOklE95HouX1tSEnjTjOsdLHzJlnQbgkxgAhqiZ1pvm_W-BeSbu7YO3aCgYKAdYSARISFQHGX2Mir6Krue-riBoWNuQi_vI1EA0175';
 
 const id = '1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc';
 
 export async function GET({ fetch }) {
-	console.log('id', id);
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${id}`;
 
 	let formData;
@@ -32,7 +31,6 @@ export async function GET({ fetch }) {
 
 	// Second fetch to get HTML data
 	try {
-		console.log('formData', formData);
 		const responderUrl = formData.responderUri;
 		const response = await fetch(responderUrl);
 		//console.log('res', response);
@@ -41,7 +39,6 @@ export async function GET({ fetch }) {
 		}
 
 		const text = await response.text();
-		console.log('text', text);
 		htmlData = text;
 	} catch (error) {
 		console.error('Error fetching HTML data:', error);

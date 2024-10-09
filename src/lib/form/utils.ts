@@ -1,7 +1,6 @@
-export async function fetchFormItems() {
-	const test = await fetch('/api/get-form');
-	const data = await test.json();
-	console.log(data);
+export async function fetchFormItems(fetch) {
+	const res = await fetch('/api/get-form');
+	const data = await res.json();
 
 	return data;
 }

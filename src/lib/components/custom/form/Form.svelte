@@ -69,6 +69,8 @@
 			console.log('cannot submit');
 		}
 	}
+
+	console.log('form', form.formItems);
 </script>
 
 {#if isLoading}

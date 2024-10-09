@@ -71,10 +71,16 @@ export async function createForm(
 	}
 }
 
-export async function updateForm(userId: string, uid: string, formInfo: object, formItems: string) {
+export async function updateForm(
+	userId: string,
+	uid: string,
+	formInfo: object,
+	formItems: string,
+	formStyle: object
+) {
 	try {
 		const formRef = doc(db, `users/${userId}/forms/${uid}`);
-		await setDoc(formRef, { formInfo, formItems }, { merge: true });
+		await setDoc(formRef, { formInfo, formItems, formStyle }, { merge: true });
 
 		return { success: true };
 	} catch (e) {
