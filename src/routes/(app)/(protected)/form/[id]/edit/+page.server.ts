@@ -1,7 +1,7 @@
 import { getFormById } from '$lib/firebase/utils.js';
-import type { LayoutServerLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params }) => {
 	const uid = params.id;
 	const formDoc = await getFormById(uid);
 
@@ -10,8 +10,6 @@ export const load: LayoutServerLoad = async ({ params, fetch }) => {
 			status: 404
 		};
 	}
-
-	//console.log('formDoc:', formDoc);
 
 	return {
 		formId: uid,
