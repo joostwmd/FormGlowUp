@@ -5,18 +5,14 @@
 
 	export let data: any;
 
-	console.log('formStyle', data.formData.formStyle);
+	// onMount(() => {
+	// 	//updateTheme(data.formData.formStyle);
+	// 	$styleConfig = data.formData.formStyle;
+	// });
 
-	onMount(() => {
-		//updateTheme(data.formData.formStyle);
-		$styleConfig = data.formData.formStyle;
-	});
-
-	$: {
-		updateTheme($styleConfig);
-	}
+	// $: {
+	// 	updateTheme($styleConfig);
+	// }
 </script>
 
-<ThemeWrapper styleConfig={$styleConfig}>
-	<slot />
-</ThemeWrapper>
+<slot />

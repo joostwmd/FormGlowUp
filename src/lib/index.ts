@@ -11,17 +11,39 @@ export type StyleConfig = {
 
 export const styleConfig = writable<StyleConfig>(DEFAULT_SYTLE_CONFIG);
 
-export function updateTheme(styleConfig: StyleConfig) {
+// export function updateTheme(styleConfig: StyleConfig) {
+// 	const isBrowser = typeof document !== 'undefined';
+// 	if (!isBrowser) return;
+
+// 	document.body.classList.forEach((className) => {
+// 		if (className.match(/^theme.*/)) {
+// 			document.body.classList.remove(className);
+// 		}
+// 	});
+
+// 	document.body.classList.add(`theme-${styleConfig.theme}`);
+
+// 	const theme = themes.find((theme) => theme.name === styleConfig.theme);
+// 	if (!theme) return;
+
+// 	const cssVars = theme.cssVars[styleConfig.mode];
+
+// 	for (const [key, value] of Object.entries(cssVars)) {
+// 		document.documentElement.style.setProperty(`--${key}`, value);
+// 	}
+// }
+
+export function updateTheme(element: HTMLElement, styleConfig: StyleConfig) {
 	const isBrowser = typeof document !== 'undefined';
 	if (!isBrowser) return;
 
-	document.body.classList.forEach((className) => {
+	element.classList.forEach((className) => {
 		if (className.match(/^theme.*/)) {
-			document.body.classList.remove(className);
+			element.classList.remove(className);
 		}
 	});
 
-	document.body.classList.add(`theme-${styleConfig.theme}`);
+	element.classList.add(`theme-${styleConfig.theme}`);
 
 	const theme = themes.find((theme) => theme.name === styleConfig.theme);
 	if (!theme) return;
@@ -29,6 +51,6 @@ export function updateTheme(styleConfig: StyleConfig) {
 	const cssVars = theme.cssVars[styleConfig.mode];
 
 	for (const [key, value] of Object.entries(cssVars)) {
-		document.documentElement.style.setProperty(`--${key}`, value);
+		element.style.setProperty(`--${key}`, value);
 	}
 }

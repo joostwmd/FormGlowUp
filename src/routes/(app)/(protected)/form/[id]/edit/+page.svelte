@@ -12,16 +12,12 @@
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import { updateForm } from '$lib/firebase/utils';
 	import { parse } from 'svelte/compiler';
+	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
+	import { DEFAULT_SYTLE_CONFIG } from '$lib/form/constants';
 
 	export let data: any;
 
-	console.log('edit', data.formData);
-
 	let form: any;
-	onMount(async () => {
-		const { html, formData } = data.form;
-		form = await constructFormStructure(html, formData);
-	});
 
 	// async function refetchForm() {
 	// 	const { html, formData } = await fetchFormItems(fetch);
@@ -81,19 +77,20 @@
 		</div>
 
 		<div class="w-2/3 sm:w-full">
-			<Card.Root class="sm:col-span-2">
-				<Card.Header class="pb-3">
-					<Card.Title>Preview of your Form</Card.Title>
-					<Card.Description class="max-w-lg text-balance leading-relaxed">
-						This is a live Preview of your 10x google form
-					</Card.Description>
-				</Card.Header>
+			<ThemeWrapper styleConfig={data.formData.formStyle}>
+				<Card.Root class="sm:col-span-2">
+					<Card.Header class="pb-3">
+						<Card.Title>Preview of your Form</Card.Title>
+						<Card.Description class="max-w-lg text-balance leading-relaxed">
+							This is a live Preview of your 10x google form
+						</Card.Description>
+					</Card.Header>
 
-				<Card.Content>
-					<!-- <Form form={{ formItems: [data.form.formData.items] }} /> -->
-					<Form formStructure={JSON.parse(data.formData.formStructure)} />
-				</Card.Content>
-			</Card.Root>
+					<Card.Content>
+						<Form formStructure={JSON.parse(data.formData.formStructure)} />
+					</Card.Content>
+				</Card.Root>
+			</ThemeWrapper>
 		</div>
 	</div>
 </div>
