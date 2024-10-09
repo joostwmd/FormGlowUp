@@ -8,8 +8,6 @@ const id = '1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc';
 export async function POST({ request, fetch }) {
 	const { accessToken, formId } = await request.json();
 
-	console.log('api server', accessToken, formId);
-
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 
 	let formData;

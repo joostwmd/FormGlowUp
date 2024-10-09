@@ -17,39 +17,21 @@
 	} from '$lib/form/stores';
 	import { constructFormInfoData, constructFormItemsData, fetchFormData } from '$lib/form/utils';
 	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
+	import RefreshFormButton from '$lib/components/custom/RefreshFormButton.svelte';
 	export let data: any;
 	let isMounted: boolean = false;
 
 	onMount(() => {
 		$formStyleStore = data.formData.formStyle;
-		//$formStructureStore = JSON.parse(data.formData.formStructure);
 		$formStructureStore = data.formData.formStructure;
 		$formInfoStore = data.formData.formInfo;
 		$formStateStore = {
 			formInfo: data.formData.formInfo,
-			//formStructure: JSON.parse(data.formData.formStructure),
 			formStructure: data.formData.formStructure,
 			formStyle: data.formData.formStyle
 		};
 		isMounted = true;
 	});
-
-	async function refetchForm() {
-		if (!data.session.user.id) {
-			console.error('no user id');
-			return;
-		}
-
-		const userId = data.session.user.id;
-		const formId = data.formData.formInfo.formId;
-
-		const { htmlData, formData } = await fetchFormData(userId, formId);
-
-		const formInfo = await constructFormInfoData(formData);
-		$formInfoStore = formInfo;
-		const formItems = await constructFormItemsData(htmlData, formData);
-		$formStructureStore.items = formItems;
-	}
 </script>
 
 {#if isMounted}
@@ -58,16 +40,7 @@
 			<div class="w-fit space-x-1">
 				<UpdateFormButton userId={data.session.user.id} formId={data.uid} />
 
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<Button on:click={refetchForm} variant="outline"
-							><RefreshIcon class="mr-1 h-4 w-4" />Refresh</Button
-						>
-					</Tooltip.Trigger>
-					<Tooltip.Content>
-						<p>Update the form with the latest changes</p>
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<RefreshFormButton userId={data.session.user.id} formId={data.formData.formInfo.formId} />
 
 				<Tooltip.Root>
 					<Tooltip.Trigger>

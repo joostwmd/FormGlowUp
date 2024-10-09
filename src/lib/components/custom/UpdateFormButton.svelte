@@ -7,9 +7,10 @@
 		formStateStore
 	} from '$lib/form/stores';
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
-	import { Button } from '../shadcn/ui/button';
+	import { Button } from '$lib/components/shadcn/ui/button/index';
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
+	import { deepEqual } from '$lib/form/utils';
 
 	export let userId: string;
 	export let formId: string;
@@ -17,25 +18,23 @@
 	let needsUpdate: boolean = false;
 	let isUpdating: boolean = false;
 
+	
+
 	$: {
 		const savedFormState = $formStateStore;
 		const localFormInfo = $formInfoStore;
-		const localFormStructure = JSON.stringify($formStructureStore);
+		const localFormStructure = $formStructureStore;
 		const localFormStyle = $formStyleStore;
 
-		const formInfoChanged =
-			JSON.stringify(savedFormState.formInfo) !== JSON.stringify(localFormInfo);
-		const formStructureChanged =
-			JSON.stringify(savedFormState.formStructure) !== localFormStructure;
+		const formInfoChanged = !deepEqual(savedFormState.formInfo, localFormInfo);
+		const formStructureChanged = !deepEqual(savedFormState.formStructure, localFormStructure);
+		const formStyleChanged = !deepEqual(savedFormState.formStyle, localFormStyle);
 
-		const formStyleChanged =
-			JSON.stringify(savedFormState.formStyle) !== JSON.stringify(localFormStyle);
+	
 
 		if (formInfoChanged || formStructureChanged || formStyleChanged) {
-			console.log('needsUpdate');
 			needsUpdate = true;
 		} else {
-			console.log('no needsUpdate');
 			needsUpdate = false;
 		}
 	}
@@ -50,8 +49,6 @@
 					return;
 				} else {
 					console.log('form updated', res.data);
-
-					console.log('TEST', JSON.stringify(res.data.formStructure));
 
 					formStateStore.set({
 						formInfo: res.data.formInfo,
