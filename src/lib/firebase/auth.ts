@@ -18,7 +18,7 @@ export const firestore = initFirestore({
 	})
 });
 
-export const { handle, signIn } = SvelteKitAuth({
+export const { handle, signIn, signOut } = SvelteKitAuth({
 	providers: [
 		Google({
 			authorization: {
@@ -34,6 +34,10 @@ export const { handle, signIn } = SvelteKitAuth({
 		})
 	],
 	callbacks: {
+		async redirect({ baseUrl }) {
+			return baseUrl + '/dashboard';
+		},
+
 		async session({ session, user }) {
 			const googleAccount = await firestore
 				.collection('accounts')
