@@ -35,7 +35,7 @@
 </script>
 
 {#if isMounted}
-	<div class="h-full w-full bg-muted/40 p-4">
+	<div class="h-full w-full bg-muted/40">
 		<div class="mb-4 flex w-full items-center justify-end">
 			<div class="w-fit space-x-1">
 				<UpdateFormButton userId={data.session.user.id} formId={data.uid} />

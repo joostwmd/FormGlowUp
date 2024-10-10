@@ -4,7 +4,6 @@
 	import * as Avatar from '$lib/components/shadcn/ui/avatar';
 
 	export let session;
-	console.log('session', session);
 </script>
 
 <div class="flex w-full items-center justify-between px-4 py-2">
