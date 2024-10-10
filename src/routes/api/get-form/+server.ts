@@ -1,12 +1,8 @@
 import { json } from '@sveltejs/kit';
 
-const userToken =
-	'ya29.a0AcM612yVPdxgbTf_x7nOgmzuxJNRvy0Q4m5wiFAl2IElS58zO2gashAXAfMLkh7SpQXgC4XWEKvUbbZN5TDNphqtFRhvevc7OQbwfQyMe-E1KYAV_rOklE95HouX1tSEnjTjOsdLHzJlnQbgkxgAhqiZ1pvm_W-BeSbu7YO3aCgYKAdYSARISFQHGX2Mir6Krue-riBoWNuQi_vI1EA0175';
-
-const id = '1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc';
-
 export async function POST({ request, fetch }) {
 	const { accessToken, formId } = await request.json();
+	console.log('accessToken:', accessToken);
 
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 

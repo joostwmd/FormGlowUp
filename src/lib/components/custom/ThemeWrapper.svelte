@@ -18,6 +18,6 @@
 	class={cn(`theme-${styleConfig.theme}`, 'w-full')}
 	style="--radius: {styleConfig.radius}rem; font-family: {styleConfig.font};"
 >
-	<ModeWatcher defaultMode={styleConfig.mode} />
+	<!-- <ModeWatcher defaultMode={styleConfig.mode} /> -->
 	<slot />
 </div>

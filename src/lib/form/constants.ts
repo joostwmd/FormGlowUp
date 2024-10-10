@@ -41,7 +41,7 @@ export const HOUR_SUFFIX = '_hour';
 export const MINUTE_SUFFIX = '_minute';
 export const SECOND_SUFFIX = '_second';
 
-export const DEFAULT_MODE = 'light';
+export const DEFAULT_MODE = 'system';
 export const DEFAULT_LOADER = 'SPIRAL';
 export const DEFAULT_END_TEXT = 'Thank you for your submission!';
 
@@ -62,7 +62,7 @@ export const FONTS = [
 ];
 
 export const DEFAULT_SYTLE_CONFIG = {
-	theme: 'green',
+	theme: 'neutral',
 	radius: 0,
 	font: FONTS[0].value,
 	mode: DEFAULT_MODE

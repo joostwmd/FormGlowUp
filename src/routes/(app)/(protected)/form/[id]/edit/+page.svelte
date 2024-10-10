@@ -4,9 +4,7 @@
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
-	import RefreshIcon from 'lucide-svelte/icons/refresh-ccw';
 	import ShareIcon from 'lucide-svelte/icons/share';
-	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
 	import {

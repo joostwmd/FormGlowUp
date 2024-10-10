@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
+	import ShineBorder from '$lib/components/custom/ShineBorder.svelte';
 	import * as Avatar from '$lib/components/shadcn/ui/avatar';
 
 	export let session;
@@ -18,3 +19,7 @@
 		<Button on:click={() => goto('/signin')}>SignIn</Button>
 	{/if}
 </div>
+
+<Button variant="ghost">
+	<ShineBorder class="text-center text-2xl font-bold capitalize" color="white">Shine</ShineBorder>
+</Button>

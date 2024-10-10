@@ -1,8 +1,12 @@
 <script lang="ts">
+	import '../../app.css';
+
 	import Nav from '$lib/components/custom/Nav.svelte';
 	import type { LayoutServerData } from './$types';
-	import '../../app.css';
 	import { page } from '$app/stores';
+	import { ModeWatcher } from 'mode-watcher';
+	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
+	import { DEFAULT_MODE, DEFAULT_SYTLE_CONFIG } from '$lib/form/constants';
 	export let data: LayoutServerData;
 
 	const hideNavRoutes = ['/public', '/preview'];
@@ -21,6 +25,8 @@
 {#if navVisible}
 	<Nav session={data.session} />
 {/if}
-<div class="h-screen w-screen bg-muted/40 p-4">
+
+<ModeWatcher defaultMode={DEFAULT_MODE} />
+<div class="h-screen w-screen p-4">
 	<slot />
 </div>
