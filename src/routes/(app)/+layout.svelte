@@ -3,7 +3,6 @@
 	import '../../app.css';
 </script>
 
-<Nav />
-<div class="h-screen w-screen bg-muted/40">
+<div class="h-screen w-screen bg-muted/40 p-4">
 	<slot />
 </div>

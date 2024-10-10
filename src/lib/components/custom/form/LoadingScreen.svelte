@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Loader from '../Loader.svelte';
-	import { formStyleStore } from '$lib/form/stores';
-	$: color = $formStyleStore.mode === 'dark' ? 'white' : 'black';
+	// import { formStyleStore } from '$lib/form/stores';
+	// $: color = $formStyleStore.mode === 'dark' ? 'white' : 'black';
+
+	const color: string = 'black';
 
 	export let variant: string;
 </script>
