@@ -19,7 +19,7 @@
 </script>
 
 {#if navVisible}
-	<Nav />
+	<Nav session={data.session} />
 {/if}
 <div class="h-screen w-screen bg-muted/40 p-4">
 	<slot />
