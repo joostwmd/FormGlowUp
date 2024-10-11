@@ -9,11 +9,11 @@
 	import { DEFAULT_MODE, DEFAULT_SYTLE_CONFIG } from '$lib/form/constants';
 	export let data: LayoutServerData;
 
-	const hideNavRoutes = ['/public', '/preview'];
+	const hideNavRoutes = ['public', 'preview'];
 	let navVisible: boolean = false;
 
 	$: {
-		const mode = $page.params.mode;
+		const mode = $page.params.viewmode;
 		if (hideNavRoutes.includes(mode)) {
 			navVisible = false;
 		} else {

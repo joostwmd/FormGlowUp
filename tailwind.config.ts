@@ -71,8 +71,8 @@ const config: Config = {
 				sans: [...fontFamily.sans]
 			},
 			screens: {
-				sm: { max: '480px' }, // mobile
-				md: { min: '481px', max: '1023px' }, // tablet
+				sm: { max: '599px' }, // mobile
+				md: { min: '600px', max: '1023px' }, // tablet
 				lg: { min: '1024px' } // desktop
 			}
 		}

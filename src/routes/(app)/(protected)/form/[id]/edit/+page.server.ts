@@ -46,8 +46,8 @@ export const actions = {
 		const formId = data.get('formId') as string;
 		const formInfo = JSON.parse(data.get('formInfo') as string);
 		const formStructure = JSON.parse(data.get('formStructure') as string);
+		console.log('form structure', formStructure);
 		const formStyle = JSON.parse(data.get('formStyle') as string);
-		console.log('form style', formStyle);
 		const res = await handleUpdateForm(userId, formId, formInfo, formStructure, formStyle);
 
 		if (res.success && res.data) {
@@ -64,6 +64,7 @@ async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
 	const formInfo = await constructFormInfoData(formData);
 	const formItems = await constructFormItemsData(htmlData, formData);
+
 	return { formInfo, formItems };
 }
 

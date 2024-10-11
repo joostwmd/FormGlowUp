@@ -1,10 +1,6 @@
 <script lang="ts">
 	import Customizer from '$lib/components/custom/Customizer.svelte';
-	//import Form from '$lib/components/custom/form/Form.svelte';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
-	import Button from '$lib/components/shadcn/ui/button/button.svelte';
-	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
-	import ShareIcon from 'lucide-svelte/icons/share';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
 	import {
@@ -17,6 +13,7 @@
 	import RefreshFormButton from '$lib/components/custom/RefreshFormButton.svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import Form from '$lib/components/custom/form/Form.svelte';
+	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
 
 	export let data: any;
 	let isMounted: boolean = false;
@@ -24,7 +21,6 @@
 	let isUpdating: boolean = false;
 
 	onMount(() => {
-		console.log('form data on mount', data.form.formStyle);
 		$formStyleStore = data.form.formStyle;
 		$formStructureStore = data.form.formStructure;
 		$formInfoStore = data.form.formInfo;
@@ -43,7 +39,7 @@
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
 				$formInfoStore = result.data.formInfo;
-				$formStructureStore = result.data.formStructure;
+				$formStructureStore.pages = result.data.formItems;
 			} else {
 				await applyAction(result);
 			}
@@ -60,10 +56,8 @@
 		formData.append('formStyle', JSON.stringify($formStyleStore));
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				console.log('UPDSTES WITH SUCCCESSSS NEW VALS', result.data.formStyle);
 				$formInfoStore = result.data.formInfo;
 				$formStructureStore = result.data.formStructure;
-				console.log('form style', result.data.formStyle);
 				$formStyleStore = result.data.formStyle;
 			} else {
 				await applyAction(result);
@@ -93,14 +87,7 @@
 					<RefreshFormButton {isRefetching} />
 				</form>
 
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<Button><ShareIcon class="mr-1 h-4 w-4" />Share</Button>
-					</Tooltip.Trigger>
-					<Tooltip.Content>
-						<p>Share the form with others</p>
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<ShareFormButton />
 			</div>
 		</div>
 		<div class="flex items-start space-x-4 sm:flex-col sm:space-x-0 sm:space-y-4">

@@ -6,7 +6,7 @@ export async function getFormsOfUserById(userId: string) {
 		const formsRef = firestore.collection('users').doc(userId).collection('forms');
 		const formsSnapshot = await formsRef.get();
 		const data = formsSnapshot.docs.map((doc) => doc.data());
-		console.log('Forms:', data);
+
 		return {
 			forms: data
 		};
@@ -17,7 +17,6 @@ export async function getFormsOfUserById(userId: string) {
 }
 
 export async function getFormById(uid: string) {
-	console.log('Getting form with UID:', uid);
 	try {
 		const formsCollectionGroup = firestore.collectionGroup('forms');
 		const querySnapshot = await formsCollectionGroup.where('uid', '==', uid).get();
@@ -130,6 +129,18 @@ export async function createUser(userId: string) {
 		return { success: true };
 	} catch (e) {
 		console.error('Error adding document: ', e);
+		return { success: false };
+	}
+}
+
+export async function deleteForm(userId: string, formId: string) {
+	try {
+		const formRef = firestore.collection(`users/${userId}/forms`).doc(formId);
+		await formRef.delete();
+
+		return { success: true };
+	} catch (e) {
+		console.error('Error deleting document: ', e);
 		return { success: false };
 	}
 }

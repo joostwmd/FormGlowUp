@@ -1,13 +1,12 @@
 <script lang="ts">
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
-	import * as DropdownMenu from '$lib/components/shadcn/ui/dropdown-menu';
-	import PaintbrushIcon from 'lucide-svelte/icons/paintbrush';
-	import EyeIcon from 'lucide-svelte/icons/eye';
-	import SendIcon from 'lucide-svelte/icons/send';
-	import EllipsisVerticalIcon from 'lucide-svelte/icons/ellipsis-vertical';
+	import PenIcon from 'lucide-svelte/icons/pen';
+	import TrashIcon from 'lucide-svelte/icons/trash';
 	import { Button } from '../shadcn/ui/button';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import ShareFormButton from './ShareFormButton.svelte';
+	import * as AlertDialog from '$lib/components/shadcn/ui/alert-dialog/index.js';
 
 	export let formData: any;
 
@@ -17,38 +16,38 @@
 </script>
 
 <Card.Root class="sm:col-span-2">
-	<Card.Content class="flex flex-col">
-		<div class="mb-3 flex items-center justify-between">
-			<div class="flex flex-col">
-				<h3 class="text-lg font-semibold">Form Title</h3>
-				<p class="text-sm text-gray-500">Form Description</p>
-			</div>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					<EllipsisVerticalIcon class="h-4 w-4" />
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content>
-					<DropdownMenu.Item>Original Form</DropdownMenu.Item>
-					<DropdownMenu.Item>Delete Form</DropdownMenu.Item>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
-		</div>
+	<Card.Header>
+		<Card.Title>{formData.formInfo.title}</Card.Title>
+		<Card.Description>{formData.formInfo.description}</Card.Description>
+	</Card.Header>
 
-		<div class="flex justify-between">
-			<Button variant="outline" on:click={handleEditClick}>
-				<PaintbrushIcon class="mr-2 h-4 w-4" />
-				Edit
-			</Button>
+	<Card.Content class="flex space-x-2">
+		<AlertDialog.Root>
+			<AlertDialog.Trigger asChild let:builder>
+				<Button builders={[builder]} variant="outline">
+					<TrashIcon class="h-4 w-4" />
+				</Button>
+			</AlertDialog.Trigger>
+			<AlertDialog.Content>
+				<AlertDialog.Header>
+					<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+					<AlertDialog.Description>
+						This action cannot be undone. This will permanently delete your account and remove your
+						data from our servers.
+					</AlertDialog.Description>
+				</AlertDialog.Header>
+				<AlertDialog.Footer>
+					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+					<AlertDialog.Action>Delete</AlertDialog.Action>
+				</AlertDialog.Footer>
+			</AlertDialog.Content>
+		</AlertDialog.Root>
 
-			<Button variant="outline">
-				<EyeIcon class="mr-2 h-4 w-4" />
-				Preview
-			</Button>
+		<Button variant="outline" on:click={handleEditClick}>
+			<PenIcon class="mr-2 h-4 w-4" />
+			Edit
+		</Button>
 
-			<Button>
-				<SendIcon class="mr-2 h-4 w-4" />
-				Share
-			</Button>
-		</div>
+		<ShareFormButton />
 	</Card.Content>
 </Card.Root>
