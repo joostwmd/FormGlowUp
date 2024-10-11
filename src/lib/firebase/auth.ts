@@ -53,8 +53,9 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 			const accountDoc = googleAccount.docs[0];
 			const account = accountDoc.data();
 
-			if (account && account.expires_at * 1000 < Date.now()) {
+			if (account && account.expires_at < Date.now()) {
 				try {
+					console.log('refreshing token');
 					const response = await fetch('https://oauth2.googleapis.com/token', {
 						method: 'POST',
 						body: new URLSearchParams({
@@ -90,6 +91,7 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 			}
 
 			return {
+				testVal: 'acccess token später',
 				...session
 			};
 		}
