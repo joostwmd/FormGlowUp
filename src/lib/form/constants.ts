@@ -41,7 +41,7 @@ export const HOUR_SUFFIX = '_hour';
 export const MINUTE_SUFFIX = '_minute';
 export const SECOND_SUFFIX = '_second';
 
-export const DEFAULT_MODE = 'system';
+export const DEFAULT_MODE = 'light';
 export const DEFAULT_LOADER = 'SPIRAL';
 export const DEFAULT_END_TEXT = 'Thank you for your submission!';
 

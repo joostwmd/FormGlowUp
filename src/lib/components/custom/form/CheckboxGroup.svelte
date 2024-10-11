@@ -8,7 +8,7 @@
 		SUBMIT_KEY_PREFIX
 	} from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/stores';
-	import { handleFormValueChange } from '$lib/form/utils';
+	import { handleFormValueChange } from '$lib/form/utils/client';
 
 	export let description: string | null = null;
 	export let randomizeOrder: boolean = false;

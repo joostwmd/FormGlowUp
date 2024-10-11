@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/stores';
-
 	import Slider from '$lib/components/shadcn/ui/slider/slider.svelte';
 
 	export let description: string | null = null;

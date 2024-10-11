@@ -19,7 +19,3 @@
 		<Button on:click={() => goto('/signin')}>SignIn</Button>
 	{/if}
 </div>
-
-<Button variant="ghost">
-	<ShineBorder class="text-center text-2xl font-bold capitalize" color="white">Shine</ShineBorder>
-</Button>

@@ -26,7 +26,6 @@
 	<Nav session={data.session} />
 {/if}
 
-<ModeWatcher defaultMode={DEFAULT_MODE} />
 <div class="h-screen w-screen p-4">
 	<slot />
 </div>

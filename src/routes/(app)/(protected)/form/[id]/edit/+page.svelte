@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Customizer from '$lib/components/custom/Customizer.svelte';
-	import Form from '$lib/components/custom/form/Form.svelte';
+	//import Form from '$lib/components/custom/form/Form.svelte';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
@@ -13,32 +13,85 @@
 		formInfoStore,
 		formStateStore
 	} from '$lib/form/stores';
-	import { constructFormInfoData, constructFormItemsData, fetchFormData } from '$lib/form/utils';
 	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
 	import RefreshFormButton from '$lib/components/custom/RefreshFormButton.svelte';
+	import { applyAction, enhance } from '$app/forms';
+	import Form from '$lib/components/custom/form/Form.svelte';
+
 	export let data: any;
 	let isMounted: boolean = false;
+	let isRefetching: boolean = false;
+	let isUpdating: boolean = false;
 
 	onMount(() => {
-		$formStyleStore = data.formData.formStyle;
-		$formStructureStore = data.formData.formStructure;
-		$formInfoStore = data.formData.formInfo;
+		console.log('form data on mount', data.form.formStyle);
+		$formStyleStore = data.form.formStyle;
+		$formStructureStore = data.form.formStructure;
+		$formInfoStore = data.form.formInfo;
 		$formStateStore = {
-			formInfo: data.formData.formInfo,
-			formStructure: data.formData.formStructure,
-			formStyle: data.formData.formStyle
+			formInfo: data.form.formInfo,
+			formStructure: data.form.formStructure,
+			formStyle: data.form.formStyle
 		};
 		isMounted = true;
 	});
+
+	async function handleEnhanceRefreshForm(formData: FormData) {
+		isRefetching = true;
+		formData.append('userId', data.session.user?.id!);
+		formData.append('formId', data.form.formInfo.formId);
+		return async ({ result }: { result: any }) => {
+			if (result.type === 'success') {
+				$formInfoStore = result.data.formInfo;
+				$formStructureStore = result.data.formStructure;
+			} else {
+				await applyAction(result);
+			}
+			isRefetching = false;
+		};
+	}
+
+	async function handleEnhanceUpdateForm(formData: FormData) {
+		isUpdating = true;
+		formData.append('userId', data.session.user?.id!);
+		formData.append('formId', data.form.uid);
+		formData.append('formInfo', JSON.stringify($formInfoStore));
+		formData.append('formStructure', JSON.stringify($formStructureStore));
+		formData.append('formStyle', JSON.stringify($formStyleStore));
+		return async ({ result }: { result: any }) => {
+			if (result.type === 'success') {
+				console.log('UPDSTES WITH SUCCCESSSS NEW VALS', result.data.formStyle);
+				$formInfoStore = result.data.formInfo;
+				$formStructureStore = result.data.formStructure;
+				console.log('form style', result.data.formStyle);
+				$formStyleStore = result.data.formStyle;
+			} else {
+				await applyAction(result);
+			}
+			isUpdating = false;
+		};
+	}
 </script>
 
 {#if isMounted}
 	<div class="h-full w-full bg-muted/40">
 		<div class="mb-4 flex w-full items-center justify-end">
-			<div class="w-fit space-x-1">
-				<UpdateFormButton userId={data.session.user.id} formId={data.uid} />
+			<div class="flex w-fit space-x-2">
+				<form
+					method="POST"
+					action="?/updateForm"
+					use:enhance={({ formData }) => handleEnhanceUpdateForm(formData)}
+				>
+					<UpdateFormButton {isUpdating} />
+				</form>
 
-				<RefreshFormButton userId={data.session.user.id} formId={data.formData.formInfo.formId} />
+				<form
+					method="POST"
+					action="?/refreshForm"
+					use:enhance={({ formData }) => handleEnhanceRefreshForm(formData)}
+				>
+					<RefreshFormButton {isRefetching} />
+				</form>
 
 				<Tooltip.Root>
 					<Tooltip.Trigger>

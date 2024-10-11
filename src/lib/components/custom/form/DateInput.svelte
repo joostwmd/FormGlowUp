@@ -6,7 +6,7 @@
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { cn } from '$lib/components/shadcn/utils';
 	import { formDataStore } from '$lib/form/stores';
-	import { handleFormValueChange } from '$lib/form/utils';
+	import { handleFormValueChange } from '$lib/form/utils/client';
 	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/form/constants';
 	import TimeInput from './TimeInput.svelte';
 

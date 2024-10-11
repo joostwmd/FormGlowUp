@@ -1,28 +1,14 @@
-import {
-	collection,
-	collectionGroup,
-	doc,
-	getDoc,
-	getDocs,
-	query,
-	setDoc,
-	where
-} from 'firebase/firestore';
-import { db } from './index';
 import { DEFAULT_SYTLE_CONFIG } from '$lib/form/constants';
+import { firestore } from './auth';
 
 export async function getFormsOfUserById(userId: string) {
 	try {
-		const userFormsCollection = collection(db, `users/${userId}/forms`);
-		const userFormDocs = await getDocs(userFormsCollection);
-
-		const forms: any[] = [];
-		userFormDocs.forEach((doc) => {
-			forms.push(doc.data());
-		});
-
+		const formsRef = firestore.collection('users').doc(userId).collection('forms');
+		const formsSnapshot = await formsRef.get();
+		const data = formsSnapshot.docs.map((doc) => doc.data());
+		console.log('Forms:', data);
 		return {
-			forms
+			forms: data
 		};
 	} catch (e) {
 		console.log('Error getting user forms:', e);
@@ -31,10 +17,10 @@ export async function getFormsOfUserById(userId: string) {
 }
 
 export async function getFormById(uid: string) {
+	console.log('Getting form with UID:', uid);
 	try {
-		const formsCollectionGroup = collectionGroup(db, 'forms');
-		const q = query(formsCollectionGroup, where('uid', '==', uid));
-		const querySnapshot = await getDocs(q);
+		const formsCollectionGroup = firestore.collectionGroup('forms');
+		const querySnapshot = await formsCollectionGroup.where('uid', '==', uid).get();
 
 		if (!querySnapshot.empty) {
 			const doc = querySnapshot.docs[0];
@@ -56,8 +42,8 @@ export async function createForm(
 	formStructure: object
 ) {
 	try {
-		const newFormRef = doc(collection(db, `users/${userId}/forms`));
-		await setDoc(newFormRef, {
+		const newFormRef = firestore.collection(`users/${userId}/forms`).doc();
+		await newFormRef.set({
 			googleFormId: googleFormId,
 			uid: newFormRef.id,
 			public: false,
@@ -81,14 +67,16 @@ export async function updateForm(
 	formStyle: object
 ) {
 	try {
-		const formRef = doc(db, `users/${userId}/forms/${uid}`);
-		await setDoc(formRef, { formInfo, formStructure, formStyle }, { merge: true });
+		const formRef = firestore.collection(`users/${userId}/forms`).doc(uid);
+		await formRef.set({ formInfo, formStructure, formStyle }, { merge: true });
 
-		const updatedDoc = await getDoc(formRef);
+		const updatedDoc = await formRef.get();
 
-		if (!updatedDoc.exists()) {
+		if (!updatedDoc.exists) {
 			throw new Error('Document does not exist after update');
 		}
+
+		console.log('Document data after update:', updatedDoc.data());
 
 		return { success: true, data: updatedDoc.data() };
 	} catch (e: any) {
@@ -99,10 +87,10 @@ export async function updateForm(
 
 export async function getUserById(userId: string) {
 	try {
-		const userDocRef = doc(db, `users/${userId}`);
-		const userDoc = await getDoc(userDocRef);
+		const userDocRef = firestore.collection('users').doc(userId);
+		const userDoc = await userDocRef.get();
 
-		if (!userDoc.exists()) {
+		if (!userDoc.exists) {
 			return null;
 		}
 
@@ -115,15 +103,8 @@ export async function getUserById(userId: string) {
 
 export async function getAccessTokens(userId: string) {
 	try {
-		// Reference the collection
-		const accountCollectionRef = collection(db, 'accounts');
-		console.log('Collection reference:', accountCollectionRef);
-
-		const q = query(accountCollectionRef, where('userId', '==', userId));
-		console.log('Query:', q);
-
-		const querySnapshot = await getDocs(q);
-		console.log('Query snapshot:', querySnapshot);
+		const accountCollectionRef = firestore.collection('accounts');
+		const querySnapshot = await accountCollectionRef.where('userId', '==', userId).get();
 
 		if (querySnapshot.empty) {
 			console.log('No documents found for user ID:', userId);
@@ -141,8 +122,8 @@ export async function getAccessTokens(userId: string) {
 
 export async function createUser(userId: string) {
 	try {
-		const userRef = doc(db, `users/${userId}`);
-		await setDoc(userRef, {
+		const userRef = firestore.collection('users').doc(userId);
+		await userRef.set({
 			uid: userId
 		});
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { updateForm } from '$lib/firebase/utils';
 	import {
 		formInfoStore,
 		formStructureStore,
@@ -10,15 +9,30 @@
 	import { Button } from '$lib/components/shadcn/ui/button/index';
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
-	import { deepEqual } from '$lib/form/utils';
 
-	export let userId: string;
-	export let formId: string;
+	function deepEqual(obj1: any, obj2: any): boolean {
+		if (obj1 === obj2) return true;
 
+		if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+			return false;
+		}
+
+		const keys1 = Object.keys(obj1);
+		const keys2 = Object.keys(obj2);
+
+		if (keys1.length !== keys2.length) return false;
+
+		for (const key of keys1) {
+			if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	export let isUpdating: boolean = false;
 	let needsUpdate: boolean = false;
-	let isUpdating: boolean = false;
-
-	
 
 	$: {
 		const savedFormState = $formStateStore;
@@ -30,40 +44,11 @@
 		const formStructureChanged = !deepEqual(savedFormState.formStructure, localFormStructure);
 		const formStyleChanged = !deepEqual(savedFormState.formStyle, localFormStyle);
 
-	
-
 		if (formInfoChanged || formStructureChanged || formStyleChanged) {
 			needsUpdate = true;
 		} else {
 			needsUpdate = false;
 		}
-	}
-
-	async function handleUpdateForm() {
-		isUpdating = true;
-		await updateForm(userId, formId, $formInfoStore, $formStructureStore, $formStyleStore)
-			.then((res) => {
-				if (!res) {
-					console.error('error updating form');
-					isUpdating = false;
-					return;
-				} else {
-					console.log('form updated', res.data);
-
-					formStateStore.set({
-						formInfo: res.data.formInfo,
-						formStructure: res.data.formStructure,
-						formStyle: res.data.formStyle
-					});
-
-					formInfoStore.set(res.data.formInfo);
-					formStructureStore.set(res.data.formStructure);
-					formStyleStore.set(res.data.formStyle);
-				}
-			})
-			.finally(() => {
-				isUpdating = false;
-			});
 	}
 </script>
 
@@ -71,7 +56,7 @@
 	<Tooltip.Trigger>
 		<Button
 			disabled={!needsUpdate || isUpdating}
-			on:click={handleUpdateForm}
+			type="submit"
 			variant={needsUpdate ? 'outline' : 'ghost'}
 		>
 			{#if isUpdating}

@@ -1,4 +1,3 @@
-import { getAccessTokens } from '$lib/firebase/utils';
 import {
 	ADDITIONAL_TITLE_ITEM,
 	CHECKBOX_GRID_QUESTION_ITEM,
@@ -17,22 +16,7 @@ import {
 	TEXT_QUESTION_ITEM,
 	TIME_QUESTION_ITEM
 } from '$lib/form/constants';
-import { formDataStore } from './stores';
-
-export async function fetchFormData(userId: string, formId: string) {
-	const accessToken = await getAccessTokens(userId);
-
-	const res = await fetch('/api/get-form', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ accessToken, formId })
-	});
-
-	const data = await res.json();
-	return data;
-}
+import { formDataStore } from '$lib/form/stores';
 
 function extractSubmitIds(htmlString: string) {
 	const ids = htmlString.match(/\b\d{9,10}\b/g) || [];
@@ -284,26 +268,4 @@ export function handleFormValueChange(value: string, submitId: string) {
 		currentData[entryId] = value;
 		return currentData;
 	});
-}
-
-
-export function deepEqual(obj1: any, obj2: any): boolean {
-	if (obj1 === obj2) return true;
-
-	if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
-		return false;
-	}
-
-	const keys1 = Object.keys(obj1);
-	const keys2 = Object.keys(obj2);
-
-	if (keys1.length !== keys2.length) return false;
-
-	for (const key of keys1) {
-		if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-			return false;
-		}
-	}
-
-	return true;
 }
