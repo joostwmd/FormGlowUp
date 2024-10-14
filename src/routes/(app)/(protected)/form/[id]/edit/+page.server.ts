@@ -63,7 +63,6 @@ async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
 	const formInfo = await constructFormInfoData(formData);
 	const formItems = await constructFormItemsData(htmlData, formData);
-
 	return { formInfo, formItems };
 }
 

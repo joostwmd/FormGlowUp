@@ -12,7 +12,11 @@ export const formStyleStore = writable<TFormStyle>();
 export type TFormStrucutre = {
 	loader: string;
 	endText: string;
-	pages: object;
+	questions: {
+		type: string;
+		title: string | null;
+		data: { submitId: string; [key: string]: any };
+	}[];
 };
 
 export const formStructureStore = writable<TFormStrucutre>();

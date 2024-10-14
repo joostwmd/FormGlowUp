@@ -49,11 +49,12 @@ async function handleCreateForm(fetch: any, userId: string, formId: string) {
 	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
 	const formInfo = await constructFormInfoData(formData);
 	const formItems = await constructFormItemsData(htmlData, formData);
+	console.log('form items', formItems);
 
 	const formStructure = {
 		loader: DEFAULT_LOADER,
 		endText: DEFAULT_END_TEXT,
-		pages: formItems
+		questions: formItems
 	};
 
 	const res = await createForm(userId, formId, formInfo, formStructure);

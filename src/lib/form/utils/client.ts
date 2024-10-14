@@ -34,7 +34,6 @@ function replaceUndefinedWithNull(obj: any): any {
 		return obj === undefined ? null : obj;
 	}
 }
-
 function parseItemData(data: any, type: string) {
 	const choiceQuestion = data.questionItem?.question?.choiceQuestion;
 	const scaleQuestion = data.questionItem?.question?.scaleQuestion;
@@ -49,7 +48,7 @@ function parseItemData(data: any, type: string) {
 		case CHECKBOX_QUESTION_ITEM:
 		case DROPDOWN_QUESTION_ITEM:
 			result = {
-				isRequired: data.questionItem?.question?.required,
+				isRequired: data.questionItem?.question?.required ?? null,
 				description: data.description,
 				shuffleOptions: choiceQuestion?.shuffle,
 				options: choiceQuestion?.options.map((option: any) =>
@@ -59,7 +58,7 @@ function parseItemData(data: any, type: string) {
 			break;
 		case SCALE_QUESTION_ITEM:
 			result = {
-				isRequired: data.questionItem?.question?.required,
+				isRequired: data.questionItem?.question?.required ?? null,
 				description: data.description,
 				minLabel: scaleQuestion?.lowLabel,
 				maxLabel: scaleQuestion?.highLabel,
@@ -73,14 +72,14 @@ function parseItemData(data: any, type: string) {
 				description: data.description,
 				columns: data.questionGroupItem?.grid?.columns?.options.map((option: any) => option.value),
 				rows: data.questionGroupItem?.questions.map((question: any) => ({
-					isRequired: question.required,
+					isRequired: question.required ?? null,
 					title: question.rowQuestion.title
 				}))
 			};
 			break;
 		case DATE_QUESTION_ITEM:
 			result = {
-				isRequired: dateQuestion?.required,
+				isRequired: dateQuestion?.required ?? null,
 				description: data.description,
 				yearIncluded: dateQuestion?.includeYear,
 				timeIncluded: dateQuestion?.includeTime
@@ -88,7 +87,7 @@ function parseItemData(data: any, type: string) {
 			break;
 		case TIME_QUESTION_ITEM:
 			result = {
-				isRequired: timeQuestion?.required,
+				isRequired: timeQuestion?.required ?? null,
 				description: data.description,
 				isDuration: timeQuestion?.duration
 			};
@@ -100,6 +99,14 @@ function parseItemData(data: any, type: string) {
 				title: data.title
 			};
 			break;
+		case TEXT_QUESTION_ITEM || PARAGRAPH_QUESTION_ITEM:
+			result = {
+				isRequired: data.questionItem?.question?.required ?? null,
+				description: data.description,
+				paragraph: data.questionItem?.question?.textQuestion?.paragraph
+			};
+			break;
+
 		default:
 			result = {};
 	}
@@ -191,11 +198,10 @@ function parseFormData(data: any, submitIds: string[]) {
 
 	return form;
 }
-function parseFormItemsData(formData: any, submitIds: string[]) {
+
+export function parseFormItemsData(formData: any, submitIds: string[]) {
 	let submitIdIndex = 0;
-	let currentPage: any[] = [];
-	const pages: { [key: number]: any[] } = {};
-	let currentPageNumber = 1;
+	const questions: any[] = [];
 
 	formData.items.forEach((item: any) => {
 		const type = findItemType(item);
@@ -207,29 +213,18 @@ function parseFormItemsData(formData: any, submitIds: string[]) {
 					row.submitId = submitIds[submitIdIndex++];
 				});
 			} else {
-				// @ts-ignore
 				itemData.submitId = submitIds[submitIdIndex++];
 			}
 		}
 
-		if (type === PAGEBREAK_ITEM) {
-			pages[currentPageNumber] = currentPage;
-			currentPage = [];
-			currentPageNumber++;
-		} else {
-			currentPage.push({
-				title: item.title ?? null,
-				type: type,
-				data: itemData
-			});
-		}
+		questions.push({
+			title: item.title ?? null,
+			type: type,
+			data: itemData
+		});
 	});
 
-	if (currentPage.length > 0) {
-		pages[currentPageNumber] = currentPage;
-	}
-
-	return pages;
+	return questions;
 }
 
 export async function constructFormItemsData(htmlData: string, formData: any) {

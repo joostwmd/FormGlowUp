@@ -39,7 +39,7 @@
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
 				$formInfoStore = result.data.formInfo;
-				$formStructureStore.pages = result.data.formItems;
+				$formStructureStore.questions = result.data.formItems;
 			} else {
 				await applyAction(result);
 			}
