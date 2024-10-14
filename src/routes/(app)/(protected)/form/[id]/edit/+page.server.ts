@@ -15,8 +15,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		};
 	}
 
-	console.log('form doc', formDoc);
-
+	console.log('form doc', JSON.stringify(formDoc.formStructure.pages, null, 2));
 	return {
 		uid: uid,
 		form: formDoc

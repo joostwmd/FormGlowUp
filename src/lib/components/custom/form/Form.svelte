@@ -34,6 +34,8 @@
 	export let canSubmit: boolean = true;
 	export let formStructure: TFormStrucutre;
 
+	console.log('form struc', formStructure.pages);
+
 	let currentPage: number = 0;
 	let isLoading: boolean = true;
 	let isSubmitted: boolean = false;
