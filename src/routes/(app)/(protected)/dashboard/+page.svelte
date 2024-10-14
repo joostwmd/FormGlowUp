@@ -17,7 +17,6 @@
 	export let data: LayoutServerData & PageServerData;
 
 	let isCreating: boolean = false;
-	let isDeleting: boolean = false;
 
 	let editUrl: string =
 		'https://docs.google.com/forms/d/1qJwjEP7NVbhzhTB1jaU4muQMwZov3m1RWJAf7iqHX_A/edit';
@@ -32,7 +31,6 @@
 	}
 
 	async function handleEnhanceDeleteForm(formData: FormData, formId: string) {
-		isDeleting = true;
 		formData.append('formId', formId);
 		formData.append('userId', data.session.user?.id!);
 
@@ -40,7 +38,6 @@
 			console.log('test url', $page);
 			await invalidate((url) => url.pathname === $page.url.pathname);
 			await applyAction(result);
-			isCreating = false;
 		};
 	}
 
