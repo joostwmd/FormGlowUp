@@ -1,6 +1,6 @@
 import { createForm, deleteForm, getFormsOfUserById } from '$lib/firebase/utils';
 import { DEFAULT_LOADER, DEFAULT_END_TEXT } from '$lib/form/constants';
-import { fetchFormData } from '$lib/form/utils/server';
+import { fetchFormData } from '$lib/form/utils';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import {
@@ -49,7 +49,6 @@ async function handleCreateForm(fetch: any, userId: string, formId: string) {
 	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
 	const formInfo = await constructFormInfoData(formData);
 	const formItems = await constructFormItemsData(htmlData, formData);
-	console.log('form items', formItems);
 
 	const formStructure = {
 		loader: DEFAULT_LOADER,

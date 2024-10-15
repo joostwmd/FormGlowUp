@@ -7,5 +7,5 @@
 </script>
 
 <ThemeWrapper styleConfig={data.formData.formStyle}>
-	<Form formStructure={data.formData.formStructure} />
+	<Form formStructure={data.formData.formStructure} formInfo={data.formData.formInfo} />
 </ThemeWrapper>

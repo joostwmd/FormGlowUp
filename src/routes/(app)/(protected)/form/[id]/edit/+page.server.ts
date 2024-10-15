@@ -1,6 +1,6 @@
 import { getFormById, updateForm } from '$lib/firebase/utils.js';
 import { constructFormInfoData, constructFormItemsData } from '$lib/form/utils/client';
-import { fetchFormData } from '$lib/form/utils/server';
+import { constructForm, fetchFormData } from '$lib/form/utils';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { TFormInfoStore, TFormStrucutre, TFormStyle } from '$lib/form/stores';
@@ -15,7 +15,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		};
 	}
 
-	console.log('form doc', JSON.stringify(formDoc.formStructure.pages, null, 2));
 	return {
 		uid: uid,
 		form: formDoc
@@ -32,7 +31,8 @@ export const actions = {
 		if (res) {
 			return {
 				formInfo: res.formInfo,
-				formItems: res.formItems
+				formItems: res.formItems,
+				htmlData: res.htmlData
 			};
 		} else {
 			return fail(422, { message: 'Failed to refresh form' });
@@ -63,6 +63,10 @@ async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
 	const formInfo = await constructFormInfoData(formData);
 	const formItems = await constructFormItemsData(htmlData, formData);
+
+	const test = await constructForm(htmlData, formData);
+	console.log('test construct form', test);
+
 	return { formInfo, formItems };
 }
 

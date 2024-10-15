@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
+import { JSDOM } from 'jsdom';
 
 export async function POST({ request, fetch }) {
 	const { accessToken, formId } = await request.json();
-	console.log('accessToken:', accessToken);
 
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 

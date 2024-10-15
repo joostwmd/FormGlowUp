@@ -29,11 +29,12 @@
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
 	} from '$lib/form/constants';
-	import { formDataStore, type TFormStrucutre } from '$lib/form/stores';
+	import { formDataStore, type TFormInfoStore, type TFormStrucutre } from '$lib/form/stores';
 
 	export let isPreview: boolean = false;
 	export let canSubmit: boolean = true;
 	export let formStructure: TFormStrucutre;
+	export let formInfo: TFormInfoStore;
 
 	let currentQuestion: number = 0;
 	let isLoading: boolean = true;
@@ -76,9 +77,24 @@
 		}
 	}
 
-	function handleOnSubmit() {
+	let isSubmitting: boolean = false;
+	async function handleOnSubmit() {
 		if (canSubmit) {
-			isSubmitted = true;
+			isSubmitting = true;
+
+			await fetch('/api/submit-form', {
+				method: 'POST',
+				body: JSON.stringify({
+					formData: $formDataStore,
+					submitUrl: formInfo.responderUri
+				}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			console.log('submit', $formDataStore);
+			//isSubmitted = true;
 		} else {
 			console.log('cannot submit');
 		}

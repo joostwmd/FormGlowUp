@@ -19,7 +19,7 @@
 	let isCreating: boolean = false;
 
 	let editUrl: string =
-		'https://docs.google.com/forms/d/1qJwjEP7NVbhzhTB1jaU4muQMwZov3m1RWJAf7iqHX_A/edit';
+		'https://docs.google.com/forms/d/1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc/edit';
 
 	async function handleEnhanceCreateForm(formData: FormData) {
 		isCreating = true;

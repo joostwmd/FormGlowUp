@@ -230,6 +230,11 @@ export function parseFormItemsData(formData: any, submitIds: string[]) {
 export async function constructFormItemsData(htmlData: string, formData: any) {
 	const submitIds = extractSubmitIds(htmlData);
 	const formItems = parseFormItemsData(formData, submitIds);
+
+	//test
+	//const test = extractValidationData(htmlData);
+	console.log('tes');
+
 	return formItems;
 }
 
@@ -248,6 +253,7 @@ export async function constructFormInfoData(formData: any) {
 export async function constructFormStructure(html: string, formData: any) {
 	const submitIds = extractSubmitIds(html);
 	const form = parseFormData(formData, submitIds);
+
 	return form;
 }
 
