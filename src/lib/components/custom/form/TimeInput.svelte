@@ -8,6 +8,19 @@
 	} from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/stores';
 
+	type TFormAttributes = {
+		name: string;
+		id: string;
+		'data-fs-error': string | undefined;
+		'aria-describedby': string | undefined;
+		'aria-invalid': 'true' | undefined;
+		'aria-required': 'true' | undefined;
+		'data-fs-control': string;
+	};
+
+	export let formAttributes: TFormAttributes;
+
+	export let handleFormValueChange: (value: string | number, submitId: string) => void;
 	export let description: string | null = null;
 	export let isDurationInput: boolean;
 	export let submitId: string;
@@ -20,21 +33,24 @@
 
 	<div class="flex items-center space-x-2">
 		<Input
-			bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}${HOUR_SUFFIX}`]}
+			{...formAttributes}
+			on:change={(e) => handleFormValueChange(e.target.value, `${submitId}${HOUR_SUFFIX}`)}
 			placeholder="HH"
 			class="w-14 text-center"
 		/>
 
 		<span>:</span>
 		<Input
-			bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}${MINUTE_SUFFIX}`]}
+			{...formAttributes}
+			on:change={(e) => handleFormValueChange(e.target.value, `${submitId}${HOUR_SUFFIX}`)}
 			placeholder="MM"
 			class="w-14 text-center"
 		/>
 		{#if isDurationInput}
 			<span>:</span>
 			<Input
-				bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}${SECOND_SUFFIX}`]}
+				{...formAttributes}
+				on:change={(e) => handleFormValueChange(e.target.value, `${submitId}${HOUR_SUFFIX}`)}
 				placeholder="SS"
 				class="w-14 text-center"
 			/>

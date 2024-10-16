@@ -6,24 +6,20 @@
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { cn } from '$lib/components/shadcn/utils';
 	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/form/constants';
-	import TimeInput from './TimeInput.svelte';
+	import {
+		dateProxy,
+		formFieldProxy,
+		type SuperForm,
+		type FormPathLeaves
+	} from 'sveltekit-superforms';
 
-	type TFormAttributes = {
-		name: string;
-		id: string;
-		'data-fs-error': string | undefined;
-		'aria-describedby': string | undefined;
-		'aria-invalid': 'true' | undefined;
-		'aria-required': 'true' | undefined;
-		'data-fs-control': string;
-	};
+	type T = Record<string, unknown>;
 
-	export let handleFormValueChange: (value: string | number, submitId: string) => void;
-	export let description: string | null = null;
 	export let includeYear: boolean = false;
 	export let includeTime: boolean = false;
 	export let submitId: string;
-	export let formAttributes: TFormAttributes;
+	export let form: SuperForm<T>;
+	export let field: FormPathLeaves<T, Date>;
 
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'short'
@@ -31,38 +27,9 @@
 
 	let dateValue: DateValue | undefined = undefined;
 
-	$: {
-		console.log(dateValue);
-		const DD = {
-			suffix: DAY_SUFFIX,
-			value: dateValue?.day
-		};
-
-		const MM = {
-			suffix: MONTH_SUFFIX,
-			value: dateValue?.month
-		};
-
-		const entries = [DD, MM];
-
-		if (includeYear) {
-			entries.push({
-				suffix: YEAR_SUFFIX,
-				value: dateValue?.year
-			});
-		}
-
-		entries.forEach((entry) => {
-			handleFormValueChange(entry.value!, submitId + entry.suffix);
-		});
-
-		handleFormValueChange(dateValue?.toDate(getLocalTimeZone()) || '', submitId);
-	}
+	$: value = dateProxy(form, field, { format: 'date', empty: 'null' });
+	$: console.log('value', value);
 </script>
-
-{#if description}
-	<p class="text-sm text-gray-500">{description}</p>
-{/if}
 
 <Popover.Root openFocus>
 	<Popover.Trigger asChild let:builder>
@@ -83,6 +50,6 @@
 	</Popover.Content>
 </Popover.Root>
 
-{#if includeTime}
+<!-- {#if includeTime}
 	<TimeInput {handleFormValueChange} {submitId} isDurationInput={false} />
-{/if}
+{/if} -->

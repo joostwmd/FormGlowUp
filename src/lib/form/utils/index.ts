@@ -22,8 +22,6 @@ export async function constructForm(htmlString: string, apiData: any) {
 	const htmlQuestionItemsData = constructQuestionItemsDataFromHTML(htmlString);
 	const apiFormItemsData = constructFormQuestionItemsDataFromAPI(apiData);
 	const formQuestionItems = mergeQuestionItemsData(htmlQuestionItemsData, apiFormItemsData);
+	console.log('formQuestionItems', JSON.stringify(formQuestionItems, null, 2));
 	const formInfo = await constructFormInfoDataFromAPI(apiData);
-
-	console.log('formQuestionItems:', formQuestionItems);
-	console.log('formInfo:', formInfo);
 }

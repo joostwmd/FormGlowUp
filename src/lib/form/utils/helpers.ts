@@ -88,8 +88,6 @@ export function mergeQuestionItemsData(htmlQuestionItems: any[], apiFormItems: a
 			}
 			questionItemIndex++;
 
-			console.log('merged item:', item);
-
 			return {
 				...item
 			};

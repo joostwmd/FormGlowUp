@@ -28,6 +28,7 @@ export function constructQuestionItemDataFromAPI(apiData: any, type: string) {
 			result = {
 				type,
 				isRequired: apiData.questionItem?.question?.required ?? null,
+
 				description: apiData.description,
 				shuffleOptions: choiceQuestion?.shuffle,
 				options: choiceQuestion?.options.map((option: any) =>
@@ -64,6 +65,7 @@ export function constructQuestionItemDataFromAPI(apiData: any, type: string) {
 			result = {
 				type,
 				isRequired: dateQuestion?.required ?? null,
+				title: apiData.title,
 				description: apiData.description,
 				yearIncluded: dateQuestion?.includeYear,
 				timeIncluded: dateQuestion?.includeTime
@@ -72,6 +74,7 @@ export function constructQuestionItemDataFromAPI(apiData: any, type: string) {
 		case TIME_QUESTION_ITEM:
 			result = {
 				type,
+				title: apiData.title,
 				isRequired: timeQuestion?.required ?? null,
 				description: apiData.description,
 				isDuration: timeQuestion?.duration
