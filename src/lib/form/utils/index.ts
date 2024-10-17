@@ -1,6 +1,6 @@
 import { getAccessTokens } from '$lib/firebase/utils';
 import { constructQuestionItemsDataFromHTML } from './html';
-import { constructFormInfoDataFromAPI, constructFormQuestionItemsDataFromAPI } from './api';
+import { constructFormQuestionItemsDataFromAPI } from './google-api';
 import { mergeQuestionItemsData } from './helpers';
 import type { TGetFormResponse } from '../types';
 
@@ -26,6 +26,7 @@ export async function fetchFormData(
 export async function constructForm(htmlString: string, apiData: any) {
 	const htmlQuestionItemsData = constructQuestionItemsDataFromHTML(htmlString);
 	const apiFormItemsData = constructFormQuestionItemsDataFromAPI(apiData);
+	console.log('api from item data new func i own utils dir', apiFormItemsData);
 	const formQuestionItems = mergeQuestionItemsData(htmlQuestionItemsData, apiFormItemsData);
 	console.log('formQuestionItems', formQuestionItems);
 	// const formInfo = await constructFormInfoDataFromAPI(apiData);

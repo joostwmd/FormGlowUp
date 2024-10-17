@@ -21,118 +21,6 @@ import {
 	GOOGLE_API_RESTART_FORM,
 	GOOGLE_API_SUBMIT_FORM
 } from './constants';
-import type { TGoogleApiAlignment } from './utils/google-api/types';
-
-export type TForm = {
-	uid: string;
-	items: FormItem[];
-	info: FormInfo;
-	theme: FormTheme;
-};
-
-export type FormItem = GridItem | ChoicesItem | DateItem | TimeItem | ScaleItem | TextItem;
-
-export type FinalFormItem = FormItem & {
-	submitId: string;
-};
-
-export type GridItem = {
-	type: string;
-	columns: string[];
-	rows: { title: string; submitId: string }[];
-	validation: {
-		isRequired: boolean;
-	};
-	displayData: ItemDisplayData;
-};
-
-export type ChoicesItem = {
-	type: string;
-	options: string[];
-	validation: {
-		isRequired: boolean;
-	};
-	displayData: ItemDisplayData;
-};
-
-export type DateItem = {
-	type: string;
-	validation: {
-		isRequired: boolean;
-	};
-	attributes: {
-		yearIncluded: boolean;
-		timeIncluded: boolean;
-	};
-	displayData: ItemDisplayData;
-};
-
-export type TimeItem = {
-	type: string;
-	validation: {
-		isRequired: boolean;
-	};
-	attributes: {
-		isDuration: boolean;
-	};
-	displayData: ItemDisplayData;
-};
-
-export type ScaleItem = {
-	type: string;
-	validation: {
-		isRequired: boolean;
-	};
-	attributes: {
-		min: number;
-		minLabel: string;
-		max: number;
-		maxLabel: string;
-	};
-	displayData: ItemDisplayData;
-};
-
-export type TextItem = {
-	type: string;
-	validation: {
-		isRequired: boolean;
-	};
-	attributes: {
-		isParagraph: boolean;
-	};
-	validation: {
-		category?: string;
-		type?: string;
-		value?: string[];
-		message?: string;
-	};
-	displayData: ItemDisplayData;
-};
-
-export type ItemDisplayData = {
-	title?: string;
-	description?: string;
-	image?: {
-		src: string;
-		width?: number;
-		alignment?: TGoogleApiAlignment;
-	};
-};
-
-export type TGetFormResponse = {
-	apiData: TGoogleFormAPIResponse;
-	htmlData: string;
-};
-
-export type TConstructedHTMLData = {
-	submitId: string;
-	validation: {
-		category?: string;
-		type?: string;
-		value?: string[];
-		message?: string;
-	};
-};
 
 export type TGoogleFormAPIResponse = {
 	formId: string;
@@ -337,3 +225,8 @@ export type TGoogleFormQuestionGroupItem = {
 		shuffleQuestions: boolean;
 	};
 };
+
+export type TGoogleApiAlignment =
+	| typeof GOOGLE_API_LEFT
+	| typeof GOOGLE_API_RIGHT
+	| typeof GOOGLE_API_CENTER;
