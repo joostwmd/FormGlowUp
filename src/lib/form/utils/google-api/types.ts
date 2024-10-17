@@ -149,8 +149,8 @@ export type TGoogleFormChoiceQuestion = {
 				width: number;
 			};
 		};
-		//Not supported yet
 		isOther?: boolean;
+		//Not supported yet
 		goToAction?:
 			| typeof GOOGLE_API_NEXT_SECTION
 			| typeof GOOGLE_API_RESTART_FORM
