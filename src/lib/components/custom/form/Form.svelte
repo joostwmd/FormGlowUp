@@ -46,6 +46,7 @@
 		TTimeItem
 	} from '$lib/form/types';
 	import ParagraphInput from './items/ParagraphInput.svelte';
+	import { validateFormItemData } from '$lib/form/utils/validation';
 	//import { validateFormItemData } from '$lib/form/utils/validation';
 
 	export let isPreview: boolean = false;
@@ -53,7 +54,7 @@
 	export let info: TFormInfo;
 	export let items: TFormItem[];
 
-	let currentQuestion: number = 0;
+	let currentItem: number = 0;
 
 	let state: 'WELCOME' | 'FORM' | 'END' = 'WELCOME';
 	let errorMessage: string | null = null;
@@ -62,16 +63,19 @@
 	function handleOnNext() {
 		console.log('next', $formStructureStore);
 
-		if (isPreview && currentQuestion === items.length - 1) {
+		if (isPreview && currentItem === items.length - 1) {
 			isSubmitted = true;
 		} else {
-			//validateFormItemData(items[currentQuestion].data, $formDataStore);
+			validateFormItemData(
+				items[currentItem],
+				$formDataStore[SUBMIT_KEY_PREFIX + items[currentItem].submitId]
+			);
 		}
 	}
 
 	function handleOnPrevious() {
-		if (currentQuestion > 0) {
-			currentQuestion -= 1;
+		if (currentItem > 0) {
+			currentItem -= 1;
 		}
 	}
 
@@ -101,18 +105,18 @@
 	let item: TFormItem;
 
 	$: {
-		if (CHOICE_ITEM_TYPES.includes(items[currentQuestion].type)) {
-			item = items[currentQuestion] as TChoicesItem;
-		} else if (GRID_ITEM_TYPES.includes(items[currentQuestion].type)) {
-			item = items[currentQuestion] as TGridItem;
-		} else if (TEXT_ITEM_TYPES.includes(items[currentQuestion].type)) {
-			item = items[currentQuestion] as TTextItem;
-		} else if (items[currentQuestion].type === DATE_QUESTION_ITEM) {
-			item = items[currentQuestion] as TDateItem;
-		} else if (items[currentQuestion].type === TIME_QUESTION_ITEM) {
-			item = items[currentQuestion] as TTimeItem;
-		} else if (items[currentQuestion].type === SCALE_QUESTION_ITEM) {
-			item = items[currentQuestion] as TScaleItem;
+		if (CHOICE_ITEM_TYPES.includes(items[currentItem].type)) {
+			item = items[currentItem] as TChoicesItem;
+		} else if (GRID_ITEM_TYPES.includes(items[currentItem].type)) {
+			item = items[currentItem] as TGridItem;
+		} else if (TEXT_ITEM_TYPES.includes(items[currentItem].type)) {
+			item = items[currentItem] as TTextItem;
+		} else if (items[currentItem].type === DATE_QUESTION_ITEM) {
+			item = items[currentItem] as TDateItem;
+		} else if (items[currentItem].type === TIME_QUESTION_ITEM) {
+			item = items[currentItem] as TTimeItem;
+		} else if (items[currentItem].type === SCALE_QUESTION_ITEM) {
+			item = items[currentItem] as TScaleItem;
 		}
 
 		console.log(item);
@@ -121,7 +125,7 @@
 
 <div class="flex w-full flex-col items-center">
 	<div class="flex w-full flex-col items-start space-y-4 px-4">
-		<FormProgress totalPages={items.length} {currentQuestion} />
+		<FormProgress totalPages={items.length} {currentItem} />
 
 		{#if item.displayData.image}
 			<img src={item.displayData.image.src} alt="form image" class="h-48 w-full object-cover" />
@@ -135,31 +139,31 @@
 			<p class="text-sm text-gray-500">{item.displayData.description}</p>
 		{/if}
 
-		{#if items[currentQuestion].type === TEXT_QUESTION_ITEM}
-			<TextInput item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === PARAGRAPH_QUESTION_ITEM}
-			<ParagraphInput item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === RADIO_QUESTION_ITEM}
-			<RadioGroup item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === CHECKBOX_QUESTION_ITEM}
-			<CheckboxGroup item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === DROPDOWN_QUESTION_ITEM}
-			<Dropdown item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === SCALE_QUESTION_ITEM}
-			<SliderInput item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === DATE_QUESTION_ITEM}
-			<DateInput item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === TIME_QUESTION_ITEM}
-			<TimeInput item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === RADIO_GRID_QUESTION_ITEM}
-			<RadioGrid item={items[currentQuestion]} />
-		{:else if items[currentQuestion].type === CHECKBOX_GRID_QUESTION_ITEM}
-			<CheckboxGrid item={items[currentQuestion]} />
+		{#if items[currentItem].type === TEXT_QUESTION_ITEM}
+			<TextInput item={items[currentItem]} />
+		{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
+			<ParagraphInput item={items[currentItem]} />
+		{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
+			<RadioGroup item={items[currentItem]} />
+		{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
+			<CheckboxGroup item={items[currentItem]} />
+		{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
+			<Dropdown item={items[currentItem]} />
+		{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
+			<SliderInput item={items[currentItem]} />
+		{:else if items[currentItem].type === DATE_QUESTION_ITEM}
+			<DateInput item={items[currentItem]} />
+		{:else if items[currentItem].type === TIME_QUESTION_ITEM}
+			<TimeInput item={items[currentItem]} />
+		{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
+			<RadioGrid item={items[currentItem]} />
+		{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
+			<CheckboxGrid item={items[currentItem]} />
 		{/if}
 
 		<FormControls
 			totalPages={items.length}
-			{currentQuestion}
+			{currentItem}
 			{handleOnNext}
 			{handleOnPrevious}
 			{handleOnSubmit}
