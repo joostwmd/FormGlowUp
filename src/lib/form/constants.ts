@@ -1,3 +1,5 @@
+import type { TFormPages, TFormStyle } from './types';
+
 export const OTHER_OPTION_VALUE = '__other_option__';
 
 export const TEXT_QUESTION_ITEM = 'TEXT_QUESTION';
@@ -44,7 +46,12 @@ export const SECOND_SUFFIX = '_second';
 
 export const DEFAULT_MODE = 'light';
 export const DEFAULT_LOADER = 'SPIRAL';
-export const DEFAULT_END_TEXT = 'Thank you for your submission!';
+
+export const DEFAULT_GOODBYE_HEADING = 'You made it';
+export const DEFAULT_GOODBYE_MESSAGE = 'Thank you for your submission!';
+
+export const DEFAULT_WELCOME_HEADING = 'Welcome to this form';
+export const DEFAULT_WELCOME_MESSAGE = 'Please fill it out';
 
 export const RADIUSES = [0, 0.25, 0.5, 0.75, 1.0];
 export const FONTS = [
@@ -62,11 +69,22 @@ export const FONTS = [
 	}
 ];
 
-export const DEFAULT_SYTLE_CONFIG = {
+export const DEFAULT_FORM_STYLE: TFormStyle = {
 	theme: 'neutral',
 	radius: 0,
 	font: FONTS[0].value,
 	mode: DEFAULT_MODE
+};
+
+export const DEFAULT_FORM_PAGES: TFormPages = {
+	welcome: {
+		heading: DEFAULT_WELCOME_HEADING,
+		message: DEFAULT_WELCOME_MESSAGE
+	},
+	goodbye: {
+		heading: DEFAULT_GOODBYE_HEADING,
+		message: DEFAULT_GOODBYE_MESSAGE
+	}
 };
 
 export const LOADERS = [
