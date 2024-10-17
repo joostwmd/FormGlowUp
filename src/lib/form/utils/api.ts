@@ -11,97 +11,144 @@ import {
 	TEXT_QUESTION_ITEM,
 	PARAGRAPH_QUESTION_ITEM
 } from '../constants';
+import type {
+	FormItem,
+	TGoogleFormAPIResponse,
+	ChoicesItem,
+	ScaleItem,
+	GridItem,
+	DateItem,
+	TimeItem,
+	TextItem,
+	TGoogleFormItemAPIData,
+	ItemDisplayData
+} from '../types';
 import { replaceUndefinedWithNull, determineItemType } from './helpers';
 
-export function constructQuestionItemDataFromAPI(apiData: any, type: string) {
-	const choiceQuestion = apiData.questionItem?.question?.choiceQuestion;
-	const scaleQuestion = apiData.questionItem?.question?.scaleQuestion;
-	const dateQuestion = apiData.questionItem?.question?.dateQuestion;
-	const timeQuestion = apiData.questionItem?.question?.timeQuestion;
+export function constructFormItemDataFromAPI(
+	itemData: TGoogleFormItemAPIData,
+	type: string
+): FormItem {
+	const questionItem = itemData.questionItem?.question;
+	const choiceQuestion = questionItem?.choiceQuestion;
+	const scaleQuestion = questionItem?.scaleQuestion;
+	const dateQuestion = questionItem?.dateQuestion;
+	const timeQuestion = questionItem?.timeQuestion;
 
-	let result;
+	const commonDisplayData: ItemDisplayData = {};
 
-	switch (type) {
-		case RADIO_QUESTION_ITEM:
-		case CHECKBOX_QUESTION_ITEM:
-		case DROPDOWN_QUESTION_ITEM:
-			result = {
-				type,
-				isRequired: apiData.questionItem?.question?.required ?? null,
+	if (itemData.title) {
+		commonDisplayData.title = itemData.title;
+	}
 
-				description: apiData.description,
-				shuffleOptions: choiceQuestion?.shuffle,
-				options: choiceQuestion?.options.map((option: any) =>
+	if (itemData.description) {
+		commonDisplayData.description = itemData.description;
+	}
+
+	if (itemData.questionItem?.image) {
+		commonDisplayData.image = {
+			src: itemData.questionItem.image.contentUri,
+			width: itemData.questionItem.image.properties.width,
+			alignmnet: itemData.questionItem.image.properties.alignment
+		};
+	}
+
+	let result: FormItem;
+
+	if (
+		type === RADIO_QUESTION_ITEM ||
+		type === CHECKBOX_QUESTION_ITEM ||
+		type === DROPDOWN_QUESTION_ITEM
+	) {
+		result = {
+			type,
+			options:
+				choiceQuestion?.options.map((option: any) =>
 					option.isOther ? OTHER_OPTION_VALUE : option.value
-				)
-			};
-			break;
-		case SCALE_QUESTION_ITEM:
-			result = {
-				type,
-				isRequired: apiData.questionItem?.question?.required ?? null,
-				description: apiData.description,
-				minLabel: scaleQuestion?.lowLabel,
-				maxLabel: scaleQuestion?.highLabel,
-				minValue: scaleQuestion?.low,
-				maxValue: scaleQuestion?.high
-			};
-			break;
-		case CHECKBOX_GRID_QUESTION_ITEM:
-		case RADIO_GRID_QUESTION_ITEM:
-			result = {
-				type,
-				description: apiData.description,
-				columns: apiData.questionGroupItem?.grid?.columns?.options.map(
-					(option: any) => option.value
-				),
-				rows: apiData.questionGroupItem?.questions.map((question: any) => ({
-					isRequired: question.required ?? null,
-					title: question.rowQuestion.title
-				}))
-			};
-			break;
-		case DATE_QUESTION_ITEM:
-			result = {
-				type,
-				isRequired: dateQuestion?.required ?? null,
-				title: apiData.title,
-				description: apiData.description,
-				yearIncluded: dateQuestion?.includeYear,
-				timeIncluded: dateQuestion?.includeTime
-			};
-			break;
-		case TIME_QUESTION_ITEM:
-			result = {
-				type,
-				title: apiData.title,
-				isRequired: timeQuestion?.required ?? null,
-				description: apiData.description,
-				isDuration: timeQuestion?.duration
-			};
-			break;
-		case TEXT_QUESTION_ITEM:
-		case PARAGRAPH_QUESTION_ITEM:
-			result = {
-				type,
-				isRequired: apiData.questionItem?.question?.required ?? null,
-				description: apiData.description,
-				paragraph: apiData.questionItem?.question?.textQuestion?.paragraph
-			};
-			break;
+				) || [],
+			validation: {
+				isRequired: questionItem?.required ?? false
+			},
+			displayData: commonDisplayData
+		} as ChoicesItem;
+	} else if (type === SCALE_QUESTION_ITEM) {
+		result = {
+			type,
+			validation: {
+				isRequired: questionItem?.required ?? false
+			},
+			attributes: {
+				min: scaleQuestion?.low ?? 0,
+				minLabel: scaleQuestion?.lowLabel ?? '',
+				max: scaleQuestion?.high ?? 0,
+				maxLabel: scaleQuestion?.highLabel ?? ''
+			},
+			displayData: commonDisplayData
+		} as ScaleItem;
+	} else if (type === CHECKBOX_GRID_QUESTION_ITEM || type === RADIO_GRID_QUESTION_ITEM) {
+		const rows =
+			itemData.questionGroupItem?.questions.map((question: any) => ({
+				title: question.rowQuestion.title as string
+			})) || [];
 
-		//result = { type: 'UNSUPPORTED_ITEM' };
+		result = {
+			type,
+			columns:
+				itemData.questionGroupItem?.grid?.columns?.options.map((option: any) => option.value) || [],
+			rows,
+			validation: {
+				isRequired:
+					itemData.questionGroupItem?.questions.some((question: any) => question.required) ?? false
+			},
+			displayData: commonDisplayData
+		} as GridItem;
+	} else if (type === DATE_QUESTION_ITEM) {
+		result = {
+			type,
+			validation: {
+				isRequired: questionItem?.required ?? false
+			},
+			attributes: {
+				yearIncluded: dateQuestion?.includeYear ?? false,
+				timeIncluded: dateQuestion?.includeTime ?? false
+			},
+			displayData: commonDisplayData
+		} as DateItem;
+	} else if (type === TIME_QUESTION_ITEM) {
+		result = {
+			type,
+			validation: {
+				isRequired: questionItem?.required ?? false
+			},
+			attributes: {
+				isDuration: timeQuestion?.duration ?? false
+			},
+			displayData: commonDisplayData
+		} as TimeItem;
+	} else if (type === TEXT_QUESTION_ITEM || type === PARAGRAPH_QUESTION_ITEM) {
+		result = {
+			type,
+			validation: {
+				isRequired: questionItem?.required ?? false
+			},
+			attributes: {
+				isParagraph: questionItem?.textQuestion?.paragraph ?? false
+			},
+			displayData: commonDisplayData
+		} as TextItem;
+	} else {
+		throw new Error(`Unsupported item type: ${type}`);
 	}
 
 	return replaceUndefinedWithNull(result);
 }
 
-export function constructFormQuestionItemsDataFromAPI(apiData: any) {
-	const apiFormItemsData = [];
+export function constructFormQuestionItemsDataFromAPI(apiData: TGoogleFormAPIResponse): FormItem[] {
+	const apiFormItemsData: FormItem[] = [];
 	for (let item of apiData.items) {
 		const type = determineItemType(item);
-		const formQuestionItemData = constructQuestionItemDataFromAPI(item, type);
-		apiFormItemsData.push({ ...formQuestionItemData });
+		const formQuestionItemData = constructFormItemDataFromAPI(item, type);
+		apiFormItemsData.push(formQuestionItemData);
 	}
 	return apiFormItemsData;
 }
