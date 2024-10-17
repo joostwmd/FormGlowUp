@@ -24,7 +24,7 @@ export const NOT_EQUALS = 'NOT_EQUALS';
 
 export const VALIDATION_PARAMETERS_MAP = {
 	1: {
-		// Zahlen
+		// Numbers
 		category: CATEGORY_NUMBER,
 		validations: {
 			1: GREATER_THAN,
@@ -50,7 +50,7 @@ export const VALIDATION_PARAMETERS_MAP = {
 		}
 	},
 	6: {
-		// Länge
+		// Length
 		category: CATEGORY_LENGTH,
 		validations: {
 			202: MAX_LENGTH,
@@ -58,7 +58,7 @@ export const VALIDATION_PARAMETERS_MAP = {
 		}
 	},
 	4: {
-		// Regular Expression
+		// Regex
 		category: CATEGORY_REGEX,
 		validations: {
 			299: CONTAINS,
@@ -67,4 +67,36 @@ export const VALIDATION_PARAMETERS_MAP = {
 			302: NOT_EQUALS
 		}
 	}
+};
+
+export const ERROR_MESSAGES = {
+	[GREATER_THAN]: (value: string, comparison: string) =>
+		`Value ${value} must be greater than ${comparison}.`,
+	[GREATER_THAN_OR_EQUAL]: (value: string, comparison: string) =>
+		`Value ${value} must be greater than or equal to ${comparison}.`,
+	[LESS_THAN]: (value: string, comparison: string) =>
+		`Value ${value} must be less than ${comparison}.`,
+	[LESS_THAN_OR_EQUAL]: (value: string, comparison: string) =>
+		`Value ${value} must be less than or equal to ${comparison}.`,
+	[EQUAL]: (value: string, comparison: string) => `Value ${value} must be equal to ${comparison}.`,
+	[NOT_EQUAL]: (value: string, comparison: string) =>
+		`Value ${value} must not be equal to ${comparison}.`,
+	[BETWEEN]: (value: string, min: string, max: string) =>
+		`Value ${value} must be between ${min} and ${max}.`,
+	[NOT_BETWEEN]: (value: string, min: string, max: string) =>
+		`Value ${value} must not be between ${min} and ${max}.`,
+	[IS_NUMBER]: (value: string) => `Value ${value} must be a number.`,
+	[IS_INTEGER]: (value: string) => `Value ${value} must be an integer.`,
+	[CONTAINS]: (value: string, substring: string) => `Value ${value} must contain ${substring}.`,
+	[NOT_CONTAINS]: (value: string, substring: string) =>
+		`Value ${value} must not contain ${substring}.`,
+	[IS_EMAIL]: (value: string) => `Value ${value} must be a valid email address.`,
+	[IS_URL]: (value: string) => `Value ${value} must be a valid URL.`,
+	[MAX_LENGTH]: (value: string, length: string) =>
+		`Value ${value} must not exceed ${length} characters.`,
+	[MIN_LENGTH]: (value: string, length: string) =>
+		`Value ${value} must be at least ${length} characters long.`,
+	[EQUALS]: (value: string, comparison: string) => `Value ${value} must be equal to ${comparison}.`,
+	[NOT_EQUALS]: (value: string, comparison: string) =>
+		`Value ${value} must not be equal to ${comparison}.`
 };
