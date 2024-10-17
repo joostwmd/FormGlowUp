@@ -1,5 +1,5 @@
 import { getAccessTokens } from '$lib/firebase/utils';
-import { constructQuestionItemsDataFromHTML } from './html';
+import { constructQuestionItemsDataFromHTML } from './html-parsing';
 import { constructFormQuestionItemsDataFromAPI } from './google-api';
 import { mergeQuestionItemsData } from './helpers';
 import type { TGetFormResponse } from '../types';

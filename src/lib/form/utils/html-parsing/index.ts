@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import type { TConstructedHTMLData } from '../types';
+import type { TConstructedHTMLData } from './types';
 
 export function constructQuestionItemsDataFromHTML(htmlString: string): TConstructedHTMLData[] {
 	const dom = new JSDOM(htmlString);
