@@ -1,6 +1,6 @@
 import { getFormById, updateForm } from '$lib/firebase/utils.js';
 import { constructFormInfoData, constructFormItemsData } from '$lib/form/utils/client';
-import { constructForm, fetchFormData } from '$lib/form/utils';
+import { constructFormData, fetchFormData } from '$lib/form';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { TFormInfoStore, TFormStrucutre, TFormStyle } from '$lib/form/stores';
@@ -64,7 +64,7 @@ async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 	const formInfo = await constructFormInfoData(apiData);
 	const formItems = await constructFormItemsData(htmlData, apiData);
 
-	const test = await constructForm(htmlData, apiData);
+	const test = await constructFormData(htmlData, apiData);
 	console.log('test construct form', test);
 
 	return { formInfo, formItems };
