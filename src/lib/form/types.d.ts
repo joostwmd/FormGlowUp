@@ -2,9 +2,10 @@ import type { TGoogleFormAPIResponse } from './utils/google-api/types';
 
 export type TForm = {
 	uid: string;
+	public: boolean;
 	items: TFormItem[];
 	info: TFormInfo;
-	theme: TFormStyle;
+	style: TFormStyle;
 	pages: TFormPages;
 };
 
@@ -53,6 +54,10 @@ export type TChoicesItem = TBaseFormItem & {
 	options: string[];
 	validation: {
 		isRequired: boolean;
+	};
+	attributes: {
+		otherOption: boolean;
+		randomizeOrder: boolean;
 	};
 	displayData: TItemDisplayData;
 };
