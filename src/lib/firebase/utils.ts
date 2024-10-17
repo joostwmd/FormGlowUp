@@ -1,4 +1,4 @@
-import { DEFAULT_SYTLE_CONFIG } from '$lib/form/constants';
+import type { TFormInfo, TFormItem, TFormPages, TFormStyle } from '$lib/form/types';
 import { firestore } from './auth';
 
 export async function getFormsOfUserById(userId: string) {
@@ -37,18 +37,21 @@ export async function getFormById(uid: string) {
 export async function createForm(
 	userId: string,
 	googleFormId: string,
-	formInfo: object,
-	formStructure: object
+	info: TFormInfo,
+	items: TFormItem[],
+	style: TFormStyle,
+	pages: TFormPages
 ) {
 	try {
 		const newFormRef = firestore.collection(`users/${userId}/forms`).doc();
 		await newFormRef.set({
-			googleFormId: googleFormId,
+			//googleFormId: googleFormId,
 			uid: newFormRef.id,
 			public: false,
-			formInfo,
-			formStructure,
-			formStyle: DEFAULT_SYTLE_CONFIG
+			info: info,
+			items: items,
+			style: style,
+			pages: pages
 		});
 
 		return { success: true, uid: newFormRef.id };
