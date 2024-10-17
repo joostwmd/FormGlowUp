@@ -4,23 +4,20 @@
 	import { formDataStore } from '$lib/form/stores';
 	import { handleFormValueChange } from '$lib/form/utils/client';
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
+	import type { TGridItem } from '$lib/form/types';
 
-	export let description: string | null = null;
-	export let randomizeOrder: boolean = false;
-	export let oneAnswerPerColumn: boolean = false;
+	export let item: TGridItem;
+	let rows = item.rows;
 
-	export let columns: string[];
-	export let rows: string[];
+	$: rows = item.attributes.randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
 
-	$: rows = randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
-
-	function handleCheckboxGridItemChange(submitId, column) {
+	function handleCheckboxGridItemChange(submitId: string, column: string) {
 		let currentValues = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`] || [];
 		console.log('Current values:', currentValues);
 
 		if (currentValues.includes(column)) {
 			console.log('already selected -> remove');
-			currentValues = currentValues.filter((value) => value !== column);
+			currentValues = currentValues.filter((value: string) => value !== column);
 		} else {
 			console.log('not selected -> add');
 			currentValues = [...currentValues, column];
@@ -51,15 +48,15 @@
 	}
 </script>
 
-{#if description}
-	<p class="text-sm text-gray-500">{description}</p>
+{#if item.displayData.description}
+	<p class="text-sm text-gray-500">{item.displayData.description}</p>
 {/if}
 
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
 			<Table.Head></Table.Head>
-			{#each columns as column}
+			{#each item.columns as column}
 				<Table.Head>{column}</Table.Head>
 			{/each}
 		</Table.Row>
@@ -68,7 +65,7 @@
 		{#each rows as row}
 			<Table.Row>
 				<Table.Cell class="font-medium">{row.title}</Table.Cell>
-				{#each columns as column}
+				{#each item.columns as column}
 					<Table.Cell>
 						<Checkbox
 							on:click={(e) => handleCheckboxGridItemChange(row.submitId, column)}
