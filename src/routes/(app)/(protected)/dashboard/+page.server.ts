@@ -1,13 +1,9 @@
 import { createForm, deleteForm, getFormsOfUserById } from '$lib/firebase/utils';
-import { DEFAULT_LOADER, DEFAULT_END_TEXT } from '$lib/form/constants';
-import { fetchFormData } from '$lib/form/utils';
+import { DEFAULT_FORM_STYLE, DEFAULT_FORM_PAGES } from '$lib/form/constants';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import {
-	constructFormInfoData,
-	constructFormItemsData,
-	extractFormId
-} from '$lib/form/utils/client';
+import { constructFormData, fetchFormData } from '$lib/form';
+import { extractFormId } from '$lib/form/utils/helpers';
 
 export const load: PageServerLoad = async ({ locals, url, depends }) => {
 	depends(url.pathname);
@@ -46,17 +42,17 @@ export const actions = {
 };
 
 async function handleCreateForm(fetch: any, userId: string, formId: string) {
-	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
-	const formInfo = await constructFormInfoData(formData);
-	const formItems = await constructFormItemsData(htmlData, formData);
+	const { htmlData, apiData } = await fetchFormData(fetch, userId, formId);
+	const formData = await constructFormData(htmlData, apiData);
 
-	const formStructure = {
-		loader: DEFAULT_LOADER,
-		endText: DEFAULT_END_TEXT,
-		questions: formItems
-	};
-
-	const res = await createForm(userId, formId, formInfo, formStructure);
+	const res = await createForm(
+		userId,
+		formId,
+		formData.info,
+		formData.items,
+		DEFAULT_FORM_STYLE,
+		DEFAULT_FORM_PAGES
+	);
 	return res;
 }
 
