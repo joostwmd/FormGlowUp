@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import type { TFormInfo, TFormItem, TFormTheme } from './types';
 
 export type TFormStyle = {
 	theme: string;
@@ -60,3 +61,20 @@ export const formStateStore = writable<TFormState>({
 	},
 	formStructure: ''
 });
+
+type TFormPage = {
+	heading: string;
+	message: string;
+};
+
+type TFormPages = {
+	welcome: TFormPage;
+	goodbye: TFormPage;
+};
+
+export type TFormStore = {
+	info: TFormInfo;
+	item: TFormItem[];
+	theme: TFormTheme;
+	pages: TFormPages;
+};

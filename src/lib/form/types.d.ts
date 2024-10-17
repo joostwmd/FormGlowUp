@@ -15,7 +15,12 @@ export type TFormInfo = {
 	documentTitle: string;
 };
 
-export type FormTheme = {};
+export type TFormTheme = {
+	theme: string;
+	radius: number;
+	font: string;
+	mode: string;
+};
 
 export type TBaseFormItem = {
 	submitId: string;
