@@ -7,15 +7,13 @@
 	import * as Popover from '$lib/components/shadcn/ui/popover/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { formDataStore } from '$lib/form/stores';
-
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
+	import type { TChoicesItem } from '$lib/form/types';
 
-	export let description: string | null = null;
-	export let randomizeOrder: boolean = false;
-	export let options: string[];
-	export let submitId: string;
+	export let item: TChoicesItem;
 
-	$: options = randomizeOrder ? options.sort(() => Math.random() - 0.5) : options;
+	let options = item.options;
+	$: options = item.attributes.randomizeOrder ? options.sort(() => Math.random() - 0.5) : options;
 
 	let open = false;
 	let value = '';
@@ -30,8 +28,8 @@
 	}
 </script>
 
-{#if description}
-	<p class="text-sm text-gray-500">{description}</p>
+{#if item.displayData.description}
+	<p class="text-sm text-gray-500">{item.displayData.description}</p>
 {/if}
 
 <Popover.Root bind:open let:ids>
@@ -48,7 +46,7 @@
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="w-80 p-0">
-		<Command.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`]}>
+		<Command.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${item.submitId}`]}>
 			<Command.Group>
 				<Command.Item
 					value="No Option Selected"
