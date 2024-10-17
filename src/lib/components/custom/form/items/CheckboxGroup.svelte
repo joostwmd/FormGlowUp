@@ -39,10 +39,6 @@
 </script>
 
 <div class="w-full">
-	{#if item.displayData.description}
-		<p class="text-sm text-gray-500">{item.displayData.description}</p>
-	{/if}
-
 	<div>
 		{#each item.options as option}
 			<div class="mb-2 flex flex h-8 items-center space-x-2">

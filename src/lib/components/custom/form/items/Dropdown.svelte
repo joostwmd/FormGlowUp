@@ -28,10 +28,6 @@
 	}
 </script>
 
-{#if item.displayData.description}
-	<p class="text-sm text-gray-500">{item.displayData.description}</p>
-{/if}
-
 <Popover.Root bind:open let:ids>
 	<Popover.Trigger asChild let:builder>
 		<Button

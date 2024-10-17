@@ -45,10 +45,6 @@
 	}
 </script>
 
-{#if item.displayData.description}
-	<p class="text-sm text-gray-500">{item.displayData.description}</p>
-{/if}
-
 <Table.Root>
 	<Table.Header>
 		<Table.Row>

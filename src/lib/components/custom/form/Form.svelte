@@ -123,6 +123,18 @@
 	<div class="flex w-full flex-col items-start space-y-4 px-4">
 		<FormProgress totalPages={items.length} {currentQuestion} />
 
+		{#if item.displayData.image}
+			<img src={item.displayData.image.src} alt="form image" class="h-48 w-full object-cover" />
+		{/if}
+
+		{#if item.displayData.title}
+			<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
+		{/if}
+
+		{#if item.displayData.description}
+			<p class="text-sm text-gray-500">{item.displayData.description}</p>
+		{/if}
+
 		{#if items[currentQuestion].type === TEXT_QUESTION_ITEM}
 			<TextInput item={items[currentQuestion]} />
 		{:else if items[currentQuestion].type === PARAGRAPH_QUESTION_ITEM}

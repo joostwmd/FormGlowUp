@@ -8,10 +8,6 @@
 </script>
 
 <div class="flex w-full flex-col items-start space-y-4">
-	{#if item.displayData.description}
-		<p class="text-sm text-gray-500">{item.displayData.description}</p>
-	{/if}
-
 	<div class="flex w-full max-w-96 flex-col">
 		<div class="mb-4 flex w-full justify-between">
 			{#if item.attributes.minLabel}

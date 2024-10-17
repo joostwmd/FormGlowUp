@@ -46,10 +46,6 @@
 	}
 </script>
 
-{#if item.displayData.description}
-	<p class="text-sm text-gray-500">{item.displayData.description}</p>
-{/if}
-
 <Popover.Root openFocus>
 	<Popover.Trigger asChild let:builder>
 		<Button

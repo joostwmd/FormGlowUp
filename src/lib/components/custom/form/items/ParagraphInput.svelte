@@ -8,7 +8,6 @@
 	export let item: TTextItem;
 </script>
 
-<h1>text</h1>
 <Textarea
 	value={$formDataStore[SUBMIT_KEY_PREFIX + item.submitId]}
 	on:change={(e) => handleFormValueChange(e.target.value, item.submitId)}
