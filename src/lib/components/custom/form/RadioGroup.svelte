@@ -8,28 +8,26 @@
 	import { formDataStore } from '$lib/form/stores';
 	import Input from '$lib/components/shadcn/ui/input/input.svelte';
 	import Label from '$lib/components/shadcn/ui/label/label.svelte';
+	import type { TChoicesItem } from '$lib/form/types';
 
-	export let description: string | null = null;
-	export let randomizeOrder: boolean = false;
-	export let options: string[];
-	export let submitId: string;
-
-	$: options = randomizeOrder ? options.sort(() => Math.random() - 0.5) : options;
+	export let item: TChoicesItem;
+	let options = item.options;
+	$: options = item.attributes.randomizeOrder ? options.sort(() => Math.random() - 0.5) : options;
 </script>
 
 <div class="w-full">
-	{#if description}
-		<p class="text-sm text-gray-500">{description}</p>
+	{#if item.displayData.description}
+		<p class="text-sm text-gray-500">{item.displayData.description}</p>
 	{/if}
 
-	<RadioGroup.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`]}>
+	<RadioGroup.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${item.submitId}`]}>
 		{#each options as option}
 			<div class="mb-1 flex h-8 items-center space-x-2">
 				{#if option === OTHER_OPTION_VALUE}
 					<RadioGroup.Item value={OTHER_OPTION_VALUE} id={OTHER_OPTION_VALUE} />
 					<Input
 						class="p-2"
-						bind:value={$formDataStore[`${submitId}${OTHER_RESPONSE_SUFFIX}`]}
+						bind:value={$formDataStore[`${item.submitId}${OTHER_RESPONSE_SUFFIX}`]}
 						type="text"
 					/>
 				{:else}
