@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
+import type { TConstructedHTMLData } from '../types';
 
-export function constructQuestionItemsDataFromHTML(htmlString: string) {
+export function constructQuestionItemsDataFromHTML(htmlString: string): TConstructedHTMLData[] {
 	const dom = new JSDOM(htmlString);
 	const doc = dom.window.document;
 	const listItems = doc.querySelectorAll('div[role="listitem"]');
@@ -10,7 +11,7 @@ export function constructQuestionItemsDataFromHTML(htmlString: string) {
 		return firstChild ? firstChild.getAttribute('data-params') : null;
 	});
 
-	const result = [];
+	const result: TConstructedHTMLData[] = [];
 
 	for (let itemData of listItemsData) {
 		if (!itemData) continue;
@@ -22,25 +23,37 @@ export function constructQuestionItemsDataFromHTML(htmlString: string) {
 		try {
 			const parsedData = JSON.parse(itemData);
 
-			const ids = itemData.match(/\b\d{9,10}\b/g) || [];
-			const submitId = ids.length > 1 ? ids.slice(1) : ids;
+			const ids = itemData.match(/\b\d{8,11}\b/g) || [];
+			console.log('how many ids', ids.length, ids);
+
+			if (ids.length < 2) {
+				console.error('Not enough IDs found in data-params:', itemData);
+				continue;
+			}
 
 			const validationDataContainer = parsedData[0][4][0][4];
-			let validationData = null;
+			let validationData: TConstructedHTMLData['validation'] = {};
+
 			if (validationDataContainer) {
 				const validation = validationDataContainer[0];
 				validationData = {
 					category: validation[0],
-					validation: validation[1],
-					value: validation.length > 3 ? validation[2] : null,
-					errorMessage: validation.length > 3 ? validation[3] : validation[2]
+					type: validation[1],
+					value: validation[2]
 				};
+
+				if (validation.length > 3) {
+					validationData.message = validation[3];
+				}
 			}
 
-			result.push({
-				submitId,
-				validationData
-			});
+			// Handle grid question type cases
+			for (let i = 1; i < ids.length; i++) {
+				result.push({
+					submitId: ids[i],
+					validation: validationData
+				});
+			}
 		} catch (e) {
 			console.error('Error parsing data-params:', e);
 		}
