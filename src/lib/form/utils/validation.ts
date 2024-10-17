@@ -7,6 +7,7 @@ import {
 	TEXT_QUESTION_ITEM,
 	TIME_QUESTION_ITEM
 } from '../constants';
+import { formDataStore, formStructureStore } from '../stores';
 
 export const CATEGORY_NUMBER = 'NUMBER';
 export const CATEGORY_TEXT = 'TEXT';
@@ -81,4 +82,24 @@ export const VALIDATION_PARAMETERS_MAP = {
 
 export function generateFormSchema(questionItems: any) {
 	console.log('generateFormSchema', questionItems);
+}
+
+export function validateFormItemData(item: any, data: any) {
+	const test = formDataStore.subscribe((val) => {
+		console.log('formDataStore', val);
+	});
+	console.log('validateFormItemData', item, data);
+
+	// const isRequired = formStructure.questions[currentQuestion].data.isRequired;
+	// const currentVal =
+	// 	$formDataStore[SUBMIT_KEY_PREFIX + formStructure.questions[currentQuestion].data.submitId];
+
+	// if (isRequired && !currentVal) {
+	// 	console.log('Field required');
+	// 	isRequiredError = true;
+	// 	return;
+	// } else {
+	// 	isRequiredError = false;
+	// 	currentQuestion++;
+	// }
 }

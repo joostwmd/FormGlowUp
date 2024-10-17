@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LoadingScreen from './LoadingScreen.svelte';
 	import EndScreen from './EndScreen.svelte';
-
+	import * as Form from '$lib/components/shadcn/ui/form';
 	import CheckboxGrid from '$lib/components/custom/form/CheckboxGrid.svelte';
 	import CheckboxGroup from '$lib/components/custom/form/CheckboxGroup.svelte';
 	import DateInput from '$lib/components/custom/form/DateInput.svelte';
@@ -29,7 +29,13 @@
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
 	} from '$lib/form/constants';
-	import { formDataStore, type TFormInfoStore, type TFormStrucutre } from '$lib/form/stores';
+	import {
+		formDataStore,
+		formStructureStore,
+		type TFormInfoStore,
+		type TFormStrucutre
+	} from '$lib/form/stores';
+	import { validateFormItemData } from '$lib/form/utils/validation';
 
 	export let isPreview: boolean = false;
 	export let canSubmit: boolean = true;
@@ -47,21 +53,12 @@
 	}, 1000);
 
 	function handleOnNext() {
+		console.log('next', $formStructureStore);
+
 		if (isPreview && currentQuestion === formStructure.questions.length - 1) {
 			isSubmitted = true;
 		} else {
-			const isRequired = formStructure.questions[currentQuestion].data.isRequired;
-			const currentVal =
-				$formDataStore[SUBMIT_KEY_PREFIX + formStructure.questions[currentQuestion].data.submitId];
-
-			if (isRequired && !currentVal) {
-				console.log('Field required');
-				isRequiredError = true;
-				return;
-			} else {
-				isRequiredError = false;
-				currentQuestion++;
-			}
+			validateFormItemData(formStructure.questions[currentQuestion].data, $formDataStore);
 		}
 	}
 
@@ -106,11 +103,19 @@
 {:else if isSubmitted}
 	<EndScreen text={formStructure.endText} />
 {:else}
-	<div class="flex w-full flex-col items-center">
-		<div class="flex w-full flex-col items-start space-y-4 px-4">
-			<FormProgress totalPages={formStructure.questions.length} {currentQuestion} />
+	<form method="POST" action="?/updateForm">
+		<div class="flex w-full flex-col items-center">
+			<div class="flex w-full flex-col items-start space-y-4 px-4">
+				<FormProgress totalPages={formStructure.questions.length} {currentQuestion} />
 
-			{#if QUESTION_ITEM_TYPES.includes(formStructure.questions[currentQuestion].type)}
+				<!-- <Form.Field {form} name={question.title}>
+				<Form.Control let:attrs>
+					<Form.Label>{question.title}</Form.Label>
+				</Form.Control>
+
+				<Form.FieldErrors />
+			</Form.Field> -->
+
 				{#if formStructure.questions[currentQuestion].type === TEXT_QUESTION_ITEM}
 					<TextInput
 						submitId={formStructure.questions[currentQuestion].data.submitId}
@@ -179,23 +184,19 @@
 						description={formStructure.questions[currentQuestion].data.description}
 					/>
 				{/if}
-			{:else if formStructure.questions[currentQuestion].type === ADDITIONAL_TITLE_ITEM}
-				<p>additional title</p>
-			{:else if formStructure.questions[currentQuestion].type === IMAGE_ITEM}
-				<p>image el</p>
-			{/if}
 
-			{#if isRequiredError}
-				<p class="text-sm text-muted-foreground text-red-500">The Question is required</p>
-			{/if}
+				{#if isRequiredError}
+					<p class="text-sm text-muted-foreground text-red-500">The Question is required</p>
+				{/if}
 
-			<FormControls
-				totalPages={formStructure.questions.length}
-				{currentQuestion}
-				{handleOnNext}
-				{handleOnPrevious}
-				{handleOnSubmit}
-			/>
+				<FormControls
+					totalPages={formStructure.questions.length}
+					{currentQuestion}
+					{handleOnNext}
+					{handleOnPrevious}
+					{handleOnSubmit}
+				/>
+			</div>
 		</div>
-	</div>
+	</form>
 {/if}
