@@ -47,6 +47,10 @@ export type TGridItem = TBaseFormItem & {
 	validation: {
 		isRequired: boolean;
 	};
+	attributes: {
+		randomizeOrder: boolean;
+		oneResponsePerColumn: boolean;
+	};
 	displayData: TItemDisplayData;
 };
 

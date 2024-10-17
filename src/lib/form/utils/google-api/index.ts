@@ -104,6 +104,10 @@ export function constructFormItemDataFromAPI(
 				isRequired:
 					itemData.questionGroupItem?.questions.some((question: any) => question.required) ?? false
 			},
+			attributes: {
+				randomizeOrder: itemData.questionGroupItem?.grid?.columns?.shuffle ?? false
+				//oneResponsePerColumn: itemData.questionGroupItem?.grid?.columns?
+			},
 			displayData: commonDisplayData
 		} as TGridItem;
 	} else if (type === DATE_QUESTION_ITEM) {
