@@ -20,7 +20,7 @@ import type {
 	TScaleItem,
 	TTextItem,
 	TTimeItem
-} from '$lib/form/final-form-types';
+} from '$lib/form/types';
 
 import { determineItemType } from './helpers';
 import type { TGoogleFormAPIResponse, TGoogleFormItemAPIData } from './types';
