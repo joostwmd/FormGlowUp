@@ -5,11 +5,11 @@
 	import * as Popover from '$lib/components/shadcn/ui/popover/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { cn } from '$lib/components/shadcn/utils';
-	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/form/constants';
+	import { DAY_SUFFIX, MONTH_SUFFIX, TIME_QUESTION_ITEM, YEAR_SUFFIX } from '$lib/form/constants';
 	import TimeInput from './TimeInput.svelte';
 	import type { TDateItem } from '$lib/form/types';
+	import { handleFormValueChange } from '$lib/form/utils/helpers';
 
-	export let handleFormValueChange: (value: string | number, submitId: string) => void;
 	export let item: TDateItem;
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'short'
@@ -70,5 +70,25 @@
 </Popover.Root>
 
 {#if item.attributes.timeIncluded}
-	<TimeInput {handleFormValueChange} submitId={item.submitId} isDurationInput={false} />
+	<TimeInput
+		item={{
+			type: TIME_QUESTION_ITEM,
+			submitId: item.submitId,
+			validation: {
+				isRequired: item.validation.isRequired
+			},
+			attributes: {
+				isDuration: false
+			},
+			displayData: {
+				description: 'Placeholder desriotion',
+				title: 'title',
+				image: {
+					src: 'src',
+					width: 1000,
+					alignment: 'LEFT'
+				}
+			}
+		}}
+	/>
 {/if}
