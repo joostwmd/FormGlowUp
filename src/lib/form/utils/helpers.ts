@@ -1,104 +1,31 @@
-import {
-	ADDITIONAL_TITLE_ITEM,
-	CHECKBOX_GRID_QUESTION_ITEM,
-	CHECKBOX_QUESTION_ITEM,
-	DATE_QUESTION_ITEM,
-	DROPDOWN_QUESTION_ITEM,
-	IMAGE_ITEM,
-	PAGEBREAK_ITEM,
-	PARAGRAPH_QUESTION_ITEM,
-	QUESTION_ITEM_TYPES,
-	RADIO_GRID_QUESTION_ITEM,
-	RADIO_QUESTION_ITEM,
-	SCALE_QUESTION_ITEM,
-	TEXT_QUESTION_ITEM,
-	TIME_QUESTION_ITEM
-} from '$lib/form/constants';
-import type { FinalFormItem, FormItem, GridItem, TConstructedHTMLData } from '../types';
-
-export function determineItemType(item: any) {
-	if (item.textItem) return ADDITIONAL_TITLE_ITEM;
-	if (item.imageItem) return IMAGE_ITEM;
-	if (item.pageBreakItem) return PAGEBREAK_ITEM;
-
-	const questionItem = item.questionItem?.question;
-	if (questionItem) {
-		if (questionItem.textQuestion)
-			return questionItem.textQuestion.paragraph ? PARAGRAPH_QUESTION_ITEM : TEXT_QUESTION_ITEM;
-		if (questionItem.choiceQuestion) {
-			switch (questionItem.choiceQuestion.type) {
-				case 'RADIO':
-					return RADIO_QUESTION_ITEM;
-				case 'CHECKBOX':
-					return CHECKBOX_QUESTION_ITEM;
-				case 'DROP_DOWN':
-					return DROPDOWN_QUESTION_ITEM;
-			}
-		}
-		if (questionItem.scaleQuestion) return SCALE_QUESTION_ITEM;
-		if (questionItem.dateQuestion) return DATE_QUESTION_ITEM;
-		if (questionItem.timeQuestion) return TIME_QUESTION_ITEM;
-	}
-
-	const questionGroupItem = item.questionGroupItem?.grid.columns.type;
-	if (questionGroupItem) {
-		switch (questionGroupItem) {
-			case 'RADIO':
-				return RADIO_GRID_QUESTION_ITEM;
-			case 'CHECKBOX':
-				return CHECKBOX_GRID_QUESTION_ITEM;
-		}
-	}
-
-	return '';
-}
-
-export function replaceUndefinedWithNull(obj: any): any {
-	if (Array.isArray(obj)) {
-		return obj.map(replaceUndefinedWithNull);
-	} else if (obj !== null && typeof obj === 'object') {
-		return Object.fromEntries(
-			Object.entries(obj).map(([key, value]) => [key, replaceUndefinedWithNull(value)])
-		);
-	} else {
-		return obj === undefined ? null : obj;
-	}
-}
-
-type TCompleteValidation = {
-	isRequired: boolean;
-	category?: string;
-	type?: string;
-	value?: string[];
-	message?: string;
-};
+import { CHECKBOX_GRID_QUESTION_ITEM, RADIO_GRID_QUESTION_ITEM } from '$lib/form/constants';
+import type { TFormItem, TGridItem } from '../types';
+import type { TConstructedHTMLData } from './html-parsing/types';
 
 export function mergeQuestionItemsData(
 	htmlQuestionItemsData: TConstructedHTMLData[],
-	apiFormItemsData: FormItem[]
-): FinalFormItem[] {
-	const combinedData: FinalFormItem[] = [];
+	apiFormItemsData: TFormItem[]
+): TFormItem[] {
+	const combinedData: TFormItem[] = [];
 
 	let currentItemIndex = 0;
 	for (let item of apiFormItemsData) {
 		if (item.type === RADIO_GRID_QUESTION_ITEM || item.type === CHECKBOX_GRID_QUESTION_ITEM) {
-			const apiItem = item as GridItem;
+			const apiItem = item as TGridItem;
 			for (let i = 0; i < apiItem.rows.length; i++) {
 				apiItem.rows[i]['submitId'] = htmlQuestionItemsData[currentItemIndex].submitId;
 				currentItemIndex++;
 				// no need for checking html validation, not possible on grid elements
 			}
 
-			const combinedItem = { ...apiItem } as FinalFormItem;
-
-			combinedData.push(combinedItem);
+			combinedData.push(apiItem);
 		} else {
-			const apiItem = item as FinalFormItem;
+			const apiItem = item as TFormItem;
 			const htmlItem = htmlQuestionItemsData[currentItemIndex];
 
 			apiItem.submitId = htmlItem.submitId;
 
-			const validationData: TCompleteValidation = {
+			const validationData = {
 				...apiItem.validation,
 				...htmlItem.validation
 			};
