@@ -68,3 +68,31 @@ export type TFormStore = {
 	style: TFormStyle;
 	pages: TFormPages;
 };
+
+export const formStore = writable<TFormStore>({
+	info: {
+		description: '',
+		documentTitle: '',
+		formId: '',
+		responderUri: '',
+		title: ''
+	},
+	items: [],
+	style: {
+		theme: '',
+		radius: 0,
+		font: '',
+		mode: 'light'
+	},
+	pages: {
+		welcome: {
+			heading: '',
+			message: ''
+		},
+
+		goodbye: {
+			heading: '',
+			message: ''
+		}
+	}
+});
