@@ -14,6 +14,7 @@ import {
 	TEXT_QUESTION_ITEM,
 	TIME_QUESTION_ITEM
 } from '$lib/form/constants';
+import type { FinalFormItem, FormItem, GridItem, TConstructedHTMLData } from '../types';
 
 export function determineItemType(item: any) {
 	if (item.textItem) return ADDITIONAL_TITLE_ITEM;
@@ -64,36 +65,50 @@ export function replaceUndefinedWithNull(obj: any): any {
 	}
 }
 
-export function mergeQuestionItemsData(htmlQuestionItems: any[], apiFormItems: any) {
-	let questionItemIndex = 0;
+type TCompleteValidation = {
+	isRequired: boolean;
+	category?: string;
+	type?: string;
+	value?: string[];
+	message?: string;
+};
 
-	const mergedItems = apiFormItems
-		.filter((item: any) => QUESTION_ITEM_TYPES.includes(item.type))
-		.map((item: any) => {
-			const htmlQuestionItem = htmlQuestionItems[questionItemIndex];
-			if (htmlQuestionItem) {
-				if (item.type === RADIO_GRID_QUESTION_ITEM || item.type === CHECKBOX_GRID_QUESTION_ITEM) {
-					item.rows.forEach((row: any, rowIndex: number) => {
-						row.submitId = htmlQuestionItem.submitId[rowIndex];
-						if (htmlQuestionItem.validationData) {
-							row.validationData = htmlQuestionItem.validationData;
-						}
-					});
-				} else {
-					item.submitId = htmlQuestionItem.submitId;
-					if (htmlQuestionItem.validationData) {
-						item.validationData = htmlQuestionItem.validationData;
-					}
-				}
+export function mergeQuestionItemsData(
+	htmlQuestionItemsData: TConstructedHTMLData[],
+	apiFormItemsData: FormItem[]
+): FinalFormItem[] {
+	const combinedData: FinalFormItem[] = [];
+
+	let currentItemIndex = 0;
+	for (let item of apiFormItemsData) {
+		if (item.type === RADIO_GRID_QUESTION_ITEM || item.type === CHECKBOX_GRID_QUESTION_ITEM) {
+			const apiItem = item as GridItem;
+			for (let i = 0; i < apiItem.rows.length; i++) {
+				apiItem.rows[i]['submitId'] = htmlQuestionItemsData[currentItemIndex].submitId;
+				currentItemIndex++;
+				// no need for checking html validation, not possible on grid elements
 			}
-			questionItemIndex++;
 
-			return {
-				...item
+			const combinedItem = { ...apiItem } as FinalFormItem;
+
+			combinedData.push(combinedItem);
+		} else {
+			const apiItem = item as FinalFormItem;
+			const htmlItem = htmlQuestionItemsData[currentItemIndex];
+
+			apiItem.submitId = htmlItem.submitId;
+
+			const validationData: TCompleteValidation = {
+				...apiItem.validation,
+				...htmlItem.validation
 			};
-		});
 
-	return mergedItems;
+			combinedData.push({ ...apiItem, validation: validationData });
+			currentItemIndex++;
+		}
+	}
+
+	return combinedData;
 }
 
 export function extractFormId(url: string): string | null {
