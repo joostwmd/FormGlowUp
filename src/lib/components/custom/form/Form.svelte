@@ -1,24 +1,23 @@
 <script lang="ts">
-	import LoadingScreen from './LoadingScreen.svelte';
-	import EndScreen from './EndScreen.svelte';
-	import * as Form from '$lib/components/shadcn/ui/form';
-	import CheckboxGrid from '$lib/components/custom/form/CheckboxGrid.svelte';
-	import CheckboxGroup from '$lib/components/custom/form/CheckboxGroup.svelte';
-	import DateInput from '$lib/components/custom/form/DateInput.svelte';
-	import Dropdown from '$lib/components/custom/form/Dropdown.svelte';
+	import CheckboxGrid from '$lib/components/custom/form/items/CheckboxGrid.svelte';
+	import CheckboxGroup from '$lib/components/custom/form/items/CheckboxGroup.svelte';
+	import DateInput from '$lib/components/custom/form/items/DateInput.svelte';
+	import Dropdown from '$lib/components/custom/form/items/Dropdown.svelte';
 	import FormControls from '$lib/components/custom/form/FormControls.svelte';
 	import FormProgress from '$lib/components/custom/form/FormProgress.svelte';
-	import RadioGrid from '$lib/components/custom/form/RadioGrid.svelte';
-	import RadioGroup from '$lib/components/custom/form/RadioGroup.svelte';
-	import SliderInput from '$lib/components/custom/form/SliderInput.svelte';
-	import TextInput from '$lib/components/custom/form/TextInput.svelte';
-	import TimeInput from '$lib/components/custom/form/TimeInput.svelte';
+	import RadioGrid from '$lib/components/custom/form/items/RadioGrid.svelte';
+	import RadioGroup from '$lib/components/custom/form/items/RadioGroup.svelte';
+	import SliderInput from '$lib/components/custom/form/items/SliderInput.svelte';
+	import TextInput from '$lib/components/custom/form/items/TextInput.svelte';
+	import TimeInput from '$lib/components/custom/form/items/TimeInput.svelte';
 	import {
 		ADDITIONAL_TITLE_ITEM,
 		CHECKBOX_GRID_QUESTION_ITEM,
 		CHECKBOX_QUESTION_ITEM,
+		CHOICE_ITEM_TYPES,
 		DATE_QUESTION_ITEM,
 		DROPDOWN_QUESTION_ITEM,
+		GRID_ITEM_TYPES,
 		IMAGE_ITEM,
 		PARAGRAPH_QUESTION_ITEM,
 		QUESTION_ITEM_TYPES,
@@ -26,6 +25,7 @@
 		RADIO_QUESTION_ITEM,
 		SCALE_QUESTION_ITEM,
 		SUBMIT_KEY_PREFIX,
+		TEXT_ITEM_TYPES,
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
 	} from '$lib/form/constants';
@@ -35,42 +35,43 @@
 		type TFormInfoStore,
 		type TFormStrucutre
 	} from '$lib/form/stores';
-	import { validateFormItemData } from '$lib/form/utils/validation';
+	import type {
+		TChoicesItem,
+		TDateItem,
+		TFormInfo,
+		TFormItem,
+		TGridItem,
+		TScaleItem,
+		TTextItem,
+		TTimeItem
+	} from '$lib/form/types';
+	import ParagraphInput from './items/ParagraphInput.svelte';
+	//import { validateFormItemData } from '$lib/form/utils/validation';
 
 	export let isPreview: boolean = false;
 	export let canSubmit: boolean = true;
-	export let formStructure: TFormStrucutre;
-	export let formInfo: TFormInfoStore;
+	export let info: TFormInfo;
+	export let items: TFormItem[];
 
 	let currentQuestion: number = 0;
-	let isLoading: boolean = true;
-	let isSubmitted: boolean = false;
-	let isRequiredError: boolean = false;
 
-	// Simulate loading delay
-	setTimeout(() => {
-		isLoading = false;
-	}, 1000);
+	let state: 'WELCOME' | 'FORM' | 'END' = 'WELCOME';
+	let errorMessage: string | null = null;
+	let isSubmitted: boolean = false;
 
 	function handleOnNext() {
 		console.log('next', $formStructureStore);
 
-		if (isPreview && currentQuestion === formStructure.questions.length - 1) {
+		if (isPreview && currentQuestion === items.length - 1) {
 			isSubmitted = true;
 		} else {
-			validateFormItemData(formStructure.questions[currentQuestion].data, $formDataStore);
+			//validateFormItemData(items[currentQuestion].data, $formDataStore);
 		}
 	}
 
 	function handleOnPrevious() {
-		isRequiredError = false;
-		if (isPreview && currentQuestion === 0) {
-			isLoading = true;
-			setTimeout(() => {
-				isLoading = false;
-			}, 500);
-		} else {
-			currentQuestion--;
+		if (currentQuestion > 0) {
+			currentQuestion -= 1;
 		}
 	}
 
@@ -83,7 +84,7 @@
 				method: 'POST',
 				body: JSON.stringify({
 					formData: $formDataStore,
-					submitUrl: formInfo.responderUri
+					submitUrl: info.responderUri
 				}),
 				headers: {
 					'Content-Type': 'application/json'
@@ -96,107 +97,60 @@
 			console.log('cannot submit');
 		}
 	}
+
+	let item: TFormItem;
+
+	$: {
+		if (CHOICE_ITEM_TYPES.includes(items[currentQuestion].type)) {
+			item = items[currentQuestion] as TChoicesItem;
+		} else if (GRID_ITEM_TYPES.includes(items[currentQuestion].type)) {
+			item = items[currentQuestion] as TGridItem;
+		} else if (TEXT_ITEM_TYPES.includes(items[currentQuestion].type)) {
+			item = items[currentQuestion] as TTextItem;
+		} else if (items[currentQuestion].type === DATE_QUESTION_ITEM) {
+			item = items[currentQuestion] as TDateItem;
+		} else if (items[currentQuestion].type === TIME_QUESTION_ITEM) {
+			item = items[currentQuestion] as TTimeItem;
+		} else if (items[currentQuestion].type === SCALE_QUESTION_ITEM) {
+			item = items[currentQuestion] as TScaleItem;
+		}
+
+		console.log(item);
+	}
 </script>
 
-{#if isLoading}
-	<LoadingScreen variant={formStructure.loader} />
-{:else if isSubmitted}
-	<EndScreen text={formStructure.endText} />
-{:else}
-	<form method="POST" action="?/updateForm">
-		<div class="flex w-full flex-col items-center">
-			<div class="flex w-full flex-col items-start space-y-4 px-4">
-				<FormProgress totalPages={formStructure.questions.length} {currentQuestion} />
+<div class="flex w-full flex-col items-center">
+	<div class="flex w-full flex-col items-start space-y-4 px-4">
+		<FormProgress totalPages={items.length} {currentQuestion} />
 
-				<!-- <Form.Field {form} name={question.title}>
-				<Form.Control let:attrs>
-					<Form.Label>{question.title}</Form.Label>
-				</Form.Control>
+		{#if items[currentQuestion].type === TEXT_QUESTION_ITEM}
+			<TextInput item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === PARAGRAPH_QUESTION_ITEM}
+			<ParagraphInput item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === RADIO_QUESTION_ITEM}
+			<RadioGroup item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === CHECKBOX_QUESTION_ITEM}
+			<CheckboxGroup item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === DROPDOWN_QUESTION_ITEM}
+			<Dropdown item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === SCALE_QUESTION_ITEM}
+			<SliderInput item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === DATE_QUESTION_ITEM}
+			<DateInput item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === TIME_QUESTION_ITEM}
+			<TimeInput item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === RADIO_GRID_QUESTION_ITEM}
+			<RadioGrid item={items[currentQuestion]} />
+		{:else if items[currentQuestion].type === CHECKBOX_GRID_QUESTION_ITEM}
+			<CheckboxGrid item={items[currentQuestion]} />
+		{/if}
 
-				<Form.FieldErrors />
-			</Form.Field> -->
-
-				{#if formStructure.questions[currentQuestion].type === TEXT_QUESTION_ITEM}
-					<TextInput
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						description={formStructure.questions[currentQuestion].data.description}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === PARAGRAPH_QUESTION_ITEM}
-					<p>noch text input</p>
-					<TextInput
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						description={formStructure.questions[currentQuestion].data.description}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === RADIO_QUESTION_ITEM}
-					<RadioGroup
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						options={formStructure.questions[currentQuestion].data.options}
-						description={formStructure.questions[currentQuestion].data.description}
-						randomizeOrder={formStructure.questions[currentQuestion].data.shuffleOptions}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === CHECKBOX_QUESTION_ITEM}
-					<CheckboxGroup
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						description={formStructure.questions[currentQuestion].data.description}
-						options={formStructure.questions[currentQuestion].data.options}
-						randomizeOrder={formStructure.questions[currentQuestion].data.shuffleOptions}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === DROPDOWN_QUESTION_ITEM}
-					<Dropdown
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						description={formStructure.questions[currentQuestion].data.description}
-						options={formStructure.questions[currentQuestion].data.options}
-						randomizeOrder={formStructure.questions[currentQuestion].data.shuffleOptions}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === SCALE_QUESTION_ITEM}
-					<SliderInput
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						minValue={formStructure.questions[currentQuestion].data.minValue}
-						maxValue={formStructure.questions[currentQuestion].data.maxValue}
-						minLabel={formStructure.questions[currentQuestion].data.minLabel}
-						maxLabel={formStructure.questions[currentQuestion].data.maxLabel}
-						description={formStructure.questions[currentQuestion].data.description}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === DATE_QUESTION_ITEM}
-					<DateInput
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						includeTime={formStructure.questions[currentQuestion].data.yearIncluded}
-						includeYear={formStructure.questions[currentQuestion].data.timeIncluded}
-						description={formStructure.questions[currentQuestion].data.description}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === TIME_QUESTION_ITEM}
-					<TimeInput
-						submitId={formStructure.questions[currentQuestion].data.submitId}
-						description={formStructure.questions[currentQuestion].data.description}
-						isDurationInput={formStructure.questions[currentQuestion].data.isDuration}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === RADIO_GRID_QUESTION_ITEM}
-					<RadioGrid
-						columns={formStructure.questions[currentQuestion].data.columns}
-						rows={formStructure.questions[currentQuestion].data.rows}
-						description={formStructure.questions[currentQuestion].data.description}
-						oneAnswerPerColumn={true}
-					/>
-				{:else if formStructure.questions[currentQuestion].type === CHECKBOX_GRID_QUESTION_ITEM}
-					<CheckboxGrid
-						columns={formStructure.questions[currentQuestion].data.columns}
-						rows={formStructure.questions[currentQuestion].data.rows}
-						description={formStructure.questions[currentQuestion].data.description}
-					/>
-				{/if}
-
-				{#if isRequiredError}
-					<p class="text-sm text-muted-foreground text-red-500">The Question is required</p>
-				{/if}
-
-				<FormControls
-					totalPages={formStructure.questions.length}
-					{currentQuestion}
-					{handleOnNext}
-					{handleOnPrevious}
-					{handleOnSubmit}
-				/>
-			</div>
-		</div>
-	</form>
-{/if}
+		<FormControls
+			totalPages={items.length}
+			{currentQuestion}
+			{handleOnNext}
+			{handleOnPrevious}
+			{handleOnSubmit}
+		/>
+	</div>
+</div>
