@@ -1,4 +1,9 @@
-import { CHECKBOX_GRID_QUESTION_ITEM, RADIO_GRID_QUESTION_ITEM } from '$lib/form/constants';
+import {
+	CHECKBOX_GRID_QUESTION_ITEM,
+	RADIO_GRID_QUESTION_ITEM,
+	SUBMIT_KEY_PREFIX
+} from '$lib/form/constants';
+import { formDataStore } from '../stores';
 import type { TFormItem, TGridItem } from '../types';
 import type { TConstructedHTMLData } from './html-parsing/types';
 
@@ -51,3 +56,11 @@ export function extractFormId(url: string): string | null {
 // 		return currentData;
 // 	});
 // }
+
+export function handleFormValueChange(value: string | number | null, submitId: string) {
+	const entryId = SUBMIT_KEY_PREFIX + submitId;
+	formDataStore.update((currentData) => {
+		currentData[entryId] = value;
+		return currentData;
+	});
+}
