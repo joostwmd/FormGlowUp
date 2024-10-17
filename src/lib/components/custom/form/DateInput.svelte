@@ -7,24 +7,10 @@
 	import { cn } from '$lib/components/shadcn/utils';
 	import { DAY_SUFFIX, MONTH_SUFFIX, YEAR_SUFFIX } from '$lib/form/constants';
 	import TimeInput from './TimeInput.svelte';
-
-	type TFormAttributes = {
-		name: string;
-		id: string;
-		'data-fs-error': string | undefined;
-		'aria-describedby': string | undefined;
-		'aria-invalid': 'true' | undefined;
-		'aria-required': 'true' | undefined;
-		'data-fs-control': string;
-	};
+	import type { TDateItem } from '$lib/form/types';
 
 	export let handleFormValueChange: (value: string | number, submitId: string) => void;
-	export let description: string | null = null;
-	export let includeYear: boolean = false;
-	export let includeTime: boolean = false;
-	export let submitId: string;
-	export let formAttributes: TFormAttributes;
-
+	export let item: TDateItem;
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'short'
 	});
@@ -45,7 +31,7 @@
 
 		const entries = [DD, MM];
 
-		if (includeYear) {
+		if (item.attributes.yearIncluded) {
 			entries.push({
 				suffix: YEAR_SUFFIX,
 				value: dateValue?.year
@@ -53,15 +39,15 @@
 		}
 
 		entries.forEach((entry) => {
-			handleFormValueChange(entry.value!, submitId + entry.suffix);
+			handleFormValueChange(entry.value!, item.submitId + entry.suffix);
 		});
 
-		handleFormValueChange(dateValue?.toDate(getLocalTimeZone()) || '', submitId);
+		handleFormValueChange(dateValue?.toDate(getLocalTimeZone()) || '', item.submitId);
 	}
 </script>
 
-{#if description}
-	<p class="text-sm text-gray-500">{description}</p>
+{#if item.displayData.description}
+	<p class="text-sm text-gray-500">{item.displayData.description}</p>
 {/if}
 
 <Popover.Root openFocus>
@@ -79,10 +65,10 @@
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="w-auto p-0">
-		<Calendar bind:value={dateValue} initialFocus {...formAttributes} />
+		<Calendar bind:value={dateValue} initialFocus />
 	</Popover.Content>
 </Popover.Root>
 
-{#if includeTime}
-	<TimeInput {handleFormValueChange} {submitId} isDurationInput={false} />
+{#if item.attributes.timeIncluded}
+	<TimeInput {handleFormValueChange} submitId={item.submitId} isDurationInput={false} />
 {/if}
