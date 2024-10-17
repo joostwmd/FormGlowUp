@@ -4,17 +4,14 @@
 	import { formDataStore } from '$lib/form/stores';
 	import { handleFormValueChange } from '$lib/form/utils/client';
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
+	import type { TGridItem } from '$lib/form/types';
 
-	export let description: string | null = null;
-	export let randomizeOrder: boolean = false;
-	export let oneAnswerPerColumn: boolean = false;
+	export let item: TGridItem;
+	let rows = item.rows;
 
-	export let columns: string[];
-	export let rows: {}[];
+	$: rows = item.attributes.randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
 
-	$: rows = randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
-
-	function handleRadioGridItemChange(submitId, column) {
+	function handleRadioGridItemChange(submitId: string, column: string) {
 		if ($formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`] === column) {
 			console.log('already selected -> rest');
 			handleFormValueChange(null, submitId);
@@ -23,41 +20,40 @@
 
 		let updateValue;
 
-		if (oneAnswerPerColumn) {
-			const columnValues = [];
-			console.log('columnValues', columnValues);
-			for (let i = 0; i < rows.length; i++) {
-				const row = rows[i];
-				console.log('row', row);
-				const rowValue = $formDataStore[`${SUBMIT_KEY_PREFIX}${row.submitId}`];
-				columnValues.push(rowValue);
-			}
+		// if (oneAnswerPerColumn) {
+		// 	const columnValues = [];
+		// 	console.log('columnValues', columnValues);
+		// 	for (let i = 0; i < rows.length; i++) {
+		// 		const row = rows[i];
+		// 		console.log('row', row);
+		// 		const rowValue = $formDataStore[`${SUBMIT_KEY_PREFIX}${row.submitId}`];
+		// 		columnValues.push(rowValue);
+		// 	}
 
-			if (!columnValues.includes(column)) {
-				console.log('can select');
-				updateValue = column;
-			} else {
-				console.log('cannot select');
-				updateValue = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`];
-			}
-		}
+		// 	if (!columnValues.includes(column)) {
+		// 		console.log('can select');
+		// 		updateValue = column;
+		// 	} else {
+		// 		console.log('cannot select');
+		// 		updateValue = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`];
+		// 	}
+		// }
 
-		handleFormValueChange(updateValue, submitId);
+		//handleFormValueChange(updateValue, submitId);
 
 		const test = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`];
-		console.log('test', test);
 	}
 </script>
 
-{#if description}
-	<p class="text-sm text-gray-500">{description}</p>
+{#if item.displayData.description}
+	<p class="text-sm text-gray-500">{item.displayData.description}</p>
 {/if}
 
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
 			<Table.Head></Table.Head>
-			{#each columns as column}
+			{#each item.columns as column}
 				<Table.Head>{column}</Table.Head>
 			{/each}
 		</Table.Row>
@@ -66,7 +62,7 @@
 		{#each rows as row}
 			<Table.Row>
 				<Table.Cell class="font-medium">{row.title}</Table.Cell>
-				{#each columns as column}
+				{#each item.columns as column}
 					<Table.Cell>
 						<RadioGroup.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${row.submitId}`]}>
 							<RadioGroup.Item value={column} />
