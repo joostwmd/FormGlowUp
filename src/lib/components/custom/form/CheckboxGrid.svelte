@@ -2,9 +2,10 @@
 	import * as Table from '$lib/components/shadcn/ui/table';
 	import Checkbox from '$lib/components/shadcn/ui/checkbox/checkbox.svelte';
 	import { formDataStore } from '$lib/form/stores';
-	import { handleFormValueChange } from '$lib/form/utils/client';
+
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 	import type { TGridItem } from '$lib/form/types';
+	import { handleFormValueChange } from '$lib/form/utils/helpers';
 
 	export let item: TGridItem;
 	let rows = item.rows;

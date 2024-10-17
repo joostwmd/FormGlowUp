@@ -2,7 +2,7 @@
 	import * as Table from '$lib/components/shadcn/ui/table';
 	import * as RadioGroup from '$lib/components/shadcn/ui/radio-group';
 	import { formDataStore } from '$lib/form/stores';
-	import { handleFormValueChange } from '$lib/form/utils/client';
+	import { handleFormValueChange } from '$lib/form/utils/helpers';
 	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 	import type { TGridItem } from '$lib/form/types';
 

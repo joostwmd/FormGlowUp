@@ -9,7 +9,7 @@
 	} from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/stores';
 	import type { TChoicesItem } from '$lib/form/types';
-	import { handleFormValueChange } from '$lib/form/utils/client';
+	import { handleFormValueChange } from '$lib/form/utils/helpers';
 
 	export let item: TChoicesItem;
 
