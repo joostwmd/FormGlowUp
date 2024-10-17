@@ -4,7 +4,8 @@ export type TForm = {
 	uid: string;
 	items: TFormItem[];
 	info: TFormInfo;
-	theme: FormTheme;
+	theme: TFormStyle;
+	pages: TFormPages;
 };
 
 export type TFormInfo = {
@@ -15,11 +16,21 @@ export type TFormInfo = {
 	documentTitle: string;
 };
 
-export type TFormTheme = {
+export type TFormStyle = {
 	theme: string;
 	radius: number;
 	font: string;
 	mode: string;
+};
+
+export type TFormPage = {
+	heading: string;
+	message: string;
+};
+
+export type TFormPages = {
+	welcome: TFormPage;
+	goodbye: TFormPage;
 };
 
 export type TBaseFormItem = {

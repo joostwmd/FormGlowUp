@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import type { TFormInfo, TFormItem, TFormTheme } from './types';
+import type { TFormInfo, TFormItem, TFormPages, TFormStyle } from './types';
 
-export type TFormStyle = {
+export type TFormStyleOld = {
 	theme: string;
 	radius: number;
 	font: string;
@@ -41,7 +41,7 @@ export const formDataStore = writable<TFormDataStore>({});
 
 export type TFormState = {
 	formInfo: TFormInfoStore;
-	formStyle: TFormStyle;
+	formStyle: TFormStyleOld;
 	formStructure: string;
 };
 
@@ -62,19 +62,9 @@ export const formStateStore = writable<TFormState>({
 	formStructure: ''
 });
 
-type TFormPage = {
-	heading: string;
-	message: string;
-};
-
-type TFormPages = {
-	welcome: TFormPage;
-	goodbye: TFormPage;
-};
-
 export type TFormStore = {
 	info: TFormInfo;
-	item: TFormItem[];
-	theme: TFormTheme;
+	items: TFormItem[];
+	style: TFormStyle;
 	pages: TFormPages;
 };
