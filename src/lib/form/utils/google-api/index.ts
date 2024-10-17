@@ -69,6 +69,10 @@ export function constructFormItemDataFromAPI(
 			validation: {
 				isRequired: questionItem?.required ?? false
 			},
+			attributes: {
+				randomizeOrder: choiceQuestion?.shuffle ?? false,
+				otherOption: choiceQuestion?.options.some((option) => option.isOther) ?? false
+			},
 			displayData: commonDisplayData
 		} as TChoicesItem;
 	} else if (type === SCALE_QUESTION_ITEM) {
