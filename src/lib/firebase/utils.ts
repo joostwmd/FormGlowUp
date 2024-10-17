@@ -64,22 +64,19 @@ export async function createForm(
 export async function updateForm(
 	userId: string,
 	uid: string,
-	formInfo: object,
-	formStructure: object,
-	formStyle: object
+	info: TFormInfo,
+	items: TFormItem[],
+	style: TFormStyle
 ) {
 	try {
 		const formRef = firestore.collection(`users/${userId}/forms`).doc(uid);
-		await formRef.set({ formInfo, formStructure, formStyle }, { merge: true });
+		await formRef.set({ info, items, style }, { merge: true });
 
 		const updatedDoc = await formRef.get();
 
 		if (!updatedDoc.exists) {
 			throw new Error('Document does not exist after update');
 		}
-
-		console.log('Document data after update:', updatedDoc.data());
-
 		return { success: true, data: updatedDoc.data() };
 	} catch (e: any) {
 		console.error('Error updating document: ', e);
