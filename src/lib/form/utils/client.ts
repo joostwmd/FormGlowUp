@@ -263,10 +263,10 @@ export function extractFormId(url: string): string | null {
 	return match ? match[1] : null;
 }
 
-export function handleFormValueChange(value: string, submitId: string) {
-	const entryId = SUBMIT_KEY_PREFIX + submitId;
-	formDataStore.update((currentData) => {
-		currentData[entryId] = value;
-		return currentData;
-	});
-}
+// export function handleFormValueChange(value: string, submitId: string) {
+// 	const entryId = SUBMIT_KEY_PREFIX + submitId;
+// 	formDataStore.update((currentData) => {
+// 		currentData[entryId] = value;
+// 		return currentData;
+// 	});
+// }
