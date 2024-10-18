@@ -2,8 +2,7 @@ import {
 	DATE_QUESTION_ITEM,
 	TIME_QUESTION_ITEM,
 	TEXT_QUESTION_ITEM,
-	PARAGRAPH_QUESTION_ITEM,
-	SUBMIT_KEY_PREFIX
+	PARAGRAPH_QUESTION_ITEM
 } from '$lib/form/constants';
 import type { TFormDataStore } from '$lib/form/stores';
 import type { TDateItem, TTimeItem, TTextItem, TFormItem } from '$lib/form/types';
@@ -15,7 +14,7 @@ export function validateFormItemData(
 	item: TFormItem,
 	formData: TFormDataStore
 ): { valid: boolean; message: string } {
-	const value = formData[SUBMIT_KEY_PREFIX + item.submitId];
+	const value = formData[item.submitId] as string;
 
 	if (item.validation.isRequired && (value === '' || value === undefined)) {
 		return { valid: false, message: 'This field is required' };
