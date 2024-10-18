@@ -7,7 +7,6 @@
 	import * as Popover from '$lib/components/shadcn/ui/popover/index.js';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { formDataStore } from '$lib/form/stores';
-	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 	import type { TChoicesItem } from '$lib/form/types';
 
 	export let item: TChoicesItem;
@@ -42,7 +41,7 @@
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="w-80 p-0">
-		<Command.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${item.submitId}`]}>
+		<Command.Root bind:value={$formDataStore[`${item.submitId}`]}>
 			<Command.Group>
 				<Command.Item
 					value="No Option Selected"

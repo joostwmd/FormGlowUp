@@ -3,7 +3,7 @@
 	import * as RadioGroup from '$lib/components/shadcn/ui/radio-group';
 	import { formDataStore } from '$lib/form/stores';
 	import { handleFormValueChange } from '$lib/form/utils/helpers';
-	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
+
 	import type { TGridItem } from '$lib/form/types';
 
 	export let item: TGridItem;
@@ -12,7 +12,7 @@
 	$: rows = item.attributes.randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
 
 	function handleRadioGridItemChange(submitId: string, column: string) {
-		if ($formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`] === column) {
+		if ($formDataStore[`${submitId}`] === column) {
 			console.log('already selected -> rest');
 			handleFormValueChange(null, submitId);
 			return;
@@ -40,8 +40,6 @@
 		// }
 
 		//handleFormValueChange(updateValue, submitId);
-
-		const test = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`];
 	}
 </script>
 
@@ -60,7 +58,7 @@
 				<Table.Cell class="font-medium">{row.title}</Table.Cell>
 				{#each item.columns as column}
 					<Table.Cell>
-						<RadioGroup.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${row.submitId}`]}>
+						<RadioGroup.Root bind:value={$formDataStore[`${row.submitId}`]}>
 							<RadioGroup.Item value={column} />
 						</RadioGroup.Root>
 					</Table.Cell>

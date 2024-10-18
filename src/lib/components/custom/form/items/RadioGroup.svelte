@@ -1,10 +1,6 @@
 <script lang="ts">
 	import * as RadioGroup from '$lib/components/shadcn/ui/radio-group/index';
-	import {
-		OTHER_OPTION_VALUE,
-		OTHER_RESPONSE_SUFFIX,
-		SUBMIT_KEY_PREFIX
-	} from '$lib/form/constants';
+	import { OTHER_OPTION_VALUE, OTHER_RESPONSE_SUFFIX } from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/stores';
 	import Input from '$lib/components/shadcn/ui/input/input.svelte';
 	import Label from '$lib/components/shadcn/ui/label/label.svelte';
@@ -16,7 +12,7 @@
 </script>
 
 <div class="w-full">
-	<RadioGroup.Root bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${item.submitId}`]}>
+	<RadioGroup.Root bind:value={$formDataStore[`${item.submitId}`]}>
 		{#each options as option}
 			<div class="mb-1 flex h-8 items-center space-x-2">
 				{#if option === OTHER_OPTION_VALUE}

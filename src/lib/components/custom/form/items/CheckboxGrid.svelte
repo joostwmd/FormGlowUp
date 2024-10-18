@@ -2,8 +2,6 @@
 	import * as Table from '$lib/components/shadcn/ui/table';
 	import Checkbox from '$lib/components/shadcn/ui/checkbox/checkbox.svelte';
 	import { formDataStore } from '$lib/form/stores';
-
-	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 	import type { TGridItem } from '$lib/form/types';
 	import { handleFormValueChange } from '$lib/form/utils/helpers';
 
@@ -13,7 +11,7 @@
 	$: rows = item.attributes.randomizeOrder ? rows.sort(() => Math.random() - 0.5) : rows;
 
 	function handleCheckboxGridItemChange(submitId: string, column: string) {
-		let currentValues = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`] || [];
+		let currentValues = $formDataStore[`${submitId}`] || [];
 		console.log('Current values:', currentValues);
 
 		if (currentValues.includes(column)) {
@@ -43,9 +41,6 @@
 		// }
 
 		handleFormValueChange(currentValues, submitId);
-
-		const test = $formDataStore[`${SUBMIT_KEY_PREFIX}${submitId}`];
-		console.log('test', test);
 	}
 </script>
 

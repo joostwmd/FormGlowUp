@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { SUBMIT_KEY_PREFIX } from '$lib/form/constants';
 	import { formDataStore } from '$lib/form/stores';
 	import Slider from '$lib/components/shadcn/ui/slider/slider.svelte';
 	import type { TScaleItem } from '$lib/form/types';
@@ -19,7 +18,7 @@
 		</div>
 		<Slider
 			class="bg-secondary"
-			bind:value={$formDataStore[`${SUBMIT_KEY_PREFIX}${item.submitId}`]}
+			bind:value={$formDataStore[`${item.submitId}`]}
 			min={item.attributes.min}
 			max={item.attributes.max}
 		/>

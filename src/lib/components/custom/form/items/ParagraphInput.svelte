@@ -9,6 +9,6 @@
 </script>
 
 <Textarea
-	value={$formDataStore[SUBMIT_KEY_PREFIX + item.submitId]}
+	value={$formDataStore[item.submitId]}
 	on:change={(e) => handleFormValueChange(e.target.value, item.submitId)}
 />
