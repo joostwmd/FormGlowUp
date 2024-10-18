@@ -6,10 +6,7 @@ export async function getFormsOfUserById(userId: string) {
 		const formsRef = firestore.collection('users').doc(userId).collection('forms');
 		const formsSnapshot = await formsRef.get();
 		const data = formsSnapshot.docs.map((doc) => doc.data());
-
-		return {
-			forms: data
-		};
+		return data;
 	} catch (e) {
 		console.log('Error getting user forms:', e);
 		return { forms: [] };

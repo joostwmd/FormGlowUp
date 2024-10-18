@@ -4,13 +4,16 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { constructFormData, fetchFormData } from '$lib/form';
 import { extractFormId } from '$lib/form/utils/helpers';
+import type { TForm } from '$lib/form/types';
 
 export const load: PageServerLoad = async ({ locals, url, depends }) => {
 	depends(url.pathname);
 	const session = await locals.auth();
-	const forms = await getFormsOfUserById(session!.user!.id!);
+	const forms = (await getFormsOfUserById(session!.user!.id!)) as TForm[];
 
-	return forms;
+	return {
+		forms: forms
+	};
 };
 
 export const actions = {
