@@ -1,11 +1,9 @@
 <script lang="ts">
 	import * as Accordion from '$lib/components/shadcn/ui/accordion/index.js';
-	import LoaderCircleIcon from 'lucide-svelte/icons/loader-circle';
 	import PaintbrushIcon from 'lucide-svelte/icons/paintbrush';
-	import CheckCircleIcon from 'lucide-svelte/icons/circle-check';
+	import MessageIcon from 'lucide-svelte/icons/message-square-quote';
 	import ThemeCustomizer from './ThemeCustomizer.svelte';
-	import GoodbyeScreenCustomizer from './GoodbyeScreenCustomizer.svelte';
-	import WelcomeSceenCustomizer from './WelcomeScreenCustomizer.svelte';
+	import MessagesCusomizer from './MessagesCusomizer.svelte';
 </script>
 
 <Accordion.Root class="w-full">
@@ -21,27 +19,15 @@
 		</Accordion.Content>
 	</Accordion.Item>
 
-	<!-- <Accordion.Item value="loader">
+	<Accordion.Item value="loader">
 		<Accordion.Trigger>
 			<div class="flex items-center">
-				<LoaderCircleIcon class="mr-2 h-4 w-4" />
-				Loading
+				<MessageIcon class="mr-2 h-4 w-4" />
+				Text
 			</div>
 		</Accordion.Trigger>
 		<Accordion.Content>
-			<WelcomeSceenCustomizer />
+			<MessagesCusomizer />
 		</Accordion.Content>
 	</Accordion.Item>
-
-	<Accordion.Item value="end">
-		<Accordion.Trigger>
-			<div class="flex items-center">
-				<CheckCircleIcon class="mr-2 h-4 w-4" />
-				End
-			</div>
-		</Accordion.Trigger>
-		<Accordion.Content>
-			<GoodbyeScreenCustomizer />
-		</Accordion.Content>
-	</Accordion.Item> -->
 </Accordion.Root>
