@@ -106,15 +106,14 @@
 			</div>
 
 			<div class="w-2/3 sm:w-full">
+				<div class="mb-8">
+					<h1>Preview of you Form</h1>
+					<p class="max-w-lg text-balance leading-relaxed">
+						This is a live Preview of your 10x google form
+					</p>
+				</div>
 				<ThemeWrapper style={$formStore.style}>
 					<Card.Root class="sm:col-span-2">
-						<Card.Header class="pb-3">
-							<Card.Title>Preview of your Form</Card.Title>
-							<Card.Description class="max-w-lg text-balance leading-relaxed">
-								This is a live Preview of your 10x google form
-							</Card.Description>
-						</Card.Header>
-
 						<Card.Content>
 							<Form
 								items={$formStore.items}
