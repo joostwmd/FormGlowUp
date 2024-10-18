@@ -3,10 +3,12 @@ import {
 	CREATE_FORM_ERROR_MESSAGES,
 	GRID_ITEM_TYPES,
 	RADIO_GRID_QUESTION_ITEM,
-	SUBMIT_KEY_PREFIX
+	SUBMIT_KEY_PREFIX,
+	TEXT_QUESTION_ITEM,
+	USER_EMAIL_VALUE
 } from '$lib/form/constants';
 import { formDataStore } from '../stores';
-import type { TFormInfo, TFormItem, TGridItem } from '../types';
+import type { TFormInfo, TFormItem, TGridItem, TTextItem } from '../types';
 import { GOOGLE_API_PAGE_BREAK_ITEM } from './google-api/constants';
 import type { TGoogleFormAPIResponse } from './google-api/types';
 import type { TConstructedHTMLData } from './html-parsing/types';
@@ -132,4 +134,23 @@ function checkForHMTLParsingError(
 
 export function checkForUserEmailCollection(htmlData: string): boolean {
 	return htmlData.includes('<input type="email"');
+}
+
+export function constructUserEmailItem(): TTextItem {
+	return {
+		type: TEXT_QUESTION_ITEM,
+		submitId: USER_EMAIL_VALUE,
+		displayData: {
+			title: 'Your Email Adress',
+			description: 'Please enter your email adress'
+		},
+		validation: {
+			isRequired: true,
+			category: 2,
+			type: 102
+		},
+		attributes: {
+			isParagraph: false
+		}
+	};
 }
