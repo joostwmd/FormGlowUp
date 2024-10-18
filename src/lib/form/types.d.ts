@@ -12,6 +12,7 @@ export type TForm = {
 export type TFormInfo = {
 	formId: string;
 	responderUri: string;
+	collectsEmail: boolean;
 	title: string;
 	description: string;
 	documentTitle: string;
