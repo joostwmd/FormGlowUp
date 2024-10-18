@@ -13,6 +13,7 @@
 	import { goto, invalidate, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
+	import NewFormCard from '$lib/components/custom/cards/NewFormCard.svelte';
 
 	export let data: LayoutServerData & PageServerData;
 
@@ -51,7 +52,7 @@
 		<Card.Description>Simply Input the Edit URL of your Google Form</Card.Description>
 	</Card.Header>
 	<Card.Content class="flex flex-col items-center">
-		<form
+		<!-- <form
 			method="POST"
 			action="?/createForm"
 			use:enhance={({ formData }) => handleEnhanceCreateForm(formData)}
@@ -66,7 +67,9 @@
 					Better Form
 				{/if}
 			</Button>
-		</form>
+		</form> -->
+
+		<NewFormCard {handleEnhanceCreateForm} {isCreating} />
 	</Card.Content>
 </Card.Root>
 
