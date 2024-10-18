@@ -9,16 +9,10 @@
 	import type { TDateItem } from '$lib/form/types';
 	import { handleFormValueChange } from '$lib/form/utils/helpers';
 	import TimeInput from './TimeInput.svelte';
-
 	export let item: TDateItem;
-	const df = new DateFormatter('en-US', {
-		dateStyle: 'short'
-	});
 
 	let dateValue: DateValue | undefined = undefined;
-
 	$: {
-		console.log(dateValue);
 		const DD = {
 			suffix: DAY_SUFFIX,
 			value: dateValue?.day
@@ -41,8 +35,28 @@
 		entries.forEach((entry) => {
 			handleFormValueChange(entry.value!, item.submitId + entry.suffix);
 		});
+	}
 
-		handleFormValueChange(dateValue?.toDate(getLocalTimeZone()) || '', item.submitId);
+	const df = new DateFormatter('en-US', {
+		dateStyle: 'long'
+	});
+
+	let displayValue: string;
+	$: {
+		if (dateValue) {
+			const date = df.formatToParts(dateValue.toDate(getLocalTimeZone()));
+			const day = date.find((part) => part.type === 'day')?.value;
+			const month = date.find((part) => part.type === 'month')?.value;
+			const year = date.find((part) => part.type === 'year')?.value;
+
+			const baseValue = `${day} ${month}`;
+
+			if (item.attributes.yearIncluded) {
+				displayValue = `${baseValue} ${year}`;
+			} else {
+				displayValue = baseValue;
+			}
+		}
 	}
 </script>
 
@@ -57,7 +71,7 @@
 			builders={[builder]}
 		>
 			<CalendarIcon class="mr-2 h-4 w-4" />
-			{dateValue ? df.format(dateValue.toDate(getLocalTimeZone())) : 'Select a date'}
+			{displayValue ? displayValue : 'Select a Date'}
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="w-auto p-0">
