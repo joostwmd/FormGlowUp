@@ -29,12 +29,7 @@
 		TEXT_QUESTION_ITEM,
 		TIME_QUESTION_ITEM
 	} from '$lib/form/constants';
-	import {
-		formDataStore,
-		formStructureStore,
-		type TFormInfoStore,
-		type TFormStrucutre
-	} from '$lib/form/stores';
+	import { formDataStore } from '$lib/form/stores';
 	import type {
 		TChoicesItem,
 		TDateItem,
@@ -61,15 +56,18 @@
 	let isSubmitted: boolean = false;
 
 	function handleOnNext() {
-		console.log('next', $formStructureStore);
-
 		if (isPreview && currentItem === items.length - 1) {
 			isSubmitted = true;
 		} else {
-			validateFormItemData(
-				items[currentItem],
-				$formDataStore[SUBMIT_KEY_PREFIX + items[currentItem].submitId]
-			);
+			const validationRes = validateFormItemData(items[currentItem], $formDataStore);
+
+			console.log(validationRes);
+
+			if (validationRes.valid) {
+				currentItem += 1;
+			} else {
+				errorMessage = validationRes.message;
+			}
 		}
 	}
 
@@ -159,6 +157,10 @@
 			<RadioGrid item={items[currentItem]} />
 		{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
 			<CheckboxGrid item={items[currentItem]} />
+		{/if}
+
+		{#if errorMessage}
+			<p class="text-red-500">{errorMessage}</p>
 		{/if}
 
 		<FormControls

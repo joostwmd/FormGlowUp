@@ -3,12 +3,11 @@ import { constructFormData, fetchFormData } from '$lib/form';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { TForm, TFormInfo, TFormItem, TFormStyle } from '$lib/form/types';
+import type { TFormStore } from '$lib/form/stores';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const uid = params.id;
 	const formDoc = (await getFormById(uid)) as TForm;
-
-	console.log('formDoc', formDoc);
 
 	if (!formDoc) {
 		return {
@@ -43,15 +42,15 @@ export const actions = {
 		const userId = data.get('userId') as string;
 		const formId = data.get('formId') as string;
 
-		const info = data.get('info');
-		const items = data.get('items');
-		const stlye = data.get('style');
+		const formStore = JSON.parse(data.get('formStore') as unknown as string) as TFormStore;
 
-		const formInfo = JSON.parse(data.get('formInfo') as string);
-		const formStructure = JSON.parse(data.get('formStructure') as string);
-		console.log('form structure', formStructure);
-		const formStyle = JSON.parse(data.get('formStyle') as string);
-		const res = await handleUpdateForm(userId, formId, formInfo, formStructure, formStyle);
+		const res = await handleUpdateForm(
+			userId,
+			formId,
+			formStore.info,
+			formStore.items,
+			formStore.style
+		);
 
 		if (res.success && res.data) {
 			return {

@@ -3,44 +3,44 @@
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
-	import {
-		formStyleStore,
-		formStructureStore,
-		formInfoStore,
-		formStateStore
-	} from '$lib/form/stores';
+	import { formStore } from '$lib/form/stores';
 	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
 	import RefreshFormButton from '$lib/components/custom/RefreshFormButton.svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import Form from '$lib/components/custom/form/Form.svelte';
 	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
+	import type { PageServerData } from './$types';
+	import type { LayoutServerData } from '../../../$types';
 
-	export let data: any;
+	export let data: PageServerData & LayoutServerData;
 	let isMounted: boolean = false;
 	let isRefetching: boolean = false;
 	let isUpdating: boolean = false;
 
 	onMount(() => {
-		$formStyleStore = data.form.formStyle;
-		$formStructureStore = data.form.formStructure;
-		$formInfoStore = data.form.formInfo;
-		$formStateStore = {
-			formInfo: data.form.formInfo,
-			formStructure: data.form.formStructure,
-			formStyle: data.form.formStyle
-		};
+		if (data.form) {
+			formStore.set({
+				info: data.form.info,
+				items: data.form.items,
+				style: data.form.style,
+				pages: data.form.pages
+			});
+		}
 		isMounted = true;
 	});
 
 	async function handleEnhanceRefreshForm(formData: FormData) {
 		isRefetching = true;
 		formData.append('userId', data.session.user?.id!);
-		formData.append('formId', data.form.formInfo.formId);
+		formData.append('formId', data.form?.info.formId!);
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
 				//extractValidationData(result.data.htmlData);
-				$formInfoStore = result.data.formInfo;
-				$formStructureStore.questions = result.data.formItems;
+				console.log('reffresh ', result);
+				$formStore.info = result.data.info;
+				$formStore.items = result.data.items;
+
+				console.log('FOOOORM IIIIITEMSS', $formStore.items);
 			} else {
 				await applyAction(result);
 			}
@@ -51,15 +51,17 @@
 	async function handleEnhanceUpdateForm(formData: FormData) {
 		isUpdating = true;
 		formData.append('userId', data.session.user?.id!);
-		formData.append('formId', data.form.uid);
-		formData.append('formInfo', JSON.stringify($formInfoStore));
-		formData.append('formStructure', JSON.stringify($formStructureStore));
-		formData.append('formStyle', JSON.stringify($formStyleStore));
+		formData.append('formId', data.form!.uid);
+		formData.append('formStore', JSON.stringify($formStore));
+
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				$formInfoStore = result.data.formInfo;
-				$formStructureStore = result.data.formStructure;
-				$formStyleStore = result.data.formStyle;
+				formStore.set({
+					info: result.data.info,
+					items: result.data.items,
+					style: result.data.style,
+					pages: result.data.pages
+				});
 			} else {
 				await applyAction(result);
 			}
@@ -108,7 +110,7 @@
 			</div>
 
 			<div class="w-2/3 sm:w-full">
-				<ThemeWrapper styleConfig={$formStyleStore}>
+				<ThemeWrapper styleConfig={$formStore.style}>
 					<Card.Root class="sm:col-span-2">
 						<Card.Header class="pb-3">
 							<Card.Title>Preview of your Form</Card.Title>
@@ -118,7 +120,12 @@
 						</Card.Header>
 
 						<Card.Content>
-							<Form formStructure={$formStructureStore} isPreview={true} canSubmit={false} />
+							<Form
+								items={$formStore.items}
+								info={$formStore.info}
+								isPreview={true}
+								canSubmit={false}
+							/>
 						</Card.Content>
 					</Card.Root>
 				</ThemeWrapper>

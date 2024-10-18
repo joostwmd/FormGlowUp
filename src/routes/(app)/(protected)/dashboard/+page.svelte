@@ -35,7 +35,6 @@
 		formData.append('userId', data.session.user?.id!);
 
 		return async ({ result }: { result: ActionResult }) => {
-			console.log('test url', $page);
 			await invalidate((url) => url.pathname === $page.url.pathname);
 			await applyAction(result);
 		};
@@ -75,8 +74,8 @@
 	{#each data.forms as form}
 		<Card.Root class="sm:col-span-2">
 			<Card.Header>
-				<Card.Title>{form.formInfo.title}</Card.Title>
-				<Card.Description>{form.formInfo.description}</Card.Description>
+				<Card.Title>{form.info.title}</Card.Title>
+				<Card.Description>{form.info.description}</Card.Description>
 			</Card.Header>
 
 			<Card.Content class="flex space-x-2">
