@@ -135,3 +135,5 @@ export const ERROR_MESSAGES = {
 	[NOT_EQUALS]: (value: string, comparison: string) =>
 		`Value ${value} must not be equal to ${comparison}.`
 };
+
+export const VALIDATION_TYPES_WITHOUT_VALUE = [IS_NUMBER, IS_INTEGER, IS_EMAIL, IS_URL];
