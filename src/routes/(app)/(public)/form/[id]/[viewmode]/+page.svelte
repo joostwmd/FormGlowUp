@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
+	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
 	import Form from '$lib/components/custom/form/Form.svelte';
 
 	export let data: PageServerData;

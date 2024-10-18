@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cn, updateTheme } from '$lib/components/shadcn/utils';
-	import type { TFormStyle } from '$lib/form/stores';
+	import type { TFormStyle } from '$lib/form/types';
 	import { ModeWatcher } from 'mode-watcher';
 
 	export let styleConfig: TFormStyle;

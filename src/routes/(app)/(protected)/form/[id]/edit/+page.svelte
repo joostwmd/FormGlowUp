@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Customizer from '$lib/components/custom/Customizer.svelte';
+	import Customizer from '$lib/components/custom/customizer/Customizer.svelte';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
-	import ThemeWrapper from '$lib/components/custom/ThemeWrapper.svelte';
+	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
 	import { formStore } from '$lib/form/stores';
 	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
@@ -35,12 +35,8 @@
 		formData.append('formId', data.form?.info.formId!);
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				//extractValidationData(result.data.htmlData);
-				console.log('reffresh ', result);
 				$formStore.info = result.data.info;
 				$formStore.items = result.data.items;
-
-				console.log('FOOOORM IIIIITEMSS', $formStore.items);
 			} else {
 				await applyAction(result);
 			}

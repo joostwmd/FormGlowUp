@@ -4,8 +4,8 @@
 	import PaintbrushIcon from 'lucide-svelte/icons/paintbrush';
 	import CheckCircleIcon from 'lucide-svelte/icons/circle-check';
 	import ThemeCustomizer from './ThemeCustomizer.svelte';
-	import CheckoutScreenCustomizer from './EndScreenCustomizer.svelte';
-	import LoadingScreenCustomizer from './LoadingScreenCustomizer.svelte';
+	import GoodbyeScreenCustomizer from './GoodbyeScreenCustomizer.svelte';
+	import WelcomeSceenCustomizer from './WelcomeScreenCustomizer.svelte';
 </script>
 
 <Accordion.Root class="w-full">
@@ -21,7 +21,7 @@
 		</Accordion.Content>
 	</Accordion.Item>
 
-	<Accordion.Item value="loader">
+	<!-- <Accordion.Item value="loader">
 		<Accordion.Trigger>
 			<div class="flex items-center">
 				<LoaderCircleIcon class="mr-2 h-4 w-4" />
@@ -29,7 +29,7 @@
 			</div>
 		</Accordion.Trigger>
 		<Accordion.Content>
-			<LoadingScreenCustomizer />
+			<WelcomeSceenCustomizer />
 		</Accordion.Content>
 	</Accordion.Item>
 
@@ -41,7 +41,7 @@
 			</div>
 		</Accordion.Trigger>
 		<Accordion.Content>
-			<CheckoutScreenCustomizer />
+			<GoodbyeScreenCustomizer />
 		</Accordion.Content>
-	</Accordion.Item>
+	</Accordion.Item> -->
 </Accordion.Root>

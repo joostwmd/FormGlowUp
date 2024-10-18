@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { formStore } from '$lib/form/stores';
 	import { themes } from '$lib/components/shadcn/themes';
-	import Button from '../shadcn/ui/button/button.svelte';
-	import Label from '../shadcn/ui/label/label.svelte';
-	import { cn } from '../shadcn/utils';
+	import Button from '../../shadcn/ui/button/button.svelte';
+	import Label from '../../shadcn/ui/label/label.svelte';
+	import { cn } from '../../shadcn/utils';
 	import { mode } from 'mode-watcher';
 	import Check from 'lucide-svelte/icons/check';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
@@ -17,8 +17,13 @@
 
 	let open = false;
 	let value = FONTS[0].value;
-	$: selectedValue = FONTS.find((option) => option.value === value)?.display ?? 'No FONT Selected';
-	// rest of the form with the keyboard.
+	$: selectedFontValue =
+		FONTS.find((option) => option.value === value)?.display ?? 'No FONT Selected';
+
+	$: {
+		console.log($formStore.style);
+	}
+
 	function closeAndFocusTrigger(triggerId: string) {
 		open = false;
 		tick().then(() => {
@@ -35,8 +40,10 @@
 			size="icon"
 			class="ml-auto rounded-[0.5rem]"
 			on:click={() => {
-				$formStore.style.radius = 0.5;
-				$formStore.style.theme = 'zinc';
+				formStore.update((prev) => ({
+					...prev,
+					style: { ...prev.style, radius: 0.5, theme: 'zinc' }
+				}));
 			}}
 		>
 			<Reset />
@@ -53,7 +60,10 @@
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							formStore.update((prev) => ({ ...prev, theme: theme.name }));
+							formStore.update((prev) => ({
+								...prev,
+								style: { ...prev.style, theme: theme.name }
+							}));
 						}}
 						class={cn('justify-start', isActive && 'border-2 border-primary')}
 						style="--theme-primary: hsl({theme.activeColor[$mode ?? 'dark']})"
@@ -79,7 +89,10 @@
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							formStore.update((prev) => ({ ...prev, radius }));
+							formStore.update((prev) => ({
+								...prev,
+								style: { ...prev.style, radius }
+							}));
 						}}
 						class={cn($formStore.style.radius === radius && 'border-2 border-primary')}
 					>
@@ -95,7 +108,11 @@
 				<Button
 					variant="outline"
 					size="sm"
-					on:click={() => formStore.update((prev) => ({ ...prev, mode: 'light' }))}
+					on:click={() =>
+						formStore.update((prev) => ({
+							...prev,
+							style: { ...prev.style, mode: 'light' }
+						}))}
 					class={cn($formStore.style.mode === 'light' && 'border-2 border-primary')}
 				>
 					<Sun class="mr-1 -translate-x-1" />
@@ -104,7 +121,11 @@
 				<Button
 					variant="outline"
 					size="sm"
-					on:click={() => formStore.update((prev) => ({ ...prev, mode: 'dark' }))}
+					on:click={() =>
+						formStore.update((prev) => ({
+							...prev,
+							style: { ...prev.style, mode: 'dark' }
+						}))}
 					class={cn($formStore.style.mode === 'dark' && 'border-2 border-primary')}
 				>
 					<Moon class="mr-1 -translate-x-1" />
@@ -124,7 +145,7 @@
 						aria-expanded={open}
 						class="w-full justify-between"
 					>
-						{selectedValue}
+						{selectedFontValue}
 						<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</Popover.Trigger>
@@ -136,7 +157,10 @@
 									value={option.value}
 									onSelect={(currentValue) => {
 										value = currentValue;
-										formStore.update((prev) => ({ ...prev, font: currentValue }));
+										formStore.update((prev) => ({
+											...prev,
+											style: { ...prev.style, font: currentValue }
+										}));
 										closeAndFocusTrigger(ids.trigger);
 									}}
 								>
