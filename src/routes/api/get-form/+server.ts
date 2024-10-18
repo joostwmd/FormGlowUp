@@ -40,5 +40,5 @@ export async function POST({ request, fetch }) {
 		return json({ error: 'Failed to fetch HTML data' }, { status: 500 });
 	}
 
-	return json({ htmlData: htmlData, apiData: apiData });
+	return json({ htmlData: htmlData, apiData: apiData, success: true });
 }
