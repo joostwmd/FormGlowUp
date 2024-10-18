@@ -5,14 +5,14 @@ import {
 	constructFormQuestionItemsDataFromAPI
 } from './utils/google-api';
 import type { TGoogleFormAPIResponse } from './utils/google-api/types';
-import { mergeQuestionItemsData } from './utils/helpers';
+import { checkForUserEmailCollection, mergeQuestionItemsData } from './utils/helpers';
 import { constructQuestionItemsDataFromHTML } from './utils/html-parsing';
 
 export async function fetchFormData(
 	fetch: any,
 	userId: string,
 	formId: string
-): Promise<TGETFormResponse> {
+): Promise<{ success: boolean; data?: TGETFormResponse }> {
 	const accessToken = await getAccessTokens(userId);
 
 	const res = await fetch('/api/get-form', {
@@ -23,8 +23,18 @@ export async function fetchFormData(
 		body: JSON.stringify({ accessToken, formId })
 	});
 
-	const data: TGETFormResponse = await res.json();
-	return data;
+	const data = await res.json();
+
+	if (data.error) {
+		return {
+			success: false
+		};
+	}
+
+	return {
+		success: true,
+		data: data
+	};
 }
 
 export async function submitForm() {
@@ -40,5 +50,12 @@ export async function constructFormData(
 	const items = mergeQuestionItemsData(htmlQuestionItemsData, apiFormItemsData);
 	const info = await constructFormInfoDataFromAPI(apiData);
 
-	return { info, items };
+	const collectsEmail = checkForUserEmailCollection(htmlData);
+
+	const formInfo: TFormInfo = {
+		...info,
+		collectsEmail
+	};
+
+	return { info: formInfo, items };
 }
