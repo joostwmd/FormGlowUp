@@ -1,6 +1,7 @@
 import type { TFormPages, TFormStyle } from './types';
 
 export const OTHER_OPTION_VALUE = '__other_option__';
+export const USER_EMAIL_VALUE = 'emailAddress';
 
 export const TEXT_QUESTION_ITEM = 'TEXT_QUESTION';
 export const PARAGRAPH_QUESTION_ITEM = 'PARAGRAPH_QUESTION';
