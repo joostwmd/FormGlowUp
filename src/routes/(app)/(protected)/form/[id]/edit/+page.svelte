@@ -106,7 +106,7 @@
 			</div>
 
 			<div class="w-2/3 sm:w-full">
-				<ThemeWrapper styleConfig={$formStore.style}>
+				<ThemeWrapper style={$formStore.style}>
 					<Card.Root class="sm:col-span-2">
 						<Card.Header class="pb-3">
 							<Card.Title>Preview of your Form</Card.Title>
