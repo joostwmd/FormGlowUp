@@ -11,7 +11,6 @@
 	import TextInput from '$lib/components/custom/form/items/TextInput.svelte';
 	import TimeInput from '$lib/components/custom/form/items/TimeInput.svelte';
 	import {
-		ADDITIONAL_TITLE_ITEM,
 		CHECKBOX_GRID_QUESTION_ITEM,
 		CHECKBOX_QUESTION_ITEM,
 		CHOICE_ITEM_TYPES,
@@ -42,12 +41,13 @@
 	} from '$lib/form/types';
 	import ParagraphInput from './items/ParagraphInput.svelte';
 	import { validateFormItemData } from '$lib/form/utils/validation';
-	//import { validateFormItemData } from '$lib/form/utils/validation';
 
 	export let isPreview: boolean = false;
 	export let canSubmit: boolean = true;
 	export let info: TFormInfo;
 	export let items: TFormItem[];
+
+	console.log('itesm', items);
 
 	let currentItem: number = 0;
 
@@ -61,9 +61,8 @@
 		} else {
 			const validationRes = validateFormItemData(items[currentItem], $formDataStore);
 
-			console.log(validationRes);
-
 			if (validationRes.valid) {
+				errorMessage = null;
 				currentItem += 1;
 			} else {
 				errorMessage = validationRes.message;
@@ -116,8 +115,6 @@
 		} else if (items[currentItem].type === SCALE_QUESTION_ITEM) {
 			item = items[currentItem] as TScaleItem;
 		}
-
-		console.log(item);
 	}
 </script>
 
@@ -126,7 +123,7 @@
 		<FormProgress totalPages={items.length} {currentItem} />
 
 		{#if item.displayData.image}
-			<img src={item.displayData.image.src} alt="form image" class="h-48 w-full object-cover" />
+			<img src={item.displayData.image.src} alt="form pic" class={'h-48 w-full object-cover'} />
 		{/if}
 
 		{#if item.displayData.title}
