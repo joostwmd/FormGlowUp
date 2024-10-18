@@ -5,16 +5,16 @@ import {
 	MONTH_SUFFIX,
 	YEAR_SUFFIX
 } from '$lib/form/constants';
+import type { TFormDataStore } from '$lib/form/stores';
 import type { TDateItem } from '$lib/form/types';
 import { isValidTime } from './time';
 
 export function validateDate(
 	item: TDateItem,
-	formData: Record<string, string>
+	formData: TFormDataStore
 ): { valid: boolean; message: string } {
-	console.log('form data', formData);
-	const month = formData[`${item.submitId}${MONTH_SUFFIX}`];
-	const day = formData[`${item.submitId}${DAY_SUFFIX}`];
+	const month = formData[`${item.submitId}${MONTH_SUFFIX}`] as string;
+	const day = formData[`${item.submitId}${DAY_SUFFIX}`] as string;
 	const year = item.attributes.yearIncluded ? formData[`${item.submitId}${YEAR_SUFFIX}`] : null;
 	const hour = item.attributes.timeIncluded ? formData[`${item.submitId}${HOUR_SUFFIX}`] : null;
 	const minute = item.attributes.timeIncluded ? formData[`${item.submitId}${MINUTE_SUFFIX}`] : null;
@@ -23,11 +23,11 @@ export function validateDate(
 		return { valid: false, message: 'This field is required' };
 	}
 
-	if (!isValidDate(day, month, year)) {
+	if (!isValidDate(day, month, year as string)) {
 		return { valid: false, message: 'Invalid date' };
 	}
 
-	if (item.attributes.timeIncluded && !isValidTime(hour, minute)) {
+	if (item.attributes.timeIncluded && !isValidTime(hour as string, minute as string)) {
 		return { valid: false, message: 'Invalid time' };
 	}
 

@@ -1,8 +1,9 @@
+import type { TFormDataStore } from '$lib/form/stores';
 import type { TTimeItem } from '$lib/form/types';
 
 export function validateTime(
 	item: TTimeItem,
-	formData: Record<string, string>
+	formData: TFormDataStore
 ): { valid: boolean; message: string } {
 	const hour = formData[`${item.submitId}_hour`];
 	const minute = formData[`${item.submitId}_minute`];
@@ -12,7 +13,7 @@ export function validateTime(
 		return { valid: false, message: 'This field is required' };
 	}
 
-	if (!isValidTime(hour, minute, second)) {
+	if (!isValidTime(hour as string, minute as string, second as string)) {
 		return { valid: false, message: 'Invalid time' };
 	}
 
