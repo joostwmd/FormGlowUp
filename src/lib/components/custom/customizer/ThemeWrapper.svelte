@@ -3,20 +3,20 @@
 	import type { TFormStyle } from '$lib/form/types';
 	import { ModeWatcher } from 'mode-watcher';
 
-	export let styleConfig: TFormStyle;
+	export let style: TFormStyle;
 	let themeWrapperElement: HTMLElement;
 
 	$: {
 		if (themeWrapperElement) {
-			updateTheme(themeWrapperElement, styleConfig);
+			updateTheme(themeWrapperElement, style);
 		}
 	}
 </script>
 
 <div
 	bind:this={themeWrapperElement}
-	class={cn(`theme-${styleConfig.theme}`, 'w-full')}
-	style="--radius: {styleConfig.radius}rem; font-family: {styleConfig.font};"
+	class={cn(`theme-${style.theme}`, 'w-full')}
+	style="--radius: {style.radius}rem; font-family: {style.font};"
 >
 	<!-- <ModeWatcher defaultMode={styleConfig.mode} /> -->
 	<slot />
