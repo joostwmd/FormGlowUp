@@ -24,8 +24,6 @@ export function constructQuestionItemsDataFromHTML(htmlString: string): TConstru
 			const parsedData = JSON.parse(itemData);
 
 			const ids = itemData.match(/\b\d{8,11}\b/g) || [];
-			console.log('how many ids', ids.length, ids);
-
 			if (ids.length < 2) {
 				console.error('Not enough IDs found in data-params:', itemData);
 				continue;
