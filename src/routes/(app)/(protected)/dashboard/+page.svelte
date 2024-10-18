@@ -14,20 +14,33 @@
 	import { page } from '$app/stores';
 	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
+	import * as Alert from '$lib/components/shadcn/ui/alert';
 
 	export let data: LayoutServerData & PageServerData;
 
 	let isCreating: boolean = false;
+	let formCreateError: string | null = null;
 
 	let editUrl: string =
-		'https://docs.google.com/forms/d/1Skdmho8WN2RkylRuCPVhveobNVlwn-YoPjkMcwu0Zmc/edit';
+		'https://docs.google.com/forms/d/1ifsMl1Eq4ZUitM0CV5IPIt2Yta2mKIAuj25MWQebSmg/edit';
 
 	async function handleEnhanceCreateForm(formData: FormData) {
 		isCreating = true;
 		formData.append('userId', data.session.user?.id!);
 		return async ({ result }: { result: ActionResult }) => {
-			await applyAction(result);
-			isCreating = false;
+			if (result.type === 'failure') {
+				formCreateError = result.data!.message;
+				isCreating = false;
+				return;
+			} else if (result.type === 'error') {
+				formCreateError = 'An error occurred while creating the form';
+				isCreating = false;
+				return;
+			} else {
+				formCreateError = null;
+				await applyAction(result);
+				isCreating = false;
+			}
 		};
 	}
 
@@ -71,6 +84,13 @@
 			</form>
 		</Card.Content>
 	</Card.Root>
+
+	{#if formCreateError}
+		<Alert.Root class="mt-8" variant="destructive">
+			<Alert.Title>Error</Alert.Title>
+			<Alert.Description>{formCreateError}</Alert.Description>
+		</Alert.Root>
+	{/if}
 </div>
 
 <div class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

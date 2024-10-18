@@ -1,9 +1,17 @@
 import { createForm, deleteForm, getFormsOfUserById } from '$lib/firebase/utils';
-import { DEFAULT_FORM_STYLE, DEFAULT_FORM_PAGES } from '$lib/form/constants';
+import {
+	DEFAULT_FORM_STYLE,
+	DEFAULT_FORM_PAGES,
+	CREATE_FORM_ERROR_MESSAGES
+} from '$lib/form/constants';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { constructFormData, fetchFormData } from '$lib/form';
-import { extractFormId } from '$lib/form/utils/helpers';
+import {
+	checkIfFormIsSupported,
+	extractFormId,
+	validateGoogleFormEditUrl
+} from '$lib/form/utils/helpers';
 import type { TForm } from '$lib/form/types';
 
 export const load: PageServerLoad = async ({ locals, url, depends }) => {
@@ -20,13 +28,14 @@ export const actions = {
 	createForm: async ({ request, fetch }) => {
 		const data = await request.formData();
 		const userId = data.get('userId') as string;
-		const formId = extractFormId(data.get('editUrl') as string);
-		const res = await handleCreateForm(fetch, userId!, formId!);
+		const editUrl = data.get('editUrl') as string;
+
+		const res = await handleCreateForm(fetch, userId, editUrl);
 
 		if (res.success) {
 			return redirect(302, `/form/${res.uid}/edit`);
 		} else {
-			return fail(422, { message: 'Failed to create form' });
+			return fail(422, { message: res.message });
 		}
 	},
 
@@ -44,19 +53,47 @@ export const actions = {
 	}
 };
 
-async function handleCreateForm(fetch: any, userId: string, formId: string) {
-	const { htmlData, apiData } = await fetchFormData(fetch, userId, formId);
-	const formData = await constructFormData(htmlData, apiData);
+async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
+	const validationRes = validateGoogleFormEditUrl(editUrl);
 
-	const res = await createForm(
+	if (!validationRes.valid) {
+		return { success: false, message: validationRes.message };
+	}
+
+	const formId = extractFormId(editUrl);
+
+	const fetchRes = await fetchFormData(fetch, userId, formId!);
+
+	if (!fetchRes.success) {
+		return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_NOT_FOUND };
+	}
+
+	const formData = await constructFormData(fetchRes.data!.htmlData, fetchRes.data!.apiData);
+
+	const analyzeRes = checkIfFormIsSupported(
+		fetchRes.data!.htmlData,
+		fetchRes.data!.apiData,
+		formData
+	);
+
+	if (!analyzeRes.isSupported) {
+		return { success: false, message: analyzeRes.message };
+	}
+
+	const createRes = await createForm(
 		userId,
-		formId,
+		formId!,
 		formData.info,
 		formData.items,
 		DEFAULT_FORM_STYLE,
 		DEFAULT_FORM_PAGES
 	);
-	return res;
+
+	if (createRes.success) {
+		return { success: true, uid: createRes.uid };
+	} else {
+		return { success: false, message: 'Failed to create form' };
+	}
 }
 
 async function handleDeleteForm(userId: string, formId: string) {
