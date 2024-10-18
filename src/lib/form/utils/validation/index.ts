@@ -2,8 +2,10 @@ import {
 	DATE_QUESTION_ITEM,
 	TIME_QUESTION_ITEM,
 	TEXT_QUESTION_ITEM,
-	PARAGRAPH_QUESTION_ITEM
+	PARAGRAPH_QUESTION_ITEM,
+	SUBMIT_KEY_PREFIX
 } from '$lib/form/constants';
+import type { TFormDataStore } from '$lib/form/stores';
 import type { TDateItem, TTimeItem, TTextItem, TFormItem } from '$lib/form/types';
 import { validateCustomParameters } from './custom';
 import { validateDate } from './date';
@@ -11,11 +13,11 @@ import { validateTime } from './time';
 
 export function validateFormItemData(
 	item: TFormItem,
-	formData: Record<string, string>
+	formData: TFormDataStore
 ): { valid: boolean; message: string } {
-	const value = formData[item.submitId];
+	const value = formData[SUBMIT_KEY_PREFIX + item.submitId];
 
-	if (item.validation.isRequired && value === '') {
+	if (item.validation.isRequired && (value === '' || value === undefined)) {
 		return { valid: false, message: 'This field is required' };
 	}
 
@@ -27,6 +29,7 @@ export function validateFormItemData(
 		TEXT_QUESTION_ITEM.includes(item.type) ||
 		PARAGRAPH_QUESTION_ITEM.includes(item.type)
 	) {
+		console.log('item as TTextItem', item as TTextItem);
 		return validateCustomParameters(item as TTextItem, value);
 	}
 

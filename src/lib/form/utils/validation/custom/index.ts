@@ -19,7 +19,8 @@ import {
 	MAX_LENGTH,
 	MIN_LENGTH,
 	EQUALS,
-	NOT_EQUALS
+	NOT_EQUALS,
+	VALIDATION_PARAMETERS_MAP_TEST
 } from '../constants';
 import {
 	greaterThan,
@@ -42,35 +43,20 @@ import {
 	notEquals
 } from './helpers';
 
-// Main validation function
 export function validateCustomParameters(item: TTextItem, value: string) {
 	if (!item.validation.category || !item.validation.type || !item.validation.value) {
-		// returns valid if no custom validation is set
 		return {
 			valid: true,
 			message: ''
 		};
 	}
 
-	const categoryMap = Object.values(VALIDATION_PARAMETERS_MAP).find(
-		(cat) => cat.category === item.validation.category
-	);
-	if (!categoryMap) {
-		return { valid: false, message: `Unknown category: ${item.validation.category}` };
-	}
-
-	const validationType = Object.entries(categoryMap.validations).find(
-		([key, val]) => val === item.validation.type
-	);
-	if (!validationType) {
-		return { valid: false, message: `Unknown validation type: ${item.validation.type}` };
-	}
-
-	const [validationKey, validationFunction] = validationType;
+	const category = VALIDATION_PARAMETERS_MAP[Number(item.validation.category)];
+	const validationType = category.validations[Number(item.validation.type)];
 
 	let isValid = false;
 	let errorMessage = '';
-	switch (validationFunction) {
+	switch (validationType) {
 		case GREATER_THAN:
 			isValid = greaterThan(value, item.validation.value[0]);
 			errorMessage = ERROR_MESSAGES[GREATER_THAN](value, item.validation.value[0]);
@@ -152,7 +138,7 @@ export function validateCustomParameters(item: TTextItem, value: string) {
 			errorMessage = ERROR_MESSAGES[NOT_EQUALS](value, item.validation.value[0]);
 			break;
 		default:
-			return { valid: false, message: `Unhandled validation type: ${validationFunction}` };
+			return { valid: false, message: `Unhandled validation type: ${validationType}` };
 	}
 
 	return {

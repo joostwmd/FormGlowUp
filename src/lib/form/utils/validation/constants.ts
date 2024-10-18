@@ -22,7 +22,42 @@ export const MIN_LENGTH = 'MIN_LENGTH';
 export const EQUALS = 'EQUALS';
 export const NOT_EQUALS = 'NOT_EQUALS';
 
-export const VALIDATION_PARAMETERS_MAP = {
+type ValidationType =
+	| typeof GREATER_THAN
+	| typeof GREATER_THAN_OR_EQUAL
+	| typeof LESS_THAN
+	| typeof LESS_THAN_OR_EQUAL
+	| typeof EQUAL
+	| typeof NOT_EQUAL
+	| typeof BETWEEN
+	| typeof NOT_BETWEEN
+	| typeof IS_NUMBER
+	| typeof IS_INTEGER
+	| typeof CONTAINS
+	| typeof NOT_CONTAINS
+	| typeof IS_EMAIL
+	| typeof IS_URL
+	| typeof MAX_LENGTH
+	| typeof MIN_LENGTH
+	| typeof EQUALS
+	| typeof NOT_EQUALS;
+
+type ValidationCategory =
+	| typeof CATEGORY_NUMBER
+	| typeof CATEGORY_TEXT
+	| typeof CATEGORY_LENGTH
+	| typeof CATEGORY_REGEX;
+
+interface ValidationMap {
+	[key: number]: {
+		category: ValidationCategory;
+		validations: {
+			[key: number]: ValidationType;
+		};
+	};
+}
+
+export const VALIDATION_PARAMETERS_MAP: ValidationMap = {
 	1: {
 		// Numbers
 		category: CATEGORY_NUMBER,
