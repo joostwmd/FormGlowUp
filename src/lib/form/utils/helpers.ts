@@ -60,7 +60,7 @@ export function extractFormId(url: string): string | null {
 export function handleFormValueChange(value: string | number | null, submitId: string) {
 	const entryId = SUBMIT_KEY_PREFIX + submitId;
 	formDataStore.update((currentData) => {
-		currentData[entryId] = value;
+		currentData[submitId] = value;
 		return currentData;
 	});
 }
