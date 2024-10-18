@@ -28,7 +28,7 @@ import type { TGoogleFormAPIResponse, TGoogleFormItemAPIData } from './types';
 export function constructFormItemDataFromAPI(
 	itemData: TGoogleFormItemAPIData,
 	type: string
-): TFormItem {
+): { isSupported: boolean; item?: TFormItem } {
 	const questionItem = itemData.questionItem?.question;
 	const choiceQuestion = questionItem?.choiceQuestion;
 	const scaleQuestion = questionItem?.scaleQuestion;
@@ -145,10 +145,15 @@ export function constructFormItemDataFromAPI(
 			displayData: commonDisplayData
 		} as TTextItem;
 	} else {
-		throw new Error(`Unsupported item type: ${type}`);
+		return {
+			isSupported: false
+		};
 	}
 
-	return result;
+	return {
+		isSupported: true,
+		item: result
+	};
 }
 
 export function constructFormQuestionItemsDataFromAPI(
@@ -158,7 +163,9 @@ export function constructFormQuestionItemsDataFromAPI(
 	for (let item of apiData.items) {
 		const type = determineItemType(item);
 		const formQuestionItemData = constructFormItemDataFromAPI(item, type);
-		apiFormItemsData.push(formQuestionItemData);
+		if (formQuestionItemData.isSupported && formQuestionItemData.item) {
+			apiFormItemsData.push(formQuestionItemData.item);
+		}
 	}
 	return apiFormItemsData;
 }
