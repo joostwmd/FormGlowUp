@@ -5,7 +5,11 @@ import {
 	constructFormQuestionItemsDataFromAPI
 } from './utils/google-api';
 import type { TGoogleFormAPIResponse } from './utils/google-api/types';
-import { checkForUserEmailCollection, mergeQuestionItemsData } from './utils/helpers';
+import {
+	checkForUserEmailCollection,
+	constructUserEmailItem,
+	mergeQuestionItemsData
+} from './utils/helpers';
 import { constructQuestionItemsDataFromHTML } from './utils/html-parsing';
 
 export async function fetchFormData(
@@ -48,9 +52,14 @@ export async function constructFormData(
 	const htmlQuestionItemsData = constructQuestionItemsDataFromHTML(htmlData);
 	const apiFormItemsData = constructFormQuestionItemsDataFromAPI(apiData);
 	const items = mergeQuestionItemsData(htmlQuestionItemsData, apiFormItemsData);
-	const info = await constructFormInfoDataFromAPI(apiData);
 
 	const collectsEmail = checkForUserEmailCollection(htmlData);
+	if (collectsEmail) {
+		const emailItem: TFormItem = constructUserEmailItem();
+		items.unshift(emailItem);
+	}
+
+	const info = await constructFormInfoDataFromAPI(apiData);
 
 	const formInfo: TFormInfo = {
 		...info,
