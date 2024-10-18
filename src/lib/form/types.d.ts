@@ -104,8 +104,8 @@ export type TScaleItem = TBaseFormItem & {
 export type TTextItem = TBaseFormItem & {
 	validation: {
 		isRequired: boolean;
-		category?: string;
-		type?: string;
+		category?: number;
+		type?: number;
 		value?: string[];
 		message?: string;
 	};

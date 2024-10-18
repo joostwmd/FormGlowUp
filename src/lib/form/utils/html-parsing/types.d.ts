@@ -1,8 +1,8 @@
 export type TConstructedHTMLData = {
 	submitId: string;
 	validation: {
-		category?: string;
-		type?: string;
+		category?: number;
+		type?: number;
 		value?: string[];
 		message?: string;
 	};
