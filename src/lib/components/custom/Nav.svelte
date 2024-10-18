@@ -1,7 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
-	import ShineBorder from '$lib/components/custom/ShineBorder.svelte';
 	import * as Avatar from '$lib/components/shadcn/ui/avatar';
 
 	export let session;
