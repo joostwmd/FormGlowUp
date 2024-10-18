@@ -18,6 +18,8 @@ export const firestore = initFirestore({
 	})
 });
 
+firestore.settings({ ignoreUndefinedProperties: true });
+
 export const { handle, signIn, signOut } = SvelteKitAuth({
 	providers: [
 		Google({
