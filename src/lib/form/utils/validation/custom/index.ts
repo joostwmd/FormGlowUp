@@ -19,8 +19,7 @@ import {
 	MAX_LENGTH,
 	MIN_LENGTH,
 	EQUALS,
-	NOT_EQUALS,
-	VALIDATION_PARAMETERS_MAP_TEST
+	NOT_EQUALS
 } from '../constants';
 import {
 	greaterThan,
