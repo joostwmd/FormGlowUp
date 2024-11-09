@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorToast from '$lib/components/custom/ErrorToast.svelte';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import type { PageServerData } from './$types';
@@ -10,11 +11,13 @@
 	import Input from '$lib/components/shadcn/ui/input/input.svelte';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 	import type { ActionResult } from '@sveltejs/kit';
-	import { goto, invalidate, invalidateAll } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
 	import * as Alert from '$lib/components/shadcn/ui/alert';
+	import { toast } from 'svelte-sonner';
+	import { CREATE_FORM_ERROR_MESSAGES } from '$lib/form/constants';
 
 	export let data: LayoutServerData & PageServerData;
 
@@ -31,6 +34,7 @@
 			if (result.type === 'failure') {
 				formCreateError = result.data!.message;
 				isCreating = false;
+				showErrorToast(result.data!.message);
 				return;
 			} else if (result.type === 'error') {
 				formCreateError = 'An error occurred while creating the form';
@@ -38,8 +42,9 @@
 				return;
 			} else {
 				formCreateError = null;
-				await applyAction(result);
 				isCreating = false;
+				showErrorToast(CREATE_FORM_ERROR_MESSAGES.UNEXPECTED_ERROR);
+				await applyAction(result);
 			}
 		};
 	}
@@ -56,6 +61,15 @@
 
 	async function handleEditClick(formId: string) {
 		await goto(`${$page.url.origin}/form/${formId}/edit`);
+	}
+
+	function showErrorToast(message: string) {
+		toast.custom(ErrorToast, {
+			componentProps: {
+				heading: 'Could not create form',
+				description: message
+			}
+		});
 	}
 </script>
 
@@ -84,13 +98,6 @@
 			</form>
 		</Card.Content>
 	</Card.Root>
-
-	{#if formCreateError}
-		<Alert.Root class="mt-8" variant="destructive">
-			<Alert.Title>Error</Alert.Title>
-			<Alert.Description>{formCreateError}</Alert.Description>
-		</Alert.Root>
-	{/if}
 </div>
 
 <div class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
