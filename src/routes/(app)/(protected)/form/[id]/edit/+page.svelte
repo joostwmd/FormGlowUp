@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorToast from '$lib/components/custom/ErrorToast.svelte';
 	import Customizer from '$lib/components/custom/customizer/Customizer.svelte';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
@@ -11,6 +12,7 @@
 	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
 	import type { PageServerData } from './$types';
 	import type { LayoutServerData } from '../../../$types';
+	import { toast } from 'svelte-sonner';
 
 	export let data: PageServerData & LayoutServerData;
 	let isMounted: boolean = false;
@@ -29,6 +31,15 @@
 		isMounted = true;
 	});
 
+	function showErrorToast(message: string) {
+		toast.custom(ErrorToast, {
+			componentProps: {
+				heading: 'Could not refresh form',
+				description: message
+			}
+		});
+	}
+
 	async function handleEnhanceRefreshForm(formData: FormData) {
 		isRefetching = true;
 		formData.append('userId', data.session.user?.id!);
@@ -37,7 +48,12 @@
 			if (result.type === 'success') {
 				$formStore.info = result.data.info;
 				$formStore.items = result.data.items;
-			} else {
+			} else if (result.type === 'failure') {
+				console.log('Failure refreshing form', result.data!.message);
+				showErrorToast(result.data!.message);
+				await applyAction(result);
+			} else if (result.type === 'error') {
+				console.log('Error refreshing form');
 				await applyAction(result);
 			}
 			isRefetching = false;
