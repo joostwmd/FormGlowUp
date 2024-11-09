@@ -103,5 +103,19 @@ export const CREATE_FORM_ERROR_MESSAGES = {
 	FORM_NOT_FOUND: 'The form could not be found.',
 	FORM_IS_PRIVATE: 'The form is private and cannot be accessed.',
 	FORM_USES_PAGEBREAKS: 'The form uses page breaks, which are not supported.',
-	HTML_PARSING_ERROR: 'There was an error parsing the HTML data.'
+	HTML_PARSING_ERROR:
+		'There was an error parsing the HTML data. This is an error on ou end. Please contact the support so we can fix it ',
+	FORM_USES_IMAGES:
+		'The form uses images, which are not supported. You can add images to a question instead',
+	FORM_USES_VIDEOS: 'The form uses videos, which are not supported.',
+	FORM_USES_TEXT:
+		'The form uses text, which is not supported. You can add a additional title to a question instead.',
+	FORM_USES_IMAGE_IN_CHOICE_QUESTION:
+		'The form uses images in choice questions, which are not supported.',
+	UNEXPECTED_ERROR: 'An unexpected error occurred. Please contact support.',
+	FORM_USES_FILE_UPLOAD: 'The form uses file uploads, which are not supported.',
+	FORM_CONSTRUCTION_ERROR:
+		'Failed to construct form data. This is an error on our end. Please contact support.',
+	FORM_USES_RATING_QUESTION:
+		'The form uses rating questions, which are not supported yet. An alternative is to use a scale question.'
 };

@@ -50,7 +50,9 @@ export type TGoogleFormItemAPIData = {
 		| typeof GOOGLE_API_PAGE_BREAK_ITEM
 		| typeof GOOGLE_API_TEXT_ITEM
 		| typeof GOOGLE_API_IMAGE_ITEM
-		| typeof GOOGLE_API_VIDEO_ITEM;
+		| typeof GOOGLE_API_VIDEO_ITEM
+		| typeof GOOGLE_API_FILE_UPLOAD_QUESTION;
+
 	questionItem?: TGoogleFormQuestionItem;
 	questionGroupItem?: TGoogleFormQuestionGroupItem;
 
@@ -60,7 +62,6 @@ export type TGoogleFormItemAPIData = {
 		description: string;
 	};
 	//additional items not supported yet
-
 	textItem?: {
 		title: string;
 		description: string;

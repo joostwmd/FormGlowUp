@@ -55,7 +55,6 @@ export function extractFormId(url: string): string | null {
 }
 
 export function handleFormValueChange(value: string | number | null, submitId: string) {
-	console.log('submit id', submitId);
 	formDataStore.update((currentData) => {
 		currentData[submitId] = value;
 		return currentData;
@@ -74,29 +73,68 @@ export function validateGoogleFormEditUrl(url: string): { valid: boolean; messag
 
 export function checkIfFormIsSupported(
 	htmlData: string,
-	apiData: TGoogleFormAPIResponse,
-	constructedFormData: { info: TFormInfo; items: TFormItem[] }
+	apiData: TGoogleFormAPIResponse
 ): {
 	isSupported: boolean;
 	message?: string;
 } {
 	// Check if form has Page Break Item
-	const pageBreakItem = apiData.items.find((item) => item.pageBreakItem);
-	if (pageBreakItem) {
+	const pageBreakItems = apiData.items.find((item) => item.pageBreakItem);
+	const imageItems = apiData.items.find((item) => item.imageItem);
+	const videoItems = apiData.items.find((item) => item.videoItem);
+	const textItems = apiData.items.find((item) => item.textItem);
+
+	const questionItems = apiData.items.filter((item) => item.questionItem);
+	for (let item of questionItems) {
+		const itemChoices = item.questionItem?.question.choiceQuestion?.options;
+		if (itemChoices) {
+			for (let choice of itemChoices) {
+				if (choice.image) {
+					return {
+						isSupported: false,
+						message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_IMAGE_IN_CHOICE_QUESTION
+					};
+				}
+			}
+		}
+
+		const question = item.questionItem?.question;
+		if (question) {
+			const keys = Object.keys(question);
+			if (keys.length === 1 && keys.includes('questionId')) {
+				return {
+					isSupported: false,
+					message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_RATING_QUESTION
+				};
+			}
+		}
+	}
+
+	const fileUploadQuestions = apiData.items.find(
+		(item) => item.questionItem?.question.fileUploadQuestion
+	);
+
+	if (fileUploadQuestions) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_FILE_UPLOAD };
+	} else if (pageBreakItems) {
 		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_PAGEBREAKS };
+	} else if (imageItems) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_IMAGES };
+	} else if (videoItems) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_VIDEOS };
+	} else if (textItems) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_TEXT };
 	} else if (htmlData.includes('data-user-email-address')) {
 		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_IS_PRIVATE };
-	} else if (checkForHMTLParsingError(apiData, constructedFormData.items)) {
-		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.HTML_PARSING_ERROR };
 	}
 
 	return { isSupported: true };
 }
 
-function checkForHMTLParsingError(
+export function checkForHMTLParsingError(
 	apiData: TGoogleFormAPIResponse,
 	constructedItems: TFormItem[]
-): boolean {
+) {
 	const apiQuesitonItems = apiData.items.filter(
 		(item) => item.questionItem || item.questionGroupItem
 	);
@@ -127,8 +165,19 @@ function checkForHMTLParsingError(
 		}
 	}
 
-	//should return true if there are missing submitIds
-	return validSubmitIds.length !== apiQuestionItemsAmount;
+	console.log('API QUESTION ITEMS AMOUNT', apiQuestionItemsAmount);
+	console.log('VALID SUBMIT IDS', validSubmitIds);
+
+	let submitIdsAmount = validSubmitIds.length;
+	if (validSubmitIds.includes(USER_EMAIL_VALUE)) {
+		submitIdsAmount--;
+	}
+
+	if (submitIdsAmount !== apiQuestionItemsAmount) {
+		return { isParsed: false, message: CREATE_FORM_ERROR_MESSAGES.HTML_PARSING_ERROR };
+	} else {
+		return { isParsed: true };
+	}
 }
 
 export function checkForUserEmailCollection(htmlData: string): boolean {

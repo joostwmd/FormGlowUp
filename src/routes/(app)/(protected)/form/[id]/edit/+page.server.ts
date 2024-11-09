@@ -4,6 +4,7 @@ import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { TForm, TFormInfo, TFormItem, TFormStyle } from '$lib/form/types';
 import type { TFormStore } from '$lib/form/stores';
+import { checkForHMTLParsingError, checkIfFormIsSupported } from '$lib/form/utils/helpers';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const uid = params.id;
@@ -28,6 +29,13 @@ export const actions = {
 		const formId = data.get('formId') as string;
 
 		const res = await handleRefreshForm(fetch, userId, formId);
+
+		if (res.success) {
+			return { ...res };
+		} else {
+			return fail(422, { message: res.message });
+		}
+
 		if (res) {
 			return {
 				...res
@@ -63,14 +71,29 @@ export const actions = {
 };
 
 async function handleRefreshForm(fetch: any, userId: string, formId: string) {
-	const res = await fetchFormData(fetch, userId, formId);
+	const fetchRes = await fetchFormData(fetch, userId, formId);
+	if (fetchRes.success && fetchRes.data) {
+		const isSupportedRes = checkIfFormIsSupported(fetchRes.data!.htmlData, fetchRes.data!.apiData);
 
-	if (res.success && res.data) {
-		const formData = await constructFormData(res.data.htmlData, res.data.apiData);
+		if (!isSupportedRes.isSupported) {
+			return { success: false, message: isSupportedRes.message };
+		}
 
-		return { info: formData.info, items: formData.items };
+		const formData = await constructFormData(fetchRes.data.htmlData, fetchRes.data.apiData);
+
+		if (!formData.success) {
+			return { success: false, message: 'Failed to construct form data' };
+		} else {
+			const couldBeParsedRes = checkForHMTLParsingError(fetchRes.data.apiData, formData.items);
+
+			if (!couldBeParsedRes.isParsed) {
+				return { success: false, message: couldBeParsedRes.message };
+			} else {
+				return { success: true, info: formData.info, items: formData.items };
+			}
+		}
 	} else {
-		return fail(422, { message: 'Failed to update form' });
+		return { success: false, message: 'Failed to update form' };
 	}
 }
 
