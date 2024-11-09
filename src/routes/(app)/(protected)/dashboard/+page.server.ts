@@ -8,6 +8,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { constructFormData, fetchFormData } from '$lib/form';
 import {
+	checkForHMTLParsingError,
 	checkIfFormIsSupported,
 	extractFormId,
 	validateGoogleFormEditUrl
@@ -31,6 +32,7 @@ export const actions = {
 		const editUrl = data.get('editUrl') as string;
 
 		const res = await handleCreateForm(fetch, userId, editUrl);
+		console.log('res', res);
 
 		if (res.success) {
 			return redirect(302, `/form/${res.uid}/edit`);
@@ -54,45 +56,66 @@ export const actions = {
 };
 
 async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
-	const validationRes = validateGoogleFormEditUrl(editUrl);
+	const validateLinkRes = validateGoogleFormEditUrl(editUrl);
 
-	if (!validationRes.valid) {
-		return { success: false, message: validationRes.message };
+	if (!validateLinkRes.valid) {
+		return { success: false, message: validateLinkRes.message };
 	}
 
 	const formId = extractFormId(editUrl);
-
 	const fetchRes = await fetchFormData(fetch, userId, formId!);
 
-	if (!fetchRes.success) {
-		return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_NOT_FOUND };
-	}
+	// if (!fetchRes.success) {
+	// 	return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_NOT_FOUND };
+	// }
 
-	const formData = await constructFormData(fetchRes.data!.htmlData, fetchRes.data!.apiData);
+	// const formData = await constructFormData(fetchRes.data!.htmlData, fetchRes.data!.apiData);
 
-	const analyzeRes = checkIfFormIsSupported(
-		fetchRes.data!.htmlData,
-		fetchRes.data!.apiData,
-		formData
-	);
+	// const analyzeRes = checkIfFormIsSupported(
+	// 	fetchRes.data!.htmlData,
+	// 	fetchRes.data!.apiData,
+	// 	formData
+	// );
 
-	if (!analyzeRes.isSupported) {
-		return { success: false, message: analyzeRes.message };
-	}
+	// if (!analyzeRes.isSupported) {
+	// 	return { success: false, message: analyzeRes.message };
+	// }
 
-	const createRes = await createForm(
-		userId,
-		formId!,
-		formData.info,
-		formData.items,
-		DEFAULT_FORM_STYLE,
-		DEFAULT_FORM_PAGES
-	);
+	if (fetchRes.success && fetchRes.data) {
+		const isSupportedRes = checkIfFormIsSupported(fetchRes.data!.htmlData, fetchRes.data!.apiData);
 
-	if (createRes.success) {
-		return { success: true, uid: createRes.uid };
+		if (!isSupportedRes.isSupported) {
+			return { success: false, message: isSupportedRes.message };
+		}
+
+		const formData = await constructFormData(fetchRes.data.htmlData, fetchRes.data.apiData);
+
+		if (!formData.success) {
+			return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_CONSTRUCTION_ERROR };
+		} else {
+			const couldBeParsedRes = checkForHMTLParsingError(fetchRes.data.apiData, formData.items);
+
+			if (!couldBeParsedRes.isParsed) {
+				return { success: false, message: couldBeParsedRes.message };
+			} else {
+				const createRes = await createForm(
+					userId,
+					formId!,
+					formData.info,
+					formData.items,
+					DEFAULT_FORM_STYLE,
+					DEFAULT_FORM_PAGES
+				);
+
+				if (createRes.success) {
+					return { success: true, uid: createRes.uid };
+				} else {
+					return { success: false, message: CREATE_FORM_ERROR_MESSAGES.UNEXPECTED_ERROR };
+				}
+			}
+		}
 	} else {
-		return { success: false, message: 'Failed to create form' };
+		return { success: false, message: 'Failed to update form' };
 	}
 }
 
