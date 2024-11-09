@@ -7,6 +7,7 @@
 	import type { TChoicesItem } from '$lib/form/types';
 
 	export let item: TChoicesItem;
+	console.log('radio item', item);
 	let options = item.options;
 	$: options = item.attributes.randomizeOrder ? options.sort(() => Math.random() - 0.5) : options;
 </script>

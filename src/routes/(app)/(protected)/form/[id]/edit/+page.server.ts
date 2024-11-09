@@ -62,15 +62,16 @@ export const actions = {
 	}
 };
 
-async function handleRefreshForm(
-	fetch: any,
-	userId: string,
-	formId: string
-): Promise<{ info: TFormInfo; items: TFormItem[] }> {
-	const { htmlData, apiData } = await fetchFormData(fetch, userId, formId);
-	const formData = await constructFormData(htmlData, apiData);
+async function handleRefreshForm(fetch: any, userId: string, formId: string) {
+	const res = await fetchFormData(fetch, userId, formId);
 
-	return { info: formData.info, items: formData.items };
+	if (res.success && res.data) {
+		const formData = await constructFormData(res.data.htmlData, res.data.apiData);
+
+		return { info: formData.info, items: formData.items };
+	} else {
+		return fail(422, { message: 'Failed to update form' });
+	}
 }
 
 async function handleUpdateForm(

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
+
 	import CheckboxGrid from '$lib/components/custom/form/items/CheckboxGrid.svelte';
 	import CheckboxGroup from '$lib/components/custom/form/items/CheckboxGroup.svelte';
 	import DateInput from '$lib/components/custom/form/items/DateInput.svelte';
@@ -44,8 +46,6 @@
 	export let info: TFormInfo;
 	export let items: TFormItem[];
 
-	console.log('itesm', items);
-
 	let currentItem: number = 0;
 
 	let state: 'WELCOME' | 'FORM' | 'END' = 'WELCOME';
@@ -77,19 +77,24 @@
 	async function handleOnSubmit() {
 		if (canSubmit) {
 			isSubmitting = true;
-
-			await fetch('/api/submit-form', {
+			const res = await fetch('/api/submit-form', {
 				method: 'POST',
 				body: JSON.stringify({
 					formData: $formDataStore,
-					submitUrl: info.responderUri
+					responderUri: info.responderUri
 				}),
 				headers: {
 					'Content-Type': 'application/json'
 				}
 			});
 
-			console.log('submit', $formDataStore);
+			const result = await res.json();
+			if (result.success) {
+				console.log('Form submitted successfully, go to goodbye page');
+			} else {
+				console.error('Form submission failed, triggereing a toeast woudl be nice');
+			}
+
 			//isSubmitted = true;
 		} else {
 			console.log('cannot submit');
@@ -119,43 +124,45 @@
 	<div class="flex w-full flex-col items-start space-y-4 px-4">
 		<FormProgress totalPages={items.length} {currentItem} />
 
-		{#if item.displayData.image}
-			<img src={item.displayData.image.src} alt="form pic" class={'h-48 w-full object-cover'} />
-		{/if}
+		{#key currentItem}
+			{#if item.displayData.image}
+				<img src={item.displayData.image.src} alt="form pic" class={'h-48 w-full object-cover'} />
+			{/if}
 
-		{#if item.displayData.title}
-			<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
-		{/if}
+			{#if item.displayData.title}
+				<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
+			{/if}
 
-		{#if item.displayData.description}
-			<p class="text-sm text-gray-500">{item.displayData.description}</p>
-		{/if}
+			{#if item.displayData.description}
+				<p class="text-sm text-gray-500">{item.displayData.description}</p>
+			{/if}
 
-		{#if items[currentItem].type === TEXT_QUESTION_ITEM}
-			<TextInput item={items[currentItem]} />
-		{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
-			<ParagraphInput item={items[currentItem]} />
-		{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
-			<RadioGroup item={items[currentItem]} />
-		{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
-			<CheckboxGroup item={items[currentItem]} />
-		{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
-			<Dropdown item={items[currentItem]} />
-		{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
-			<SliderInput item={items[currentItem]} />
-		{:else if items[currentItem].type === DATE_QUESTION_ITEM}
-			<DateInput item={items[currentItem]} />
-		{:else if items[currentItem].type === TIME_QUESTION_ITEM}
-			<TimeInput item={items[currentItem]} />
-		{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
-			<RadioGrid item={items[currentItem]} />
-		{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
-			<CheckboxGrid item={items[currentItem]} />
-		{/if}
+			{#if items[currentItem].type === TEXT_QUESTION_ITEM}
+				<TextInput item={items[currentItem]} />
+			{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
+				<ParagraphInput item={items[currentItem]} />
+			{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
+				<RadioGroup item={items[currentItem]} />
+			{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
+				<CheckboxGroup item={items[currentItem]} />
+			{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
+				<Dropdown item={items[currentItem]} />
+			{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
+				<SliderInput item={items[currentItem]} />
+			{:else if items[currentItem].type === DATE_QUESTION_ITEM}
+				<DateInput item={items[currentItem]} />
+			{:else if items[currentItem].type === TIME_QUESTION_ITEM}
+				<TimeInput item={items[currentItem]} />
+			{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
+				<RadioGrid item={items[currentItem]} />
+			{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
+				<CheckboxGrid item={items[currentItem]} />
+			{/if}
 
-		{#if errorMessage}
-			<p class="text-red-500">{errorMessage}</p>
-		{/if}
+			{#if errorMessage}
+				<p class="text-red-500">{errorMessage}</p>
+			{/if}
+		{/key}
 
 		<FormControls
 			totalPages={items.length}

@@ -21,7 +21,8 @@ export const formStore = writable<TFormStore>({
 		documentTitle: '',
 		formId: '',
 		responderUri: '',
-		title: ''
+		title: '',
+		collectsEmail: false
 	},
 	items: [],
 	style: {

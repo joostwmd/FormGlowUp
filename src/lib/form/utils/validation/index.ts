@@ -28,7 +28,6 @@ export function validateFormItemData(
 		TEXT_QUESTION_ITEM.includes(item.type) ||
 		PARAGRAPH_QUESTION_ITEM.includes(item.type)
 	) {
-		console.log('item as TTextItem', item as TTextItem);
 		return validateCustomParameters(item as TTextItem, value);
 	}
 

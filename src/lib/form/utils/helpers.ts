@@ -7,9 +7,8 @@ import {
 	TEXT_QUESTION_ITEM,
 	USER_EMAIL_VALUE
 } from '$lib/form/constants';
-import { formDataStore } from '../stores';
+import { formDataStore, type TFormDataStore } from '../stores';
 import type { TFormInfo, TFormItem, TGridItem, TTextItem } from '../types';
-import { GOOGLE_API_PAGE_BREAK_ITEM } from './google-api/constants';
 import type { TGoogleFormAPIResponse } from './google-api/types';
 import type { TConstructedHTMLData } from './html-parsing/types';
 
@@ -56,7 +55,7 @@ export function extractFormId(url: string): string | null {
 }
 
 export function handleFormValueChange(value: string | number | null, submitId: string) {
-	const entryId = SUBMIT_KEY_PREFIX + submitId;
+	console.log('submit id', submitId);
 	formDataStore.update((currentData) => {
 		currentData[submitId] = value;
 		return currentData;
@@ -153,4 +152,24 @@ export function constructUserEmailItem(): TTextItem {
 			isParagraph: false
 		}
 	};
+}
+
+export function constructGoogleFormSubmitUrl(responderUrl: string): string {
+	const url = new URL(responderUrl);
+	url.pathname = url.pathname.replace('/viewform', '/formResponse');
+	url.pathname = url.pathname.replace('/d/', '/u/0/d/');
+	return url.toString();
+}
+
+export function constructSubmitData(formData: Record<string, any>) {
+	const submitData = new URLSearchParams();
+	const entries = Object.entries(formData);
+	const nonNullEntries = entries.filter(([key, value]) => value !== null);
+
+	for (let [key, value] of nonNullEntries) {
+		const prefixedKey = key === USER_EMAIL_VALUE ? key : `${SUBMIT_KEY_PREFIX}${key}`;
+		submitData.append(prefixedKey, value as string);
+	}
+
+	return submitData.toString();
 }
