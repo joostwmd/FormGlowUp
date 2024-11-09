@@ -1,10 +1,5 @@
 <script lang="ts">
-	import {
-		formInfoStore,
-		formStructureStore,
-		formStyleStore,
-		formStateStore
-	} from '$lib/form/stores';
+	import { formStore } from '$lib/form/stores';
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
 	import { Button } from '$lib/components/shadcn/ui/button/index';
 	import SaveIcon from 'lucide-svelte/icons/arrow-down-to-line';
@@ -35,16 +30,16 @@
 	let needsUpdate: boolean = false;
 
 	$: {
-		const savedFormState = $formStateStore;
-		const localFormInfo = $formInfoStore;
-		const localFormStructure = $formStructureStore;
-		const localFormStyle = $formStyleStore;
+		const savedFormState = $formStore;
+		const localFormInfo = $formStore.info;
+		const localFormItems = $formStore.items;
+		const localFormStyle = $formStore.style;
 
-		const formInfoChanged = !deepEqual(savedFormState.formInfo, localFormInfo);
-		const formStructureChanged = !deepEqual(savedFormState.formStructure, localFormStructure);
-		const formStyleChanged = !deepEqual(savedFormState.formStyle, localFormStyle);
+		const formInfoChanged = !deepEqual(savedFormState.info, localFormInfo);
+		const formItemsChanged = !deepEqual(savedFormState.items, localFormItems);
+		const formStyleChanged = !deepEqual(savedFormState.style, localFormStyle);
 
-		if (formInfoChanged || formStructureChanged || formStyleChanged) {
+		if (formInfoChanged || formItemsChanged || formStyleChanged) {
 			needsUpdate = true;
 		} else {
 			needsUpdate = false;

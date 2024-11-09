@@ -1,13 +1,13 @@
 import { getFormById, updateForm } from '$lib/firebase/utils.js';
-import { constructFormInfoData, constructFormItemsData } from '$lib/form/utils/client';
-import { constructForm, fetchFormData } from '$lib/form/utils';
+import { constructFormData, fetchFormData } from '$lib/form';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { TFormInfoStore, TFormStrucutre, TFormStyle } from '$lib/form/stores';
+import type { TForm, TFormInfo, TFormItem, TFormStyle } from '$lib/form/types';
+import type { TFormStore } from '$lib/form/stores';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const uid = params.id;
-	const formDoc = await getFormById(uid);
+	const formDoc = (await getFormById(uid)) as TForm;
 
 	if (!formDoc) {
 		return {
@@ -30,9 +30,7 @@ export const actions = {
 		const res = await handleRefreshForm(fetch, userId, formId);
 		if (res) {
 			return {
-				formInfo: res.formInfo,
-				formItems: res.formItems,
-				htmlData: res.htmlData
+				...res
 			};
 		} else {
 			return fail(422, { message: 'Failed to refresh form' });
@@ -43,11 +41,16 @@ export const actions = {
 		const data = await request.formData();
 		const userId = data.get('userId') as string;
 		const formId = data.get('formId') as string;
-		const formInfo = JSON.parse(data.get('formInfo') as string);
-		const formStructure = JSON.parse(data.get('formStructure') as string);
-		console.log('form structure', formStructure);
-		const formStyle = JSON.parse(data.get('formStyle') as string);
-		const res = await handleUpdateForm(userId, formId, formInfo, formStructure, formStyle);
+
+		const formStore = JSON.parse(data.get('formStore') as unknown as string) as TFormStore;
+
+		const res = await handleUpdateForm(
+			userId,
+			formId,
+			formStore.info,
+			formStore.items,
+			formStore.style
+		);
 
 		if (res.success && res.data) {
 			return {
@@ -60,24 +63,25 @@ export const actions = {
 };
 
 async function handleRefreshForm(fetch: any, userId: string, formId: string) {
-	const { htmlData, formData } = await fetchFormData(fetch, userId, formId);
-	const formInfo = await constructFormInfoData(formData);
-	const formItems = await constructFormItemsData(htmlData, formData);
+	const res = await fetchFormData(fetch, userId, formId);
 
-	const test = await constructForm(htmlData, formData);
-	console.log('test construct form', test);
+	if (res.success && res.data) {
+		const formData = await constructFormData(res.data.htmlData, res.data.apiData);
 
-	return { formInfo, formItems };
+		return { info: formData.info, items: formData.items };
+	} else {
+		return fail(422, { message: 'Failed to update form' });
+	}
 }
 
 async function handleUpdateForm(
 	userId: string,
 	formId: string,
-	formInfo: TFormInfoStore,
-	formStructure: TFormStrucutre,
-	formStyle: TFormStyle
+	info: TFormInfo,
+	items: TFormItem[],
+	style: TFormStyle
 ) {
-	const res = await updateForm(userId, formId, formInfo, formStructure, formStyle);
+	const res = await updateForm(userId, formId, info, items, style);
 
 	if (res.success) {
 		return { success: true, data: res.data };

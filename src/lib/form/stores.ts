@@ -1,62 +1,68 @@
 import { writable } from 'svelte/store';
-
-export type TFormStyle = {
-	theme: string;
-	radius: number;
-	font: string;
-	mode: 'light' | 'dark';
-};
-
-export const formStyleStore = writable<TFormStyle>();
-
-export type TFormStrucutre = {
-	loader: string;
-	endText: string;
-	questions: {
-		type: string;
-		title: string | null;
-		data: { submitId: string; [key: string]: any };
-	}[];
-};
-
-export const formStructureStore = writable<TFormStrucutre>();
-
-export type TFormInfoStore = {
-	description: string;
-	documentTitle: string;
-	formId: string;
-	responderUri: string;
-	title: string;
-};
-
-export const formInfoStore = writable<TFormInfoStore>();
+import type { TFormInfo, TFormItem, TFormPages, TFormStyle } from './types';
 
 //for submit
 export type TFormDataStore = {
-	[key: string]: any;
+	[key: string]: string | number | null;
 };
 
 export const formDataStore = writable<TFormDataStore>({});
 
-export type TFormState = {
-	formInfo: TFormInfoStore;
-	formStyle: TFormStyle;
-	formStructure: string;
+export type TFormStore = {
+	info: TFormInfo;
+	items: TFormItem[];
+	style: TFormStyle;
+	pages: TFormPages;
 };
 
-export const formStateStore = writable<TFormState>({
-	formInfo: {
+export const formStore = writable<TFormStore>({
+	info: {
 		description: '',
 		documentTitle: '',
 		formId: '',
 		responderUri: '',
-		title: ''
+		title: '',
+		collectsEmail: false
 	},
-	formStyle: {
+	items: [],
+	style: {
 		theme: '',
 		radius: 0,
 		font: '',
 		mode: 'light'
 	},
-	formStructure: ''
+	pages: {
+		welcome: {
+			heading: '',
+			message: ''
+		},
+
+		goodbye: {
+			heading: '',
+			message: ''
+		}
+	}
 });
+
+// export type TFormState = {
+// 	formInfo: TFormInfoStore;
+// 	formStyle: TFormStyleOld;
+// 	formStructure: string;
+// };
+
+// export const formStateStore = writable<TFormState>({
+// 	formInfo: {
+// 		description: '',
+// 		documentTitle: '',
+// 		formId: '',
+// 		responderUri: '',
+// 		title: ''
+// 	},
+// 	formStyle: {
+// 		theme: '',
+// 		radius: 0,
+// 		font: '',
+// 		mode: 'light'
+// 	},
+// 	formStructure: ''
+// });

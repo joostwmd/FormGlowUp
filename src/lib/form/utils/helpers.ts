@@ -1,99 +1,51 @@
 import {
-	ADDITIONAL_TITLE_ITEM,
 	CHECKBOX_GRID_QUESTION_ITEM,
-	CHECKBOX_QUESTION_ITEM,
-	DATE_QUESTION_ITEM,
-	DROPDOWN_QUESTION_ITEM,
-	IMAGE_ITEM,
-	PAGEBREAK_ITEM,
-	PARAGRAPH_QUESTION_ITEM,
-	QUESTION_ITEM_TYPES,
+	CREATE_FORM_ERROR_MESSAGES,
+	GRID_ITEM_TYPES,
 	RADIO_GRID_QUESTION_ITEM,
-	RADIO_QUESTION_ITEM,
-	SCALE_QUESTION_ITEM,
+	SUBMIT_KEY_PREFIX,
 	TEXT_QUESTION_ITEM,
-	TIME_QUESTION_ITEM
+	USER_EMAIL_VALUE
 } from '$lib/form/constants';
+import { formDataStore, type TFormDataStore } from '../stores';
+import type { TFormInfo, TFormItem, TGridItem, TTextItem } from '../types';
+import type { TGoogleFormAPIResponse } from './google-api/types';
+import type { TConstructedHTMLData } from './html-parsing/types';
 
-export function determineItemType(item: any) {
-	if (item.textItem) return ADDITIONAL_TITLE_ITEM;
-	if (item.imageItem) return IMAGE_ITEM;
-	if (item.pageBreakItem) return PAGEBREAK_ITEM;
+export function mergeQuestionItemsData(
+	htmlQuestionItemsData: TConstructedHTMLData[],
+	apiFormItemsData: TFormItem[]
+): TFormItem[] {
+	const combinedData: TFormItem[] = [];
 
-	const questionItem = item.questionItem?.question;
-	if (questionItem) {
-		if (questionItem.textQuestion)
-			return questionItem.textQuestion.paragraph ? PARAGRAPH_QUESTION_ITEM : TEXT_QUESTION_ITEM;
-		if (questionItem.choiceQuestion) {
-			switch (questionItem.choiceQuestion.type) {
-				case 'RADIO':
-					return RADIO_QUESTION_ITEM;
-				case 'CHECKBOX':
-					return CHECKBOX_QUESTION_ITEM;
-				case 'DROP_DOWN':
-					return DROPDOWN_QUESTION_ITEM;
+	let currentItemIndex = 0;
+	for (let item of apiFormItemsData) {
+		if (item.type === RADIO_GRID_QUESTION_ITEM || item.type === CHECKBOX_GRID_QUESTION_ITEM) {
+			const apiItem = item as TGridItem;
+			for (let i = 0; i < apiItem.rows.length; i++) {
+				apiItem.rows[i]['submitId'] = htmlQuestionItemsData[currentItemIndex].submitId;
+				currentItemIndex++;
+				// no need for checking html validation, not possible on grid elements
 			}
-		}
-		if (questionItem.scaleQuestion) return SCALE_QUESTION_ITEM;
-		if (questionItem.dateQuestion) return DATE_QUESTION_ITEM;
-		if (questionItem.timeQuestion) return TIME_QUESTION_ITEM;
-	}
 
-	const questionGroupItem = item.questionGroupItem?.grid.columns.type;
-	if (questionGroupItem) {
-		switch (questionGroupItem) {
-			case 'RADIO':
-				return RADIO_GRID_QUESTION_ITEM;
-			case 'CHECKBOX':
-				return CHECKBOX_GRID_QUESTION_ITEM;
-		}
-	}
+			combinedData.push(apiItem);
+		} else {
+			const apiItem = item as TFormItem;
+			const htmlItem = htmlQuestionItemsData[currentItemIndex];
 
-	return '';
-}
+			apiItem.submitId = htmlItem.submitId;
 
-export function replaceUndefinedWithNull(obj: any): any {
-	if (Array.isArray(obj)) {
-		return obj.map(replaceUndefinedWithNull);
-	} else if (obj !== null && typeof obj === 'object') {
-		return Object.fromEntries(
-			Object.entries(obj).map(([key, value]) => [key, replaceUndefinedWithNull(value)])
-		);
-	} else {
-		return obj === undefined ? null : obj;
-	}
-}
-
-export function mergeQuestionItemsData(htmlQuestionItems: any[], apiFormItems: any) {
-	let questionItemIndex = 0;
-
-	const mergedItems = apiFormItems
-		.filter((item: any) => QUESTION_ITEM_TYPES.includes(item.type))
-		.map((item: any) => {
-			const htmlQuestionItem = htmlQuestionItems[questionItemIndex];
-			if (htmlQuestionItem) {
-				if (item.type === RADIO_GRID_QUESTION_ITEM || item.type === CHECKBOX_GRID_QUESTION_ITEM) {
-					item.rows.forEach((row: any, rowIndex: number) => {
-						row.submitId = htmlQuestionItem.submitId[rowIndex];
-						if (htmlQuestionItem.validationData) {
-							row.validationData = htmlQuestionItem.validationData;
-						}
-					});
-				} else {
-					item.submitId = htmlQuestionItem.submitId;
-					if (htmlQuestionItem.validationData) {
-						item.validationData = htmlQuestionItem.validationData;
-					}
-				}
-			}
-			questionItemIndex++;
-
-			return {
-				...item
+			const validationData = {
+				...apiItem.validation,
+				...htmlItem.validation
 			};
-		});
 
-	return mergedItems;
+			combinedData.push({ ...apiItem, validation: validationData });
+			currentItemIndex++;
+		}
+	}
+
+	return combinedData;
 }
 
 export function extractFormId(url: string): string | null {
@@ -102,10 +54,122 @@ export function extractFormId(url: string): string | null {
 	return match ? match[1] : null;
 }
 
-// export function handleFormValueChange(value: string, submitId: string) {
-// 	const entryId = SUBMIT_KEY_PREFIX + submitId;
-// 	formDataStore.update((currentData) => {
-// 		currentData[entryId] = value;
-// 		return currentData;
-// 	});
-// }
+export function handleFormValueChange(value: string | number | null, submitId: string) {
+	console.log('submit id', submitId);
+	formDataStore.update((currentData) => {
+		currentData[submitId] = value;
+		return currentData;
+	});
+}
+
+export function validateGoogleFormEditUrl(url: string): { valid: boolean; message: string } {
+	if (url.includes('edit')) {
+		return { valid: true, message: '' };
+	} else if (url.includes('viewform')) {
+		return { valid: false, message: CREATE_FORM_ERROR_MESSAGES.SHARE_LINK_PASTED };
+	} else {
+		return { valid: false, message: CREATE_FORM_ERROR_MESSAGES.INVALID_LINK };
+	}
+}
+
+export function checkIfFormIsSupported(
+	htmlData: string,
+	apiData: TGoogleFormAPIResponse,
+	constructedFormData: { info: TFormInfo; items: TFormItem[] }
+): {
+	isSupported: boolean;
+	message?: string;
+} {
+	// Check if form has Page Break Item
+	const pageBreakItem = apiData.items.find((item) => item.pageBreakItem);
+	if (pageBreakItem) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_PAGEBREAKS };
+	} else if (htmlData.includes('data-user-email-address')) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_IS_PRIVATE };
+	} else if (checkForHMTLParsingError(apiData, constructedFormData.items)) {
+		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.HTML_PARSING_ERROR };
+	}
+
+	return { isSupported: true };
+}
+
+function checkForHMTLParsingError(
+	apiData: TGoogleFormAPIResponse,
+	constructedItems: TFormItem[]
+): boolean {
+	const apiQuesitonItems = apiData.items.filter(
+		(item) => item.questionItem || item.questionGroupItem
+	);
+
+	const validSubmitIds = [];
+
+	for (let item of constructedItems) {
+		if (GRID_ITEM_TYPES.includes(item.type)) {
+			const typedItem = item as TGridItem;
+			for (let row of typedItem.rows) {
+				if (typeof row.submitId === 'string' && row.submitId.length >= 8) {
+					validSubmitIds.push(row.submitId);
+				}
+			}
+		} else {
+			if (typeof item.submitId === 'string' && item.submitId.length >= 8) {
+				validSubmitIds.push(item.submitId);
+			}
+		}
+	}
+
+	let apiQuestionItemsAmount = 0;
+	for (let item of apiQuesitonItems) {
+		if (item.questionGroupItem) {
+			apiQuestionItemsAmount += item.questionGroupItem.questions.length;
+		} else {
+			apiQuestionItemsAmount++;
+		}
+	}
+
+	//should return true if there are missing submitIds
+	return validSubmitIds.length !== apiQuestionItemsAmount;
+}
+
+export function checkForUserEmailCollection(htmlData: string): boolean {
+	return htmlData.includes('<input type="email"');
+}
+
+export function constructUserEmailItem(): TTextItem {
+	return {
+		type: TEXT_QUESTION_ITEM,
+		submitId: USER_EMAIL_VALUE,
+		displayData: {
+			title: 'Your Email Adress',
+			description: 'Please enter your email adress'
+		},
+		validation: {
+			isRequired: true,
+			category: 2,
+			type: 102
+		},
+		attributes: {
+			isParagraph: false
+		}
+	};
+}
+
+export function constructGoogleFormSubmitUrl(responderUrl: string): string {
+	const url = new URL(responderUrl);
+	url.pathname = url.pathname.replace('/viewform', '/formResponse');
+	url.pathname = url.pathname.replace('/d/', '/u/0/d/');
+	return url.toString();
+}
+
+export function constructSubmitData(formData: Record<string, any>) {
+	const submitData = new URLSearchParams();
+	const entries = Object.entries(formData);
+	const nonNullEntries = entries.filter(([key, value]) => value !== null);
+
+	for (let [key, value] of nonNullEntries) {
+		const prefixedKey = key === USER_EMAIL_VALUE ? key : `${SUBMIT_KEY_PREFIX}${key}`;
+		submitData.append(prefixedKey, value as string);
+	}
+
+	return submitData.toString();
+}

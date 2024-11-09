@@ -1,12 +1,11 @@
 import { json } from '@sveltejs/kit';
-import { JSDOM } from 'jsdom';
 
 export async function POST({ request, fetch }) {
 	const { accessToken, formId } = await request.json();
 
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 
-	let formData;
+	let apiData;
 	let htmlData;
 
 	// First fetch to get form data
@@ -21,14 +20,14 @@ export async function POST({ request, fetch }) {
 			throw new Error(`Error fetching form data: ${response.statusText}`);
 		}
 
-		formData = await response.json();
+		apiData = await response.json();
 	} catch (error) {
 		console.error('Error fetching form data:', error);
 		return json({ error: 'Failed to fetch form data' }, { status: 500 });
 	}
 
 	try {
-		const responderUrl = formData.responderUri;
+		const responderUrl = apiData.responderUri;
 		const response = await fetch(responderUrl);
 		if (!response.ok) {
 			throw new Error(`Error fetching HTML data: ${response.statusText}`);
@@ -41,5 +40,5 @@ export async function POST({ request, fetch }) {
 		return json({ error: 'Failed to fetch HTML data' }, { status: 500 });
 	}
 
-	return json({ htmlData: htmlData, formData: formData });
+	return json({ htmlData: htmlData, apiData: apiData, success: true });
 }

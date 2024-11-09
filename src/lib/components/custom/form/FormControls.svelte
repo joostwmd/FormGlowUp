@@ -2,7 +2,7 @@
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 
 	export let totalPages: number;
-	export let currentQuestion: number;
+	export let currentItem: number;
 
 	export let handleOnSubmit: () => void;
 	export let handleOnNext: () => void;
@@ -10,13 +10,13 @@
 </script>
 
 <div class="flex w-full justify-between">
-	{#if currentQuestion === 0}
+	{#if currentItem === 0}
 		<Button variant="ghost" disabled>Previous</Button>
 	{:else}
 		<Button variant="outline" on:click={handleOnPrevious}>Previous</Button>
 	{/if}
 
-	{#if currentQuestion === totalPages - 1}
+	{#if currentItem === totalPages - 1}
 		<Button on:click={handleOnSubmit}>Submit</Button>
 	{:else}
 		<Button on:click={handleOnNext}>Next</Button>
