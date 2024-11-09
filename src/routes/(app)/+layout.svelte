@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../../app.css';
 
+	import { Toaster } from '$lib/components/shadcn/ui/sonner';
 	import Nav from '$lib/components/custom/Nav.svelte';
 	import type { LayoutServerData } from './$types';
 	import { page } from '$app/stores';
@@ -26,3 +27,5 @@
 <div class="h-screen w-screen p-4">
 	<slot />
 </div>
+
+<Toaster color={'red'} />
