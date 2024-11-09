@@ -48,23 +48,28 @@ export async function submitForm() {
 export async function constructFormData(
 	htmlData: string,
 	apiData: TGoogleFormAPIResponse
-): Promise<{ info: TFormInfo; items: TFormItem[] }> {
-	const htmlQuestionItemsData = constructQuestionItemsDataFromHTML(htmlData);
-	const apiFormItemsData = constructFormQuestionItemsDataFromAPI(apiData);
-	const items = mergeQuestionItemsData(htmlQuestionItemsData, apiFormItemsData);
+): Promise<{ success: true; info: TFormInfo; items: TFormItem[] } | { success: false }> {
+	try {
+		const htmlQuestionItemsData = constructQuestionItemsDataFromHTML(htmlData);
+		const apiFormItemsData = constructFormQuestionItemsDataFromAPI(apiData);
+		const items = mergeQuestionItemsData(htmlQuestionItemsData, apiFormItemsData);
 
-	const collectsEmail = checkForUserEmailCollection(htmlData);
-	if (collectsEmail) {
-		const emailItem: TFormItem = constructUserEmailItem();
-		items.unshift(emailItem);
+		const collectsEmail = checkForUserEmailCollection(htmlData);
+		if (collectsEmail) {
+			const emailItem: TFormItem = constructUserEmailItem();
+			items.unshift(emailItem);
+		}
+
+		const info = await constructFormInfoDataFromAPI(apiData);
+
+		const formInfo: TFormInfo = {
+			...info,
+			collectsEmail
+		};
+
+		return { success: true, info: formInfo, items };
+	} catch (e) {
+		console.log('error', e);
+		return { success: false };
 	}
-
-	const info = await constructFormInfoDataFromAPI(apiData);
-
-	const formInfo: TFormInfo = {
-		...info,
-		collectsEmail
-	};
-
-	return { info: formInfo, items };
 }
