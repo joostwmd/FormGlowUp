@@ -99,49 +99,47 @@
 
 <div class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 	{#each data.forms as form}
-		<ThemeWrapper style={form.style}>
-			<Card.Root class="sm:col-span-2">
-				<Card.Header>
-					<Card.Title>{form.info.title}</Card.Title>
-					<Card.Description>{form.info.description}</Card.Description>
-				</Card.Header>
+		<Card.Root class="sm:col-span-2">
+			<Card.Header>
+				<Card.Title>{form.info.title}</Card.Title>
+				<Card.Description>{form.info.description}</Card.Description>
+			</Card.Header>
 
-				<Card.Content class="flex space-x-2">
-					<AlertDialog.Root>
-						<AlertDialog.Trigger asChild let:builder>
-							<Button builders={[builder]} variant="outline">
-								<TrashIcon class="h-4 w-4" />
-							</Button>
-						</AlertDialog.Trigger>
-						<AlertDialog.Content>
-							<AlertDialog.Header>
-								<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
-								<AlertDialog.Description>
-									This action cannot be undone. This will permanently delete your account and remove
-									your data from our servers.
-								</AlertDialog.Description>
-							</AlertDialog.Header>
-							<AlertDialog.Footer>
-								<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-								<form
-									method="POST"
-									action="?/deleteForm"
-									use:enhance={({ formData }) => handleEnhanceDeleteForm(formData, form.uid)}
-								>
-									<AlertDialog.Action class="w-full" type="submit">Delete</AlertDialog.Action>
-								</form>
-							</AlertDialog.Footer>
-						</AlertDialog.Content>
-					</AlertDialog.Root>
+			<Card.Content class="flex space-x-2">
+				<AlertDialog.Root>
+					<AlertDialog.Trigger asChild let:builder>
+						<Button builders={[builder]} variant="outline">
+							<TrashIcon class="h-4 w-4" />
+						</Button>
+					</AlertDialog.Trigger>
+					<AlertDialog.Content>
+						<AlertDialog.Header>
+							<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+							<AlertDialog.Description>
+								This action cannot be undone. This will permanently delete your account and remove
+								your data from our servers.
+							</AlertDialog.Description>
+						</AlertDialog.Header>
+						<AlertDialog.Footer>
+							<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+							<form
+								method="POST"
+								action="?/deleteForm"
+								use:enhance={({ formData }) => handleEnhanceDeleteForm(formData, form.uid)}
+							>
+								<AlertDialog.Action class="w-full" type="submit">Delete</AlertDialog.Action>
+							</form>
+						</AlertDialog.Footer>
+					</AlertDialog.Content>
+				</AlertDialog.Root>
 
-					<Button variant="outline" on:click={() => handleEditClick(form.uid)}>
-						<PenIcon class="mr-2 h-4 w-4" />
-						Edit
-					</Button>
+				<Button variant="outline" on:click={() => handleEditClick(form.uid)}>
+					<PenIcon class="mr-2 h-4 w-4" />
+					Edit
+				</Button>
 
-					<ShareFormButton />
-				</Card.Content>
-			</Card.Root>
-		</ThemeWrapper>
+				<ShareFormButton />
+			</Card.Content>
+		</Card.Root>
 	{/each}
 </div>
