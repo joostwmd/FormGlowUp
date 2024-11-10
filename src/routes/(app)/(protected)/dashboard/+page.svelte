@@ -22,9 +22,9 @@
 	export let data: LayoutServerData & PageServerData;
 
 	let isCreating: boolean = false;
-	let formCreateError: string | null = null;
 
-	let editUrl: string = '';
+	let editUrl: string =
+		'https://docs.google.com/forms/d/1ifsMl1Eq4ZUitM0CV5IPIt2Yta2mKIAuj25MWQebSmg/edit';
 	//'https://docs.google.com/forms/d/1ifsMl1Eq4ZUitM0CV5IPIt2Yta2mKIAuj25MWQebSmg/edit';
 
 	async function handleEnhanceCreateForm(formData: FormData) {
@@ -32,18 +32,15 @@
 		formData.append('userId', data.session.user?.id!);
 		return async ({ result }: { result: ActionResult }) => {
 			if (result.type === 'failure') {
-				formCreateError = result.data!.message;
 				isCreating = false;
 				showErrorToast(result.data!.message);
 				return;
 			} else if (result.type === 'error') {
-				formCreateError = 'An error occurred while creating the form';
+				showErrorToast(CREATE_FORM_ERROR_MESSAGES.UNEXPECTED_ERROR);
 				isCreating = false;
 				return;
 			} else {
-				formCreateError = null;
 				isCreating = false;
-				showErrorToast(CREATE_FORM_ERROR_MESSAGES.UNEXPECTED_ERROR);
 				await applyAction(result);
 			}
 		};
