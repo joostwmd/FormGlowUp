@@ -15,7 +15,7 @@ export type TFormStore = {
 	pages: TFormPages;
 };
 
-export const formStore = writable<TFormStore>({
+const emptyFormStore = (): TFormStore => ({
 	info: {
 		description: '',
 		documentTitle: '',
@@ -36,7 +36,6 @@ export const formStore = writable<TFormStore>({
 			heading: '',
 			message: ''
 		},
-
 		goodbye: {
 			heading: '',
 			message: ''
@@ -44,25 +43,5 @@ export const formStore = writable<TFormStore>({
 	}
 });
 
-// export type TFormState = {
-// 	formInfo: TFormInfoStore;
-// 	formStyle: TFormStyleOld;
-// 	formStructure: string;
-// };
-
-// export const formStateStore = writable<TFormState>({
-// 	formInfo: {
-// 		description: '',
-// 		documentTitle: '',
-// 		formId: '',
-// 		responderUri: '',
-// 		title: ''
-// 	},
-// 	formStyle: {
-// 		theme: '',
-// 		radius: 0,
-// 		font: '',
-// 		mode: 'light'
-// 	},
-// 	formStructure: ''
-// });
+export const localFormStore = writable<TFormStore>(emptyFormStore());
+export const dbFormStore = writable<TFormStore>(emptyFormStore());
