@@ -32,7 +32,6 @@ export const actions = {
 		const editUrl = data.get('editUrl') as string;
 
 		const res = await handleCreateForm(fetch, userId, editUrl);
-		console.log('res', res);
 
 		if (res.success) {
 			return redirect(302, `/form/${res.uid}/edit`);
@@ -65,22 +64,6 @@ async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
 	const formId = extractFormId(editUrl);
 	const fetchRes = await fetchFormData(fetch, userId, formId!);
 
-	// if (!fetchRes.success) {
-	// 	return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_NOT_FOUND };
-	// }
-
-	// const formData = await constructFormData(fetchRes.data!.htmlData, fetchRes.data!.apiData);
-
-	// const analyzeRes = checkIfFormIsSupported(
-	// 	fetchRes.data!.htmlData,
-	// 	fetchRes.data!.apiData,
-	// 	formData
-	// );
-
-	// if (!analyzeRes.isSupported) {
-	// 	return { success: false, message: analyzeRes.message };
-	// }
-
 	if (fetchRes.success && fetchRes.data) {
 		const isSupportedRes = checkIfFormIsSupported(fetchRes.data!.htmlData, fetchRes.data!.apiData);
 
@@ -100,7 +83,6 @@ async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
 			} else {
 				const createRes = await createForm(
 					userId,
-					formId!,
 					formData.info,
 					formData.items,
 					DEFAULT_FORM_STYLE,
