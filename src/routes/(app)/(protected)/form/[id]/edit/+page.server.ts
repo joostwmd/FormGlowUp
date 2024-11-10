@@ -35,14 +35,6 @@ export const actions = {
 		} else {
 			return fail(422, { message: res.message });
 		}
-
-		if (res) {
-			return {
-				...res
-			};
-		} else {
-			return fail(422, { message: 'Failed to refresh form' });
-		}
 	},
 
 	updateForm: async ({ request }) => {
@@ -50,14 +42,14 @@ export const actions = {
 		const userId = data.get('userId') as string;
 		const formId = data.get('formId') as string;
 
-		const formStore = JSON.parse(data.get('formStore') as unknown as string) as TFormStore;
+		const formData = JSON.parse(data.get('formData') as unknown as string) as TFormStore;
 
 		const res = await handleUpdateForm(
 			userId,
 			formId,
-			formStore.info,
-			formStore.items,
-			formStore.style
+			formData.info,
+			formData.items,
+			formData.style
 		);
 
 		if (res.success && res.data) {
@@ -65,7 +57,9 @@ export const actions = {
 				...res.data
 			};
 		} else {
-			return fail(422, { message: 'Failed to update form' });
+			return fail(422, {
+				message: 'Failed to update form. This is an error on our end, please contact us.'
+			});
 		}
 	}
 };
