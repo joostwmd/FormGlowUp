@@ -14,6 +14,7 @@ import {
 import type {
 	TChoicesItem,
 	TDateItem,
+	TFormInfo,
 	TFormItem,
 	TGridItem,
 	TItemDisplayData,
@@ -171,13 +172,23 @@ export function constructFormQuestionItemsDataFromAPI(
 }
 
 export async function constructFormInfoDataFromAPI(apiData: any) {
-	const formInfo = {
+	const formInfo: Omit<TFormInfo, 'collectsEmail'> = {
 		formId: apiData.formId,
 		responderUri: apiData.responderUri,
-		title: apiData.info.title,
-		description: apiData.info.description,
-		documentTitle: apiData.info.documentTitle
+		title: '',
+		description: '',
+		documentTitle: ''
 	};
+
+	if (apiData.info.title !== undefined) {
+		formInfo.title = apiData.info.title;
+	}
+	if (apiData.info.description !== undefined) {
+		formInfo.description = apiData.info.description;
+	}
+	if (apiData.info.documentTitle !== undefined) {
+		formInfo.documentTitle = apiData.info.documentTitle;
+	}
 
 	return formInfo;
 }
