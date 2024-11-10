@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formStore } from '$lib/form/stores';
+	import { localFormStore } from '$lib/form/stores';
 	import { themes } from '$lib/components/shadcn/themes';
 	import Button from '../../shadcn/ui/button/button.svelte';
 	import Label from '../../shadcn/ui/label/label.svelte';
@@ -20,10 +20,6 @@
 	$: selectedFontValue =
 		FONTS.find((option) => option.value === value)?.display ?? 'No FONT Selected';
 
-	$: {
-		console.log($formStore.style);
-	}
-
 	function closeAndFocusTrigger(triggerId: string) {
 		open = false;
 		tick().then(() => {
@@ -40,7 +36,7 @@
 			size="icon"
 			class="ml-auto rounded-[0.5rem]"
 			on:click={() => {
-				formStore.update((prev) => ({
+				localFormStore.update((prev) => ({
 					...prev,
 					style: { ...prev.style, radius: 0.5, theme: 'zinc' }
 				}));
@@ -55,12 +51,12 @@
 			<Label class="text-xs">Color</Label>
 			<div class="grid grid-cols-3 gap-2">
 				{#each themes as theme (theme.name)}
-					{@const isActive = $formStore.style.theme === theme.name}
+					{@const isActive = $localFormStore.style.theme === theme.name}
 					<Button
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							formStore.update((prev) => ({
+							localFormStore.update((prev) => ({
 								...prev,
 								style: { ...prev.style, theme: theme.name }
 							}));
@@ -89,12 +85,12 @@
 						variant="outline"
 						size="sm"
 						on:click={() => {
-							formStore.update((prev) => ({
+							localFormStore.update((prev) => ({
 								...prev,
 								style: { ...prev.style, radius }
 							}));
 						}}
-						class={cn($formStore.style.radius === radius && 'border-2 border-primary')}
+						class={cn($localFormStore.style.radius === radius && 'border-2 border-primary')}
 					>
 						{radius}
 					</Button>
@@ -109,11 +105,11 @@
 					variant="outline"
 					size="sm"
 					on:click={() =>
-						formStore.update((prev) => ({
+						localFormStore.update((prev) => ({
 							...prev,
 							style: { ...prev.style, mode: 'light' }
 						}))}
-					class={cn($formStore.style.mode === 'light' && 'border-2 border-primary')}
+					class={cn($localFormStore.style.mode === 'light' && 'border-2 border-primary')}
 				>
 					<Sun class="mr-1 -translate-x-1" />
 					Light
@@ -122,11 +118,11 @@
 					variant="outline"
 					size="sm"
 					on:click={() =>
-						formStore.update((prev) => ({
+						localFormStore.update((prev) => ({
 							...prev,
 							style: { ...prev.style, mode: 'dark' }
 						}))}
-					class={cn($formStore.style.mode === 'dark' && 'border-2 border-primary')}
+					class={cn($localFormStore.style.mode === 'dark' && 'border-2 border-primary')}
 				>
 					<Moon class="mr-1 -translate-x-1" />
 					Dark
@@ -157,7 +153,7 @@
 									value={option.value}
 									onSelect={(currentValue) => {
 										value = currentValue;
-										formStore.update((prev) => ({
+										localFormStore.update((prev) => ({
 											...prev,
 											style: { ...prev.style, font: currentValue }
 										}));

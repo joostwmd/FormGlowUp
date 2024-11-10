@@ -28,7 +28,6 @@ export async function fetchFormData(
 	});
 
 	const data = await res.json();
-
 	if (data.error) {
 		return {
 			success: false

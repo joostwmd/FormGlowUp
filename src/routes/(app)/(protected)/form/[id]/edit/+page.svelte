@@ -4,7 +4,7 @@
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
-	import { formStore } from '$lib/form/stores';
+	import { localFormStore, dbFormStore } from '$lib/form/stores';
 	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
 	import RefreshFormButton from '$lib/components/custom/RefreshFormButton.svelte';
 	import { applyAction, enhance } from '$app/forms';
@@ -13,6 +13,7 @@
 	import type { PageServerData } from './$types';
 	import type { LayoutServerData } from '../../../$types';
 	import { toast } from 'svelte-sonner';
+	import { CREATE_FORM_ERROR_MESSAGES } from '$lib/form/constants';
 
 	export let data: PageServerData & LayoutServerData;
 	let isMounted: boolean = false;
@@ -21,7 +22,14 @@
 
 	onMount(() => {
 		if (data.form) {
-			formStore.set({
+			localFormStore.set({
+				info: data.form.info,
+				items: data.form.items,
+				style: data.form.style,
+				pages: data.form.pages
+			});
+
+			dbFormStore.set({
 				info: data.form.info,
 				items: data.form.items,
 				style: data.form.style,
@@ -46,14 +54,18 @@
 		formData.append('formId', data.form?.info.formId!);
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				$formStore.info = result.data.info;
-				$formStore.items = result.data.items;
+				console.log('refreshed form', result.data);
+				localFormStore.update((store) => ({
+					info: result.data.info,
+					items: result.data.items,
+					style: store.style,
+					pages: store.pages
+				}));
 			} else if (result.type === 'failure') {
-				console.log('Failure refreshing form', result.data!.message);
 				showErrorToast(result.data!.message);
 				await applyAction(result);
 			} else if (result.type === 'error') {
-				console.log('Error refreshing form');
+				showErrorToast(CREATE_FORM_ERROR_MESSAGES.UNEXPECTED_ERROR);
 				await applyAction(result);
 			}
 			isRefetching = false;
@@ -64,11 +76,12 @@
 		isUpdating = true;
 		formData.append('userId', data.session.user?.id!);
 		formData.append('formId', data.form!.uid);
-		formData.append('formStore', JSON.stringify($formStore));
+		formData.append('formData', JSON.stringify($localFormStore));
 
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				formStore.set({
+				console.log('response of update form', result.data);
+				dbFormStore.set({
 					info: result.data.info,
 					items: result.data.items,
 					style: result.data.style,
@@ -128,12 +141,12 @@
 						This is a live Preview of your 10x google form
 					</p>
 				</div>
-				<ThemeWrapper style={$formStore.style}>
+				<ThemeWrapper style={$localFormStore.style}>
 					<Card.Root class="sm:col-span-2">
 						<Card.Content>
 							<Form
-								items={$formStore.items}
-								info={$formStore.info}
+								items={$localFormStore.items}
+								info={$localFormStore.info}
 								isPreview={true}
 								canSubmit={false}
 							/>

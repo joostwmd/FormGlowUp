@@ -33,7 +33,6 @@ export async function getFormById(uid: string) {
 
 export async function createForm(
 	userId: string,
-	googleFormId: string,
 	info: TFormInfo,
 	items: TFormItem[],
 	style: TFormStyle,
@@ -42,9 +41,8 @@ export async function createForm(
 	try {
 		const newFormRef = firestore.collection(`users/${userId}/forms`).doc();
 		await newFormRef.set({
-			//googleFormId: googleFormId,
 			uid: newFormRef.id,
-			public: false,
+			public: true,
 			info: info,
 			items: items,
 			style: style,

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formStore } from '$lib/form/stores';
+	import { localFormStore } from '$lib/form/stores';
 	import Input from '$lib/components/shadcn/ui/input/input.svelte';
 	import { Label } from '$lib/components/shadcn/ui/label';
 </script>
@@ -16,12 +16,12 @@
 			<div class="space-y-2 px-2">
 				<div class="space-y-1">
 					<Label class="text-sm">Heading</Label>
-					<Input bind:value={$formStore.pages.welcome.heading} />
+					<Input bind:value={$localFormStore.pages.welcome.heading} />
 				</div>
 
 				<div class="space-y-1">
 					<Label class="text-sm">Message</Label>
-					<Input bind:value={$formStore.pages.welcome.message} />
+					<Input bind:value={$localFormStore.pages.welcome.message} />
 				</div>
 			</div>
 		</div>
@@ -32,12 +32,12 @@
 			<div class="space-y-2 px-2">
 				<div class="space-y-1">
 					<Label class="text-sm">Heading</Label>
-					<Input bind:value={$formStore.pages.goodbye.heading} />
+					<Input bind:value={$localFormStore.pages.goodbye.heading} />
 				</div>
 
 				<div class="space-y-1">
 					<Label class="text-sm">Message</Label>
-					<Input bind:value={$formStore.pages.goodbye.message} />
+					<Input bind:value={$localFormStore.pages.goodbye.message} />
 				</div>
 			</div>
 		</div>
