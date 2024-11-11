@@ -5,10 +5,10 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<!-- LDRS -->
-		<script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/grid.js"></script>
-		<script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/zoomies.js"></script>
-		<script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/spiral.js"></script>
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src 'self'; img-src 'self' *.googleusercontent.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
+		/>
 
 		%sveltekit.head%
 	</head>
