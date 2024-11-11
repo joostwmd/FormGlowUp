@@ -8,11 +8,15 @@
 	const mode = $page.params.viewmode;
 </script>
 
-<ThemeWrapper style={data.form?.style}>
-	<Form
-		items={data.form?.items}
-		info={data.form?.info}
-		isPreview={true}
-		canSubmit={mode === 'public'}
-	/>
-</ThemeWrapper>
+<div class="flex h-screen w-screen items-center justify-center">
+	<div class="w-full max-w-[820px]">
+		<ThemeWrapper style={data.form?.style}>
+			<Form
+				items={data.form?.items}
+				info={data.form?.info}
+				isPreview={true}
+				canSubmit={mode === 'public'}
+			/>
+		</ThemeWrapper>
+	</div>
+</div>
