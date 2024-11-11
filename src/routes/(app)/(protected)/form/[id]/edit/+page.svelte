@@ -5,15 +5,16 @@
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
 	import { localFormStore, dbFormStore } from '$lib/form/stores';
-	import UpdateFormButton from '$lib/components/custom/UpdateFormButton.svelte';
-	import RefreshFormButton from '$lib/components/custom/RefreshFormButton.svelte';
+	import UpdateFormButton from '$lib/components/custom/buttons/UpdateFormButton.svelte';
+	import RefreshFormButton from '$lib/components/custom/buttons/RefreshFormButton.svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import Form from '$lib/components/custom/form/Form.svelte';
-	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
+	import ShareFormButton from '$lib/components/custom/buttons/ShareFormButton.svelte';
 	import type { PageServerData } from './$types';
 	import type { LayoutServerData } from '../../../$types';
 	import { toast } from 'svelte-sonner';
 	import { CREATE_FORM_ERROR_MESSAGES } from '$lib/form/constants';
+	import PreviewFormButton from '$lib/components/custom/buttons/PreviewFormButton.svelte';
 
 	export let data: PageServerData & LayoutServerData;
 	let isMounted: boolean = false;
@@ -95,7 +96,7 @@
 	}
 </script>
 
-{#if isMounted}
+{#if isMounted && data.form}
 	<div class="h-full w-full bg-muted/40">
 		<div class="mb-4 flex w-full items-center justify-end">
 			<div class="flex w-fit space-x-2">
@@ -114,6 +115,8 @@
 				>
 					<RefreshFormButton {isRefetching} />
 				</form>
+
+				<PreviewFormButton formId={data.uid} />
 
 				<ShareFormButton />
 			</div>
