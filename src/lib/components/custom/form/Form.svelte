@@ -37,7 +37,7 @@
 		TTimeItem
 	} from '$lib/form/types';
 	import ParagraphInput from './items/ParagraphInput.svelte';
-	import { validateFormItemData } from '$lib/form/utils/validation';
+	import { validateFormItemData } from '$lib/form/utils/question-validation';
 	import { toast } from 'svelte-sonner';
 	import ErrorToast from '../toasts/ErrorToast.svelte';
 
