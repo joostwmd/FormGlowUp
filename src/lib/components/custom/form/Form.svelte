@@ -128,75 +128,71 @@
 	}
 </script>
 
-<div class="flex w-full flex-col items-center">
-	<div class="flex w-full flex-col items-start space-y-4">
-		{#if state === 'WELCOME'}
-			<div class="flex w-full flex-col items-center">
-				<h1 class="text-center text-2xl font-bold">{info.title}</h1>
-				<p class="text-center text-sm text-gray-500">{info.description}</p>
-			</div>
-		{:else if state === 'FORM'}
-			<FormProgress totalPages={items.length} {currentItem} />
-			{#key currentItem}
-				{#if item.displayData.image}
-					<img
-						src={`/api/proxy-image?url=${item.displayData.image.src}`}
-						alt="form pic"
-						class="w-full object-contain"
-					/>
-				{/if}
-				{#if item.displayData.title}
-					<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
-				{/if}
-				{#if item.displayData.description}
-					<p class="text-sm text-gray-500">{item.displayData.description}</p>
-				{/if}
-				{#if items[currentItem].type === TEXT_QUESTION_ITEM}
-					<TextInput item={items[currentItem]} />
-				{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
-					<ParagraphInput item={items[currentItem]} />
-				{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
-					<RadioGroup item={items[currentItem]} />
-				{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
-					<CheckboxGroup item={items[currentItem]} />
-				{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
-					<Dropdown item={items[currentItem]} />
-				{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
-					<SliderInput item={items[currentItem]} />
-				{:else if items[currentItem].type === DATE_QUESTION_ITEM}
-					<DateInput item={items[currentItem]} />
-				{:else if items[currentItem].type === TIME_QUESTION_ITEM}
-					<TimeInput item={items[currentItem]} />
-				{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
-					<RadioGrid item={items[currentItem]} />
-				{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
-					<CheckboxGrid item={items[currentItem]} />
-				{/if}
-				{#if errorMessage}
-					<p class="text-red-500">{errorMessage}</p>
-				{/if}
-			{/key}
-		{:else if state === 'END'}
-			<div class="flex w-full flex-col items-center">
-				<h1 class="text-center text-2xl font-bold">Thank you for your Time</h1>
-				<p class="text-center text-sm text-gray-500">
-					Your reposonses were successfully transmitted
-				</p>
+<div class="flex h-full w-full flex-col justify-between space-y-4">
+	{#if state === 'WELCOME'}
+		<div class="flex w-full flex-col items-center">
+			<h1 class="text-center text-2xl font-bold">{info.title}</h1>
+			<p class="text-center text-sm text-gray-500">{info.description}</p>
+		</div>
+	{:else if state === 'FORM'}
+		<FormProgress totalPages={items.length} {currentItem} />
+		{#key currentItem}
+			{#if item.displayData.image}
+				<img
+					src={`/api/proxy-image?url=${item.displayData.image.src}`}
+					alt="form pic"
+					class="w-full object-contain"
+				/>
+			{/if}
+			{#if item.displayData.title}
+				<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
+			{/if}
+			{#if item.displayData.description}
+				<p class="text-sm text-gray-500">{item.displayData.description}</p>
+			{/if}
+			{#if items[currentItem].type === TEXT_QUESTION_ITEM}
+				<TextInput item={items[currentItem]} />
+			{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
+				<ParagraphInput item={items[currentItem]} />
+			{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
+				<RadioGroup item={items[currentItem]} />
+			{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
+				<CheckboxGroup item={items[currentItem]} />
+			{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
+				<Dropdown item={items[currentItem]} />
+			{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
+				<SliderInput item={items[currentItem]} />
+			{:else if items[currentItem].type === DATE_QUESTION_ITEM}
+				<DateInput item={items[currentItem]} />
+			{:else if items[currentItem].type === TIME_QUESTION_ITEM}
+				<TimeInput item={items[currentItem]} />
+			{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
+				<RadioGrid item={items[currentItem]} />
+			{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
+				<CheckboxGrid item={items[currentItem]} />
+			{/if}
+			{#if errorMessage}
+				<p class="text-red-500">{errorMessage}</p>
+			{/if}
+		{/key}
+	{:else if state === 'END'}
+		<div class="flex w-full flex-col items-center">
+			<h1 class="text-center text-2xl font-bold">Thank you for your Time</h1>
+			<p class="text-center text-sm text-gray-500">Your reposonses were successfully transmitted</p>
 
-				{#if isPreview}
-					<p class="">Responsed are not send to Google in Preview Mode</p>
-				{/if}
-			</div>
-		{/if}
+			{#if isPreview}
+				<p class="">Responsed are not send to Google in Preview Mode</p>
+			{/if}
+		</div>
+	{/if}
 
-		<FormControls
-			{state}
-			{isPreview}
-			totalPages={items.length}
-			{currentItem}
-			{handleOnNext}
-			{handleOnPrevious}
-			{handleOnSubmit}
-		/>
-	</div>
+	<FormControls
+		{state}
+		{isPreview}
+		totalPages={items.length}
+		{currentItem}
+		{handleOnNext}
+		{handleOnPrevious}
+		{handleOnSubmit}
+	/>
 </div>

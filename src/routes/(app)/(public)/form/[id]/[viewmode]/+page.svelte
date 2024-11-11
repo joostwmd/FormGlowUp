@@ -17,16 +17,16 @@
 			</div>
 		{/if}
 
-		<div class="flex h-screen w-screen items-center justify-center px-8">
-			<div class="flex w-full max-w-[820px] flex-col">
+		<div class="flex h-screen w-screen flex-col items-center justify-center px-8">
+			<div class="h-4/6 w-full max-w-[820px]">
 				<Form items={data.form.items} info={data.form.info} isPreview={mode === 'preview'} />
 			</div>
-		</div>
 
-		<!-- {#if mode === 'public'}
-			<div class="fixed bottom-0 mb-4 w-full text-center">
-				<p>Powered by Form GlowUp</p>
-			</div>
-		{/if} -->
+			{#if mode === 'public'}
+				<div class="mt-4 w-full text-center">
+					<p>Powered by Form GlowUp</p>
+				</div>
+			{/if}
+		</div>
 	</ThemeWrapper>
 {/if}
