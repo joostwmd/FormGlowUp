@@ -21,7 +21,7 @@
 	}
 </script>
 
-{#if navVisible}
+{#if navVisible && data.session}
 	<Nav session={data.session} />
 {/if}
 
