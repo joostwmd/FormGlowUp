@@ -60,19 +60,16 @@
 
 		changedDetails = [];
 
-		// Check info changes
 		const infoChanges = getChangedProperties(dbFormState.info, localFormState.info);
 		infoChanges.forEach(({ prop, newValue }) => {
 			changedDetails.push(`Info "${prop}" changed to "${newValue}"`);
 		});
 
-		// Check style changes
 		const styleChanges = getChangedProperties(dbFormState.style, localFormState.style);
 		styleChanges.forEach(({ prop, newValue }) => {
 			changedDetails.push(`Style "${prop}" changed to "${newValue}"`);
 		});
 
-		// Check items changes
 		const itemsChanges: { prop: string; newValue: any }[] = [];
 		localFormState.items.forEach((item, index) => {
 			const dbItem = dbFormState.items[index];
@@ -86,7 +83,6 @@
 			}
 		});
 
-		// Handle removed items
 		if (dbFormState.items.length > localFormState.items.length) {
 			for (let i = localFormState.items.length; i < dbFormState.items.length; i++) {
 				const removedItem = dbFormState.items[i];
@@ -127,8 +123,8 @@
 	</Tooltip.Trigger>
 	<Tooltip.Content>
 		{#if needsUpdate}
-			<p>You have unsaved changes:</p>
-			<ul>
+			<p>You have {changedDetails.length} unsaved changes:</p>
+			<ul class="my-6 ml-6 list-disc [&>li]:mt-2">
 				{#each changedDetails as detail}
 					<li>{detail}</li>
 				{/each}
