@@ -10,7 +10,7 @@ import {
 import { formDataStore } from '../stores';
 import type { TFormItem, TGridItem, TTextItem } from '../types';
 import type { TGoogleFormAPIResponse } from './google-api/types';
-import { constructQuestionItemsDataFromHTML } from './html-parsing/utils';
+import { constructQuestionItemsDataFromHTML } from './html-parsing';
 import type { TConstructedHTMLData } from './html-parsing/types';
 
 export function mergeQuestionItemsData(
@@ -134,20 +134,6 @@ export function checkIfFormIsSupported(
 	// }
 
 	return { isSupported: true };
-}
-
-export function checkIfFormShufflesQuestions(htmlData: {
-	firstFetch: string;
-	secondFetch: string;
-}): { success: boolean; message?: string } {
-	const firstFetch = constructQuestionItemsDataFromHTML(htmlData.firstFetch);
-	const secondFetch = constructQuestionItemsDataFromHTML(htmlData.secondFetch);
-
-	if (JSON.stringify(firstFetch) === JSON.stringify(secondFetch)) {
-		return { success: true };
-	} else {
-		return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_SHUFFLES_QUESTIONS };
-	}
 }
 
 export function checkForHMTLParsingError(

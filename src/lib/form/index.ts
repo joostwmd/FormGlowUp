@@ -10,7 +10,7 @@ import {
 	constructUserEmailItem,
 	mergeQuestionItemsData
 } from './utils/helpers';
-import { constructQuestionItemsDataFromHTML } from './utils/html-parsing/utils';
+import { constructQuestionItemsDataFromHTML } from './utils/html-parsing';
 
 export async function fetchFormData(
 	fetch: any,

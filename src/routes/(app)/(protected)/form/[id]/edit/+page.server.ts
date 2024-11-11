@@ -78,11 +78,11 @@ async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 			return { success: false, message: isSupportedRes.message };
 		}
 
-		// const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
+		const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
 
-		// if (!isShuffelingQuestionRes.success) {
-		// 	return { success: false, message: isShuffelingQuestionRes.message };
-		// }
+		if (!isShuffelingQuestionRes.success) {
+			return { success: false, message: isShuffelingQuestionRes.message };
+		}
 
 		const formData = await constructFormData(
 			fetchRes.data.htmlData.firstFetch,
