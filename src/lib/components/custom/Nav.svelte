@@ -6,11 +6,11 @@
 	export let session;
 </script>
 
-<div class="flex w-full items-center justify-between px-4 py-2">
+<div class="flex w-full items-center justify-between border-b p-4">
 	<h1 class="text-center text-2xl font-bold">Form GlowUp</h1>
 
 	{#if session}
-		<Avatar.Root>
+		<Avatar.Root class="h-8 w-8">
 			<Avatar.Image src={session.user.image} alt="Profile Avatar" />
 			<Avatar.Fallback>{session.user.name[0]}</Avatar.Fallback>
 		</Avatar.Root>

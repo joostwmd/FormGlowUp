@@ -25,9 +25,9 @@
 	<Nav session={data.session} />
 {/if}
 
-<div class="h-screen w-screen p-4">
+<div class="h-screen w-screen">
 	<slot />
 </div>
 
 <Toaster />
-<!-- <ModeWatcher defaultMode="light" /> -->
+<ModeWatcher defaultMode="dark" />

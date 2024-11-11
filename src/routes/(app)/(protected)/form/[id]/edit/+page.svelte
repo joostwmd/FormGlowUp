@@ -119,7 +119,7 @@
 </script>
 
 {#if isMounted && data.form}
-	<div class="h-full w-full bg-muted/40">
+	<div class="h-full w-full p-4">
 		<div class="mb-4 flex w-full items-center justify-end">
 			<div class="mt-4 flex w-fit flex-row gap-2 sm:grid sm:grid-cols-2 sm:gap-2">
 				<form
