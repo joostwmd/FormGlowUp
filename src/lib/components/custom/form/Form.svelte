@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
-
 	import CheckboxGrid from '$lib/components/custom/form/items/CheckboxGrid.svelte';
 	import CheckboxGroup from '$lib/components/custom/form/items/CheckboxGroup.svelte';
 	import DateInput from '$lib/components/custom/form/items/DateInput.svelte';
@@ -69,6 +67,7 @@
 
 	function handleOnPrevious() {
 		if (currentItem > 0) {
+			errorMessage = null;
 			currentItem -= 1;
 		}
 	}
