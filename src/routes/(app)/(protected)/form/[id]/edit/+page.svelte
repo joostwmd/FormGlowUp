@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ErrorToast from '$lib/components/custom/ErrorToast.svelte';
+	import ErrorToast from '$lib/components/custom/toasts/ErrorToast.svelte';
 	import Customizer from '$lib/components/custom/customizer/Customizer.svelte';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
@@ -118,7 +118,7 @@
 
 				<PreviewFormButton formId={data.uid} />
 
-				<ShareFormButton />
+				<ShareFormButton formId={data.uid} />
 			</div>
 		</div>
 		<div class="flex items-start space-x-4 sm:flex-col sm:space-x-0 sm:space-y-4">
