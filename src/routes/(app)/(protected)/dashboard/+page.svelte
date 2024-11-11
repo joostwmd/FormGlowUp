@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ErrorToast from '$lib/components/custom/ErrorToast.svelte';
+	import ErrorToast from '$lib/components/custom/toasts/ErrorToast.svelte';
 	import Button from '$lib/components/shadcn/ui/button/button.svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import type { PageServerData } from './$types';
@@ -112,7 +112,7 @@
 
 				<PreviewFormButton formId={form.uid} />
 
-				<ShareFormButton />
+				<ShareFormButton formId={form.uid} />
 			</Card.Content>
 		</Card.Root>
 	{/each}
