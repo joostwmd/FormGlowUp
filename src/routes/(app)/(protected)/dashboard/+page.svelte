@@ -6,6 +6,7 @@
 	import type { LayoutServerData } from '../$types';
 	import PenIcon from 'lucide-svelte/icons/pen';
 	import TrashIcon from 'lucide-svelte/icons/trash';
+	import EyeIcon from 'lucide-svelte/icons/eye';
 	import * as AlertDialog from '$lib/components/shadcn/ui/alert-dialog/index.js';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import Input from '$lib/components/shadcn/ui/input/input.svelte';
@@ -14,8 +15,6 @@
 	import { goto, invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ShareFormButton from '$lib/components/custom/ShareFormButton.svelte';
-	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
-	import * as Alert from '$lib/components/shadcn/ui/alert';
 	import { toast } from 'svelte-sonner';
 	import { CREATE_FORM_ERROR_MESSAGES } from '$lib/form/constants';
 
@@ -136,6 +135,11 @@
 				<Button variant="outline" on:click={() => handleEditClick(form.uid)}>
 					<PenIcon class="mr-2 h-4 w-4" />
 					Edit
+				</Button>
+
+				<Button variant="outline" on:click={async () => goto(`/form/${form.uid}/preview`)}>
+					<EyeIcon class="mr-2 h-4 w-4" />
+					Preview
 				</Button>
 
 				<ShareFormButton />
