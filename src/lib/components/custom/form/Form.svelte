@@ -125,7 +125,11 @@
 
 		{#key currentItem}
 			{#if item.displayData.image}
-				<img src={item.displayData.image.src} alt="form pic" class={'h-48 w-full object-cover'} />
+				<img
+					src={`/api/proxy-image?url=${item.displayData.image.src}`}
+					alt="form pic"
+					class={'h-48 w-full object-cover'}
+				/>
 			{/if}
 
 			{#if item.displayData.title}
