@@ -12,7 +12,6 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@tailwindcss/typography": "^0.5.14",
@@ -36,6 +35,7 @@
 		"@auth/firebase-adapter": "^2.6.0",
 		"@auth/sveltekit": "^1.6.0",
 		"@internationalized/date": "^3.5.6",
+		"@sveltejs/adapter-vercel": "^5.4.7",
 		"bits-ui": "^0.21.16",
 		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.18",
