@@ -13,7 +13,7 @@
 	<ThemeWrapper style={data.form?.style}>
 		{#if mode === 'preview'}
 			<div class="flex justify-start">
-				<GoBackToEditButton />
+				<GoBackToEditButton formId={data.uid} />
 			</div>
 		{/if}
 
