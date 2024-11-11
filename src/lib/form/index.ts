@@ -1,15 +1,12 @@
 import { getAccessTokens } from '$lib/firebase/utils';
 import type { TFormInfo, TFormItem, TGETFormResponse } from './types';
+import { checkForUserEmailCollection } from './utils/form-creation-validation';
 import {
 	constructFormInfoDataFromAPI,
 	constructFormQuestionItemsDataFromAPI
 } from './utils/google-api';
 import type { TGoogleFormAPIResponse } from './utils/google-api/types';
-import {
-	checkForUserEmailCollection,
-	constructUserEmailItem,
-	mergeQuestionItemsData
-} from './utils/helpers';
+import { constructUserEmailItem, mergeQuestionItemsData } from './utils/helpers';
 import { constructQuestionItemsDataFromHTML } from './utils/html-parsing';
 
 export async function fetchFormData(
