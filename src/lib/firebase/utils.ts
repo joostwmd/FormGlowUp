@@ -1,4 +1,4 @@
-import type { TFormInfo, TFormItem, TFormPages, TFormStyle } from '$lib/form/types';
+import type { TFormInfo, TFormItem, TFormStyle } from '$lib/form/types';
 import { firestore } from './auth';
 
 export async function getFormsOfUserById(userId: string) {
@@ -35,8 +35,7 @@ export async function createForm(
 	userId: string,
 	info: TFormInfo,
 	items: TFormItem[],
-	style: TFormStyle,
-	pages: TFormPages
+	style: TFormStyle
 ) {
 	try {
 		const newFormRef = firestore.collection(`users/${userId}/forms`).doc();
@@ -45,8 +44,7 @@ export async function createForm(
 			public: true,
 			info: info,
 			items: items,
-			style: style,
-			pages: pages
+			style: style
 		});
 
 		return { success: true, uid: newFormRef.id };

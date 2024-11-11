@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ErrorToast from '$lib/components/custom/toasts/ErrorToast.svelte';
-	import Customizer from '$lib/components/custom/customizer/Customizer.svelte';
+	import * as Accordion from '$lib/components/shadcn/ui/accordion/index.js';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import ThemeWrapper from '$lib/components/custom/customizer/ThemeWrapper.svelte';
 	import { onMount } from 'svelte';
@@ -15,6 +15,9 @@
 	import { toast } from 'svelte-sonner';
 	import { CREATE_FORM_ERROR_MESSAGES } from '$lib/form/constants';
 	import PreviewFormButton from '$lib/components/custom/buttons/PreviewFormButton.svelte';
+	import SuccessToast from '$lib/components/custom/toasts/SuccessToast.svelte';
+	import PaintbrushIcon from 'lucide-svelte/icons/paintbrush';
+	import ThemeCustomizer from '$lib/components/custom/customizer/ThemeCustomizer.svelte';
 
 	export let data: PageServerData & LayoutServerData;
 	let isMounted: boolean = false;
@@ -26,15 +29,13 @@
 			localFormStore.set({
 				info: data.form.info,
 				items: data.form.items,
-				style: data.form.style,
-				pages: data.form.pages
+				style: data.form.style
 			});
 
 			dbFormStore.set({
 				info: data.form.info,
 				items: data.form.items,
-				style: data.form.style,
-				pages: data.form.pages
+				style: data.form.style
 			});
 		}
 		isMounted = true;
@@ -49,18 +50,29 @@
 		});
 	}
 
+	function showSuccessToast(heading: string, message: string) {
+		toast.custom(SuccessToast, {
+			componentProps: {
+				heading: heading,
+				description: message
+			}
+		});
+	}
+
 	async function handleEnhanceRefreshForm(formData: FormData) {
 		isRefetching = true;
 		formData.append('userId', data.session.user?.id!);
 		formData.append('formId', data.form?.info.formId!);
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				console.log('refreshed form', result.data);
+				showSuccessToast(
+					'Form Refreshed',
+					'Your form has been successfully refreshed with the latest data from google forms. Don not forget to save your changes.'
+				);
 				localFormStore.update((store) => ({
 					info: result.data.info,
 					items: result.data.items,
-					style: store.style,
-					pages: store.pages
+					style: store.style
 				}));
 			} else if (result.type === 'failure') {
 				showErrorToast(result.data!.message);
@@ -81,12 +93,22 @@
 
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
-				console.log('response of update form', result.data);
+				console.log('Form Updated', result.data);
+				showSuccessToast(
+					'Form Updated',
+					'Your form has been successfully updated with the latest data. Your changes are now published.'
+				);
+
+				localFormStore.set({
+					info: result.data.info,
+					items: result.data.items,
+					style: result.data.style
+				});
+
 				dbFormStore.set({
 					info: result.data.info,
 					items: result.data.items,
-					style: result.data.style,
-					pages: result.data.pages
+					style: result.data.style
 				});
 			} else {
 				await applyAction(result);
@@ -99,7 +121,9 @@
 {#if isMounted && data.form}
 	<div class="h-full w-full bg-muted/40">
 		<div class="mb-4 flex w-full items-center justify-end">
-			<div class="flex w-fit space-x-2">
+			<div
+				class="sm:sapce-y-2 mt-4 flex w-fit justify-end space-x-2 sm:flex sm:flex-col sm:space-x-0 sm:space-y-2"
+			>
 				<form
 					method="POST"
 					action="?/updateForm"
@@ -124,15 +148,20 @@
 		<div class="flex items-start space-x-4 sm:flex-col sm:space-x-0 sm:space-y-4">
 			<div class="w-1/3 sm:w-full">
 				<Card.Root class="sm:col-span-2">
-					<Card.Header class="pb-3">
-						<Card.Title>Style your Form</Card.Title>
-						<Card.Description class="max-w-lg text-balance leading-relaxed">
-							10x your google form by selecting themes, colors and much more.
-						</Card.Description>
-					</Card.Header>
-
 					<Card.Content>
-						<Customizer />
+						<Accordion.Root class="w-full">
+							<Accordion.Item value="customization">
+								<Accordion.Trigger>
+									<div class="flex items-center">
+										<PaintbrushIcon class="mr-2 h-4 w-4" />
+										Cusomize your Form
+									</div>
+								</Accordion.Trigger>
+								<Accordion.Content>
+									<ThemeCustomizer />
+								</Accordion.Content>
+							</Accordion.Item>
+						</Accordion.Root>
 					</Card.Content>
 				</Card.Root>
 			</div>
@@ -147,12 +176,7 @@
 				<ThemeWrapper style={$localFormStore.style}>
 					<Card.Root class="sm:col-span-2">
 						<Card.Content>
-							<Form
-								items={$localFormStore.items}
-								info={$localFormStore.info}
-								isPreview={true}
-								canSubmit={false}
-							/>
+							<Form items={$localFormStore.items} info={$localFormStore.info} isPreview={true} />
 						</Card.Content>
 					</Card.Root>
 				</ThemeWrapper>

@@ -25,16 +25,6 @@ export type TFormStyle = {
 	mode: string;
 };
 
-export type TFormPage = {
-	heading: string;
-	message: string;
-};
-
-export type TFormPages = {
-	welcome: TFormPage;
-	goodbye: TFormPage;
-};
-
 export type TBaseFormItem = {
 	submitId: string;
 	type: string;
@@ -127,5 +117,5 @@ export type TItemDisplayData = {
 
 export type TGETFormResponse = {
 	apiData: TGoogleFormAPIResponse;
-	htmlData: string;
+	htmlData: { firstFetch: string; secondFetch: string };
 };

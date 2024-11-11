@@ -38,22 +38,21 @@
 	} from '$lib/form/types';
 	import ParagraphInput from './items/ParagraphInput.svelte';
 	import { validateFormItemData } from '$lib/form/utils/validation';
+	import { toast } from 'svelte-sonner';
+	import ErrorToast from '../toasts/ErrorToast.svelte';
 
 	export let isPreview: boolean = false;
-	export let canSubmit: boolean = true;
 	export let info: TFormInfo;
 	export let items: TFormItem[];
 
 	let currentItem: number = 0;
-
 	let state: 'WELCOME' | 'FORM' | 'END' = 'WELCOME';
 	let errorMessage: string | null = null;
-	let isSubmitted: boolean = false;
 
 	function handleOnNext() {
-		if (isPreview && currentItem === items.length - 1) {
-			isSubmitted = true;
-		} else {
+		if (state === 'WELCOME') {
+			state = 'FORM';
+		} else if (state === 'FORM') {
 			const validationRes = validateFormItemData(items[currentItem], $formDataStore);
 
 			if (validationRes.valid) {
@@ -66,7 +65,11 @@
 	}
 
 	function handleOnPrevious() {
-		if (currentItem > 0) {
+		if (state === 'FORM' && currentItem === 0 && isPreview) {
+			state = 'WELCOME';
+		} else if (state === 'END' && isPreview) {
+			state = 'FORM';
+		} else if (currentItem > 0) {
 			errorMessage = null;
 			currentItem -= 1;
 		}
@@ -74,8 +77,12 @@
 
 	let isSubmitting: boolean = false;
 	async function handleOnSubmit() {
-		if (canSubmit) {
+		if (isPreview) {
+			state = 'END';
+		} else {
 			isSubmitting = true;
+			console.log('subbmitting for real');
+
 			const res = await fetch('/api/submit-form', {
 				method: 'POST',
 				body: JSON.stringify({
@@ -90,13 +97,15 @@
 			const result = await res.json();
 			if (result.success) {
 				console.log('Form submitted successfully, go to goodbye page');
+				state = 'END';
 			} else {
-				console.error('Form submission failed, triggereing a toeast woudl be nice');
+				toast.custom(ErrorToast, {
+					componentProps: {
+						heading: 'Form Submission Failed',
+						description: 'Please try again later'
+					}
+				});
 			}
-
-			//isSubmitted = true;
-		} else {
-			console.log('cannot submit');
 		}
 	}
 
@@ -120,54 +129,67 @@
 </script>
 
 <div class="flex w-full flex-col items-center">
-	<div class="flex w-full flex-col items-start space-y-4 px-4">
-		<FormProgress totalPages={items.length} {currentItem} />
+	<div class="flex w-full flex-col items-start space-y-4">
+		{#if state === 'WELCOME'}
+			<div class="flex w-full flex-col items-center">
+				<h1 class="text-2xl font-bold">{info.title}</h1>
+				<p class="text-sm text-gray-500">{info.description}</p>
+			</div>
+		{:else if state === 'FORM'}
+			<FormProgress totalPages={items.length} {currentItem} />
+			{#key currentItem}
+				{#if item.displayData.image}
+					<img
+						src={`/api/proxy-image?url=${item.displayData.image.src}`}
+						alt="form pic"
+						class="w-full object-contain"
+					/>
+				{/if}
+				{#if item.displayData.title}
+					<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
+				{/if}
+				{#if item.displayData.description}
+					<p class="text-sm text-gray-500">{item.displayData.description}</p>
+				{/if}
+				{#if items[currentItem].type === TEXT_QUESTION_ITEM}
+					<TextInput item={items[currentItem]} />
+				{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
+					<ParagraphInput item={items[currentItem]} />
+				{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
+					<RadioGroup item={items[currentItem]} />
+				{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
+					<CheckboxGroup item={items[currentItem]} />
+				{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
+					<Dropdown item={items[currentItem]} />
+				{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
+					<SliderInput item={items[currentItem]} />
+				{:else if items[currentItem].type === DATE_QUESTION_ITEM}
+					<DateInput item={items[currentItem]} />
+				{:else if items[currentItem].type === TIME_QUESTION_ITEM}
+					<TimeInput item={items[currentItem]} />
+				{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
+					<RadioGrid item={items[currentItem]} />
+				{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
+					<CheckboxGrid item={items[currentItem]} />
+				{/if}
+				{#if errorMessage}
+					<p class="text-red-500">{errorMessage}</p>
+				{/if}
+			{/key}
+		{:else if state === 'END'}
+			<div class="flex w-full flex-col items-center">
+				<h1 class="text-2xl font-bold">Thank you for your Time</h1>
+				<p class="text-sm text-gray-500">Your reposonses were successfully transmitted</p>
 
-		{#key currentItem}
-			{#if item.displayData.image}
-				<img
-					src={`/api/proxy-image?url=${item.displayData.image.src}`}
-					alt="form pic"
-					class={'h-48 w-full object-cover'}
-				/>
-			{/if}
-
-			{#if item.displayData.title}
-				<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
-			{/if}
-
-			{#if item.displayData.description}
-				<p class="text-sm text-gray-500">{item.displayData.description}</p>
-			{/if}
-
-			{#if items[currentItem].type === TEXT_QUESTION_ITEM}
-				<TextInput item={items[currentItem]} />
-			{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
-				<ParagraphInput item={items[currentItem]} />
-			{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
-				<RadioGroup item={items[currentItem]} />
-			{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
-				<CheckboxGroup item={items[currentItem]} />
-			{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
-				<Dropdown item={items[currentItem]} />
-			{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
-				<SliderInput item={items[currentItem]} />
-			{:else if items[currentItem].type === DATE_QUESTION_ITEM}
-				<DateInput item={items[currentItem]} />
-			{:else if items[currentItem].type === TIME_QUESTION_ITEM}
-				<TimeInput item={items[currentItem]} />
-			{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
-				<RadioGrid item={items[currentItem]} />
-			{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
-				<CheckboxGrid item={items[currentItem]} />
-			{/if}
-
-			{#if errorMessage}
-				<p class="text-red-500">{errorMessage}</p>
-			{/if}
-		{/key}
+				{#if isPreview}
+					<p class="">Responsed are not send to Google in Preview Mode</p>
+				{/if}
+			</div>
+		{/if}
 
 		<FormControls
+			{state}
+			{isPreview}
 			totalPages={items.length}
 			{currentItem}
 			{handleOnNext}

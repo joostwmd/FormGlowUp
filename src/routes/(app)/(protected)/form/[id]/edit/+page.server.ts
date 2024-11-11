@@ -10,6 +10,8 @@ export const load: PageServerLoad = async ({ params }) => {
 	const uid = params.id;
 	const formDoc = (await getFormById(uid)) as TForm;
 
+	console.log('formDoc', formDoc);
+
 	if (!formDoc) {
 		return {
 			status: 404
@@ -67,13 +69,25 @@ export const actions = {
 async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 	const fetchRes = await fetchFormData(fetch, userId, formId);
 	if (fetchRes.success && fetchRes.data) {
-		const isSupportedRes = checkIfFormIsSupported(fetchRes.data!.htmlData, fetchRes.data!.apiData);
+		const isSupportedRes = checkIfFormIsSupported(
+			fetchRes.data!.htmlData.firstFetch,
+			fetchRes.data!.apiData
+		);
 
 		if (!isSupportedRes.isSupported) {
 			return { success: false, message: isSupportedRes.message };
 		}
 
-		const formData = await constructFormData(fetchRes.data.htmlData, fetchRes.data.apiData);
+		// const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
+
+		// if (!isShuffelingQuestionRes.success) {
+		// 	return { success: false, message: isShuffelingQuestionRes.message };
+		// }
+
+		const formData = await constructFormData(
+			fetchRes.data.htmlData.firstFetch,
+			fetchRes.data.apiData
+		);
 
 		if (!formData.success) {
 			return { success: false, message: 'Failed to construct form data' };

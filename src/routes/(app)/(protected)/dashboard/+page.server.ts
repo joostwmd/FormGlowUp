@@ -1,15 +1,12 @@
 import { createForm, deleteForm, getFormsOfUserById } from '$lib/firebase/utils';
-import {
-	DEFAULT_FORM_STYLE,
-	DEFAULT_FORM_PAGES,
-	CREATE_FORM_ERROR_MESSAGES
-} from '$lib/form/constants';
+import { DEFAULT_FORM_STYLE, CREATE_FORM_ERROR_MESSAGES } from '$lib/form/constants';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { constructFormData, fetchFormData } from '$lib/form';
 import {
 	checkForHMTLParsingError,
 	checkIfFormIsSupported,
+	checkIfFormShufflesQuestions,
 	extractFormId,
 	validateGoogleFormEditUrl
 } from '$lib/form/utils/helpers';
@@ -65,13 +62,26 @@ async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
 	const fetchRes = await fetchFormData(fetch, userId, formId!);
 
 	if (fetchRes.success && fetchRes.data) {
-		const isSupportedRes = checkIfFormIsSupported(fetchRes.data!.htmlData, fetchRes.data!.apiData);
+		const isSupportedRes = checkIfFormIsSupported(
+			fetchRes.data!.htmlData.firstFetch,
+			fetchRes.data!.apiData
+		);
 
 		if (!isSupportedRes.isSupported) {
 			return { success: false, message: isSupportedRes.message };
 		}
 
-		const formData = await constructFormData(fetchRes.data.htmlData, fetchRes.data.apiData);
+		// const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
+		// console.log('isSHuffleing', isShuffelingQuestionRes);
+
+		// if (!isShuffelingQuestionRes.success) {
+		// 	return { success: false, message: isShuffelingQuestionRes.message };
+		// }
+
+		const formData = await constructFormData(
+			fetchRes.data.htmlData.firstFetch,
+			fetchRes.data.apiData
+		);
 
 		if (!formData.success) {
 			return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_CONSTRUCTION_ERROR };
@@ -85,8 +95,7 @@ async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
 					userId,
 					formData.info,
 					formData.items,
-					DEFAULT_FORM_STYLE,
-					DEFAULT_FORM_PAGES
+					DEFAULT_FORM_STYLE
 				);
 
 				if (createRes.success) {

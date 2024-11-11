@@ -19,19 +19,14 @@
 
 		<div class="flex h-screen w-screen items-center justify-center">
 			<div class="flex w-full max-w-[820px] flex-col">
-				<Form
-					items={data.form?.items}
-					info={data.form?.info}
-					isPreview={true}
-					canSubmit={mode === 'public'}
-				/>
+				<Form items={data.form.items} info={data.form.info} isPreview={mode === 'preview'} />
 			</div>
 		</div>
 
-		{#if mode === 'public'}
+		<!-- {#if mode === 'public'}
 			<div class="fixed bottom-0 mb-4 w-full text-center">
 				<p>Powered by Form GlowUp</p>
 			</div>
-		{/if}
+		{/if} -->
 	</ThemeWrapper>
 {/if}

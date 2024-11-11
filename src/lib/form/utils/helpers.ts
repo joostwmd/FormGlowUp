@@ -7,9 +7,10 @@ import {
 	TEXT_QUESTION_ITEM,
 	USER_EMAIL_VALUE
 } from '$lib/form/constants';
-import { formDataStore, type TFormDataStore } from '../stores';
-import type { TFormInfo, TFormItem, TGridItem, TTextItem } from '../types';
+import { formDataStore } from '../stores';
+import type { TFormItem, TGridItem, TTextItem } from '../types';
 import type { TGoogleFormAPIResponse } from './google-api/types';
+import { constructQuestionItemsDataFromHTML } from './html-parsing/utils';
 import type { TConstructedHTMLData } from './html-parsing/types';
 
 export function mergeQuestionItemsData(
@@ -128,7 +129,25 @@ export function checkIfFormIsSupported(
 		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_IS_PRIVATE };
 	}
 
+	// else if (htmlData.includes('data-shuffle-seed')) {
+	// 	return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_SHUFFLES_QUESTIONS };
+	// }
+
 	return { isSupported: true };
+}
+
+export function checkIfFormShufflesQuestions(htmlData: {
+	firstFetch: string;
+	secondFetch: string;
+}): { success: boolean; message?: string } {
+	const firstFetch = constructQuestionItemsDataFromHTML(htmlData.firstFetch);
+	const secondFetch = constructQuestionItemsDataFromHTML(htmlData.secondFetch);
+
+	if (JSON.stringify(firstFetch) === JSON.stringify(secondFetch)) {
+		return { success: true };
+	} else {
+		return { success: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_SHUFFLES_QUESTIONS };
+	}
 }
 
 export function checkForHMTLParsingError(
@@ -164,9 +183,6 @@ export function checkForHMTLParsingError(
 			apiQuestionItemsAmount++;
 		}
 	}
-
-	console.log('API QUESTION ITEMS AMOUNT', apiQuestionItemsAmount);
-	console.log('VALID SUBMIT IDS', validSubmitIds);
 
 	let submitIdsAmount = validSubmitIds.length;
 	if (validSubmitIds.includes(USER_EMAIL_VALUE)) {

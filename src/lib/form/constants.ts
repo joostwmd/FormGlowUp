@@ -1,4 +1,4 @@
-import type { TFormPages, TFormStyle } from './types';
+import type { TFormStyle } from './types';
 
 export const OTHER_OPTION_VALUE = '__other_option__';
 export const USER_EMAIL_VALUE = 'emailAddress';
@@ -86,17 +86,6 @@ export const DEFAULT_FORM_STYLE: TFormStyle = {
 	mode: DEFAULT_MODE
 };
 
-export const DEFAULT_FORM_PAGES: TFormPages = {
-	welcome: {
-		heading: DEFAULT_WELCOME_HEADING,
-		message: DEFAULT_WELCOME_MESSAGE
-	},
-	goodbye: {
-		heading: DEFAULT_GOODBYE_HEADING,
-		message: DEFAULT_GOODBYE_MESSAGE
-	}
-};
-
 export const CREATE_FORM_ERROR_MESSAGES = {
 	SHARE_LINK_PASTED: 'The share link has been pasted. Please try again with the edit link.',
 	INVALID_LINK: 'The provided link is invalid.',
@@ -117,5 +106,6 @@ export const CREATE_FORM_ERROR_MESSAGES = {
 	FORM_CONSTRUCTION_ERROR:
 		'Failed to construct form data. This is an error on our end. Please contact support.',
 	FORM_USES_RATING_QUESTION:
-		'The form uses rating questions, which are not supported yet. An alternative is to use a scale question.'
+		'The form uses rating questions, which are not supported yet. An alternative is to use a scale question.',
+	FORM_SHUFFLES_QUESTIONS: 'The form shuffles questions, which is not supported.'
 };

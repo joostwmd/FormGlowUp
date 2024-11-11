@@ -6,7 +6,7 @@ export async function POST({ request, fetch }) {
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 
 	let apiData;
-	let htmlData;
+	const htmlData: { firstFetch: string; secondFetch: string } = { firstFetch: '', secondFetch: '' };
 
 	// First fetch to get form data
 	try {
@@ -28,17 +28,24 @@ export async function POST({ request, fetch }) {
 
 	try {
 		const responderUrl = apiData.responderUri;
-		const response = await fetch(responderUrl);
-		if (!response.ok) {
-			throw new Error(`Error fetching HTML data: ${response.statusText}`);
+		const responseOne = await fetch(responderUrl);
+		if (!responseOne.ok) {
+			throw new Error(`Error fetching HTML data: ${responseOne.statusText}`);
 		}
 
-		const text = await response.text();
-		htmlData = text;
+		const textOne = await responseOne.text();
+		htmlData.firstFetch = textOne;
+
+		const responseTwo = await fetch(responderUrl);
+		if (!responseTwo.ok) {
+			throw new Error(`Error fetching HTML data: ${responseTwo.statusText}`);
+		}
+
+		const textTwo = await responseTwo.text();
+		htmlData.secondFetch = textTwo;
 	} catch (error) {
 		console.error('Error fetching HTML data:', error);
 		return json({ error: 'Failed to fetch HTML data' }, { status: 500 });
 	}
-
 	return json({ htmlData: htmlData, apiData: apiData, success: true });
 }

@@ -5,6 +5,7 @@
 	import Nav from '$lib/components/custom/Nav.svelte';
 	import type { LayoutServerData } from './$types';
 	import { page } from '$app/stores';
+	import { ModeWatcher } from 'mode-watcher';
 	export let data: LayoutServerData;
 
 	const hideNavRoutes = ['public', 'preview'];
@@ -28,4 +29,5 @@
 	<slot />
 </div>
 
-<Toaster color={'red'} />
+<Toaster />
+<!-- <ModeWatcher defaultMode="light" /> -->

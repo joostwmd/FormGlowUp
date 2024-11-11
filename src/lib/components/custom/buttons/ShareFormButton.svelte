@@ -45,7 +45,7 @@
 	<Dialog.Trigger>
 		<Tooltip.Root>
 			<Tooltip.Trigger>
-				<Button><SendIcon class="mr-1 h-4 w-4" />Share</Button>
+				<Button><SendIcon class="mr-2 h-4 w-4" />Share</Button>
 			</Tooltip.Trigger>
 			<Tooltip.Content>
 				<p>Share the form with others</p>

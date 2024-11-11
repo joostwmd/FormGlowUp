@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { TFormInfo, TFormItem, TFormPages, TFormStyle } from './types';
+import type { TFormInfo, TFormItem, TFormStyle } from './types';
 
 //for submit
 export type TFormDataStore = {
@@ -12,7 +12,6 @@ export type TFormStore = {
 	info: TFormInfo;
 	items: TFormItem[];
 	style: TFormStyle;
-	pages: TFormPages;
 };
 
 const emptyFormStore = (): TFormStore => ({
@@ -30,16 +29,6 @@ const emptyFormStore = (): TFormStore => ({
 		radius: 0,
 		font: '',
 		mode: 'light'
-	},
-	pages: {
-		welcome: {
-			heading: '',
-			message: ''
-		},
-		goodbye: {
-			heading: '',
-			message: ''
-		}
 	}
 });
 
