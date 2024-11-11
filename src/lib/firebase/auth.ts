@@ -100,5 +100,6 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 	adapter: FirestoreAdapter(firestore),
 	pages: {
 		signIn: '/signin'
-	}
+	},
+	trustHost: true
 });
