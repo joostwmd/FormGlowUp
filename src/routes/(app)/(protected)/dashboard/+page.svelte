@@ -67,7 +67,7 @@
 </script>
 
 <div class="flex w-full flex-col items-center">
-	<Card.Root class="w-full">
+	<Card.Root class="mt-8 w-full max-w-96">
 		<Card.Header>
 			<Card.Title>10x your Google Form</Card.Title>
 			<Card.Description>Simply Input the Edit URL of your Google Form</Card.Description>
@@ -93,7 +93,7 @@
 	</Card.Root>
 </div>
 
-<div class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div class="mt-12 grid grid-cols-1 gap-4 px-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 	{#each data.forms as form}
 		<Card.Root class="sm:col-span-2">
 			<Card.Header>
