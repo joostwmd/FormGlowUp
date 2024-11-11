@@ -3,14 +3,14 @@ import { DEFAULT_FORM_STYLE, CREATE_FORM_ERROR_MESSAGES } from '$lib/form/consta
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { constructFormData, fetchFormData } from '$lib/form';
+import type { TForm } from '$lib/form/types';
 import {
 	checkForHMTLParsingError,
 	checkIfFormIsSupported,
 	checkIfFormShufflesQuestions,
-	extractFormId,
 	validateGoogleFormEditUrl
-} from '$lib/form/utils/helpers';
-import type { TForm } from '$lib/form/types';
+} from '$lib/form/utils/form-creation-validation';
+import { extractFormId } from '$lib/form/utils/helpers';
 
 export const load: PageServerLoad = async ({ locals, url, depends }) => {
 	depends(url.pathname);
@@ -71,12 +71,11 @@ async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
 			return { success: false, message: isSupportedRes.message };
 		}
 
-		// const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
-		// console.log('isSHuffleing', isShuffelingQuestionRes);
+		const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
 
-		// if (!isShuffelingQuestionRes.success) {
-		// 	return { success: false, message: isShuffelingQuestionRes.message };
-		// }
+		if (!isShuffelingQuestionRes.success) {
+			return { success: false, message: isShuffelingQuestionRes.message };
+		}
 
 		const formData = await constructFormData(
 			fetchRes.data.htmlData.firstFetch,

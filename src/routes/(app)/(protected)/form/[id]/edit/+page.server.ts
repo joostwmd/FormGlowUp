@@ -4,13 +4,14 @@ import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { TForm, TFormInfo, TFormItem, TFormStyle } from '$lib/form/types';
 import type { TFormStore } from '$lib/form/stores';
-import { checkForHMTLParsingError, checkIfFormIsSupported } from '$lib/form/utils/helpers';
+import {
+	checkForHMTLParsingError,
+	checkIfFormIsSupported
+} from '$lib/form/utils/form-creation-validation';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const uid = params.id;
 	const formDoc = (await getFormById(uid)) as TForm;
-
-	console.log('formDoc', formDoc);
 
 	if (!formDoc) {
 		return {
@@ -76,12 +77,6 @@ async function handleRefreshForm(fetch: any, userId: string, formId: string) {
 
 		if (!isSupportedRes.isSupported) {
 			return { success: false, message: isSupportedRes.message };
-		}
-
-		const isShuffelingQuestionRes = checkIfFormShufflesQuestions(fetchRes.data.htmlData);
-
-		if (!isShuffelingQuestionRes.success) {
-			return { success: false, message: isShuffelingQuestionRes.message };
 		}
 
 		const formData = await constructFormData(
