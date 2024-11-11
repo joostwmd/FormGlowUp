@@ -132,8 +132,8 @@
 	<div class="flex w-full flex-col items-start space-y-4">
 		{#if state === 'WELCOME'}
 			<div class="flex w-full flex-col items-center">
-				<h1 class="text-2xl font-bold">{info.title}</h1>
-				<p class="text-sm text-gray-500">{info.description}</p>
+				<h1 class="text-center text-2xl font-bold">{info.title}</h1>
+				<p class="text-center text-sm text-gray-500">{info.description}</p>
 			</div>
 		{:else if state === 'FORM'}
 			<FormProgress totalPages={items.length} {currentItem} />
@@ -178,8 +178,10 @@
 			{/key}
 		{:else if state === 'END'}
 			<div class="flex w-full flex-col items-center">
-				<h1 class="text-2xl font-bold">Thank you for your Time</h1>
-				<p class="text-sm text-gray-500">Your reposonses were successfully transmitted</p>
+				<h1 class="text-center text-2xl font-bold">Thank you for your Time</h1>
+				<p class="text-center text-sm text-gray-500">
+					Your reposonses were successfully transmitted
+				</p>
 
 				{#if isPreview}
 					<p class="">Responsed are not send to Google in Preview Mode</p>

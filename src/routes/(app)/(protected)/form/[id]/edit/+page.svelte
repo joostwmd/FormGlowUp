@@ -121,9 +121,7 @@
 {#if isMounted && data.form}
 	<div class="h-full w-full bg-muted/40">
 		<div class="mb-4 flex w-full items-center justify-end">
-			<div
-				class="sm:sapce-y-2 mt-4 flex w-fit justify-end space-x-2 sm:flex sm:flex-col sm:space-x-0 sm:space-y-2"
-			>
+			<div class="mt-4 flex w-fit flex-row gap-2 sm:grid sm:grid-cols-2 sm:gap-2">
 				<form
 					method="POST"
 					action="?/updateForm"

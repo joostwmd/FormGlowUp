@@ -17,7 +17,7 @@
 			</div>
 		{/if}
 
-		<div class="flex h-screen w-screen items-center justify-center">
+		<div class="flex h-screen w-screen items-center justify-center px-8">
 			<div class="flex w-full max-w-[820px] flex-col">
 				<Form items={data.form.items} info={data.form.info} isPreview={mode === 'preview'} />
 			</div>
