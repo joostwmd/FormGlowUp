@@ -4,6 +4,7 @@
 	import Form from '$lib/components/custom/form/Form.svelte';
 	import { page } from '$app/stores';
 	import GoBackToEditButton from '$lib/components/custom/buttons/GoBackToEditButton.svelte';
+	import { ModeWatcher } from 'mode-watcher';
 	export let data: PageServerData;
 
 	const mode = $page.params.viewmode;
