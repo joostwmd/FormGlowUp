@@ -9,6 +9,7 @@ export async function POST({ request }) {
 	console.log('formData', formData);
 	const submitUrl = constructGoogleFormSubmitUrl(responderUri);
 	const submitData = constructSubmitData(formData);
+	console.log('submitData', submitData);
 
 	try {
 		// Make a single POST request to the form submit URL with the form data

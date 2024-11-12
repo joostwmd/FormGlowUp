@@ -98,7 +98,11 @@ export function constructSubmitData(formData: Record<string, any>) {
 
 	for (let [key, value] of nonNullEntries) {
 		const prefixedKey = key === USER_EMAIL_VALUE ? key : `${SUBMIT_KEY_PREFIX}${key}`;
-		submitData.append(prefixedKey, value as string);
+		if (Array.isArray(value)) {
+			value.forEach((val) => submitData.append(prefixedKey, val));
+		} else {
+			submitData.append(prefixedKey, value as string);
+		}
 	}
 
 	return submitData.toString();
