@@ -90,7 +90,6 @@ export const CREATE_FORM_ERROR_MESSAGES = {
 	SHARE_LINK_PASTED: 'The share link has been pasted. Please try again with the edit link.',
 	INVALID_LINK: 'The provided link is invalid.',
 	FORM_NOT_FOUND: 'The form could not be found.',
-	FORM_IS_PRIVATE: 'The form is private and cannot be accessed.',
 	FORM_USES_PAGEBREAKS: 'The form uses page breaks, which are not supported.',
 	HTML_PARSING_ERROR:
 		'There was an error parsing the HTML data. This is an error on ou end. Please contact the support so we can fix it ',

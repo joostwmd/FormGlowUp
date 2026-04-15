@@ -56,6 +56,7 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 			const account = accountDoc.data();
 
 			if (account && account.expires_at < Date.now()) {
+				console.log('refreshing token');
 				try {
 					const response = await fetch('https://oauth2.googleapis.com/token', {
 						method: 'POST',
@@ -88,7 +89,6 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 					console.error('Error refreshing access_token', error);
 				}
 			} else {
-				console.log('token is still valid');
 			}
 
 			return {

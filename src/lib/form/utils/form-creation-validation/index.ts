@@ -65,9 +65,11 @@ export function checkIfFormIsSupported(
 		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_VIDEOS };
 	} else if (textItems) {
 		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_USES_TEXT };
-	} else if (htmlData.includes('data-user-email-address')) {
-		return { isSupported: false, message: CREATE_FORM_ERROR_MESSAGES.FORM_IS_PRIVATE };
 	}
+
+	// Note: we used to treat `data-user-email-address` in responder HTML as "private form".
+	// Google now emits that attribute in many normal / public responder pages, so it caused
+	// false positives. Unsupported or sign-in-only forms still fail at HTML parse / submit-id checks.
 
 	return { isSupported: true };
 }

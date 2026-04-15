@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 
 export async function POST({ request, fetch }) {
 	const { accessToken, formId } = await request.json();
-
+	console.log('formId', formId);
 	const apiUrl = `https://forms.googleapis.com/v1/forms/${formId}`;
 
 	let apiData;

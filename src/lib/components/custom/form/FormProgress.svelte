@@ -5,7 +5,7 @@
 	export let currentItem: number;
 </script>
 
-<div class="flex w-full flex-col items-start">
-	<p class="text-md mb-4 text-gray-500">Question {currentItem + 1} of {totalPages}</p>
+<div class="flex w-full flex-col items-start gap-3">
+	<p class="text-sm text-muted-foreground">Question {currentItem + 1} of {totalPages}</p>
 	<Progress max={totalPages} value={currentItem + 1} />
 </div>

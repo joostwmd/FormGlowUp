@@ -66,8 +66,8 @@
 		return async ({ result }: { result: any }) => {
 			if (result.type === 'success') {
 				showSuccessToast(
-					'Form Refreshed',
-					'Your form has been successfully refreshed with the latest data from google forms. Don not forget to save your changes.'
+					'Form refreshed',
+					'Preview now matches Google Forms. Save if you want to keep any style or layout changes.'
 				);
 				localFormStore.update((store) => ({
 					info: result.data.info,
@@ -95,8 +95,8 @@
 			if (result.type === 'success') {
 				console.log('Form Updated', result.data);
 				showSuccessToast(
-					'Form Updated',
-					'Your form has been successfully updated with the latest data. Your changes are now published.'
+					'Changes saved',
+					'Your glow-up is published. New respondents will see this version.'
 				);
 
 				localFormStore.set({
@@ -119,9 +119,9 @@
 </script>
 
 {#if isMounted && data.form}
-	<div class="h-full w-full p-4">
+	<div class="edit-shell h-full w-full p-4">
 		<div class="mb-4 flex w-full items-center justify-end">
-			<div class="mt-4 flex w-fit flex-row gap-2 sm:grid sm:grid-cols-2 sm:gap-2">
+			<div class="edit-toolbar mt-4 flex w-fit flex-row flex-wrap justify-end gap-2">
 				<form
 					method="POST"
 					action="?/updateForm"
@@ -149,10 +149,10 @@
 					<Card.Content>
 						<Accordion.Root class="w-full">
 							<Accordion.Item value="customization">
-								<Accordion.Trigger>
-									<div class="flex items-center">
-										<PaintbrushIcon class="mr-2 h-4 w-4" />
-										Cusomize your Form
+								<Accordion.Trigger class="transition-colors hover:text-foreground">
+									<div class="flex items-center gap-2">
+										<PaintbrushIcon class="h-4 w-4 shrink-0 opacity-80" aria-hidden="true" />
+										Customize appearance
 									</div>
 								</Accordion.Trigger>
 								<Accordion.Content>
@@ -165,15 +165,18 @@
 			</div>
 
 			<div class="w-2/3 sm:w-full">
-				<div class="mb-8">
-					<h1>Preview of you Form</h1>
-					<p class="max-w-lg text-balance leading-relaxed">
-						This is a live Preview of your 10x google form
+				<div class="edit-preview-intro mb-8">
+					<h1 class="text-2xl font-semibold tracking-tight">Live preview</h1>
+					<p class="mt-2 max-w-prose text-pretty text-sm leading-relaxed text-muted-foreground">
+						What you see here is how respondents will experience your form. Saving publishes theme
+						and structure updates; refresh pulls the latest questions from Google Forms.
 					</p>
 				</div>
 				<ThemeWrapper style={$localFormStore.style}>
 					<Card.Root class="sm:col-span-2">
-						<Card.Content>
+						<Card.Content
+							class="flex h-[min(70vh,800px)] min-h-0 flex-col overflow-hidden"
+						>
 							<Form items={$localFormStore.items} info={$localFormStore.info} isPreview={true} />
 						</Card.Content>
 					</Card.Root>
@@ -182,3 +185,38 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+	@media (prefers-reduced-motion: no-preference) {
+		@keyframes edit-shell-in {
+			from {
+				opacity: 0;
+				transform: translate3d(0, 6px, 0);
+			}
+			to {
+				opacity: 1;
+				transform: translate3d(0, 0, 0);
+			}
+		}
+
+		.edit-shell {
+			animation: edit-shell-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+		}
+
+		.edit-preview-intro {
+			animation: edit-shell-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+		}
+	}
+
+	.edit-toolbar :global(button),
+	.edit-toolbar :global([role='button']) {
+		transition:
+			transform 0.12s ease,
+			box-shadow 0.12s ease;
+	}
+
+	.edit-toolbar :global(button:active),
+	.edit-toolbar :global([role='button']:active) {
+		transform: translateY(1px);
+	}
+</style>

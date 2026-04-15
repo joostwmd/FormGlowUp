@@ -13,6 +13,7 @@ Thumbs.db
 # Env
 .env
 .env.*
+playwright.env
 !.env.example
 !.env.test
 
@@ -22,3 +23,7 @@ vite.config.ts.timestamp-*
 
 # Firebase
 firebase-admin.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

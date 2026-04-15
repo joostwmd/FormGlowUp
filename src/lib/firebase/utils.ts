@@ -13,6 +13,32 @@ export async function getFormsOfUserById(userId: string) {
 	}
 }
 
+/** Direct read — no composite / collection-group index (path: users/{userId}/forms/{formUid}). */
+export async function getFormForUser(userId: string, formUid: string) {
+	try {
+		const snap = await firestore
+			.collection('users')
+			.doc(userId)
+			.collection('forms')
+			.doc(formUid)
+			.get();
+
+		if (!snap.exists) {
+			console.log('Form not found');
+			return null;
+		}
+		return snap.data();
+	} catch (e) {
+		console.log('Error getting form:', e);
+		return null;
+	}
+}
+
+/**
+ * Resolve a form by its public `uid` across all users (collection group).
+ * Requires a single-field index override for `uid` on collection group `forms`
+ * (see `firestore.indexes.json` — deploy with Firebase CLI or add the same override in console).
+ */
 export async function getFormById(uid: string) {
 	try {
 		const formsCollectionGroup = firestore.collectionGroup('forms');
@@ -25,8 +51,15 @@ export async function getFormById(uid: string) {
 			console.log('Form not found');
 			return null;
 		}
-	} catch (e) {
-		console.log('Error getting form:', e);
+	} catch (e: unknown) {
+		const err = e as { message?: string; details?: string; cause?: { message?: string } };
+		const parts = [err.message, err.details, err.cause?.message].filter(Boolean);
+		const text = parts.join('\n');
+		console.error('Error getting form (collection group):', text || e);
+		const urlMatch = text.match(/https:\/\/console\.firebase\.google\.com[^\s"'<>]+/);
+		if (urlMatch) {
+			console.error('Open this URL to create the required Firestore index:\n', urlMatch[0]);
+		}
 		return null;
 	}
 }
@@ -94,6 +127,7 @@ export async function getUserById(userId: string) {
 }
 
 export async function getAccessTokens(userId: string) {
+	console.log('userId', userId);
 	try {
 		const accountCollectionRef = firestore.collection('accounts');
 		const querySnapshot = await accountCollectionRef.where('userId', '==', userId).get();

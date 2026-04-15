@@ -56,6 +56,6 @@ export function constructQuestionItemsDataFromHTML(htmlString: string): TConstru
 			console.error('Error parsing data-params:', e);
 		}
 	}
-	console.log('constrcut qesution HTML', result);
+	//console.log('html parsing', result);
 	return result;
 }

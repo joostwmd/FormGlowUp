@@ -9,12 +9,7 @@ import {
 } from '$lib/form/constants';
 import { formDataStore } from '../stores';
 import type { TFormItem, TGridItem, TTextItem } from '../types';
-import type { TGoogleFormAPIResponse } from './google-api/types';
-
 import type { TConstructedHTMLData } from './html-parsing/types';
-
-// import that fucks my project
-//import { constructQuestionItemsDataFromHTML } from './html-parsing';
 
 export function mergeQuestionItemsData(
 	htmlQuestionItemsData: TConstructedHTMLData[],

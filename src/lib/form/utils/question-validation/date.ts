@@ -19,7 +19,7 @@ export function validateDate(
 	const hour = item.attributes.timeIncluded ? formData[`${item.submitId}${HOUR_SUFFIX}`] : null;
 	const minute = item.attributes.timeIncluded ? formData[`${item.submitId}${MINUTE_SUFFIX}`] : null;
 
-	if (!month || !day || !year || !hour || !minute) {
+	if (!month || !day || !year) {
 		return { valid: false, message: 'This field is required' };
 	}
 
@@ -27,8 +27,14 @@ export function validateDate(
 		return { valid: false, message: 'Invalid date' };
 	}
 
-	if (item.attributes.timeIncluded && !isValidTime(hour as string, minute as string)) {
-		return { valid: false, message: 'Invalid time' };
+	if (item.attributes.timeIncluded) {
+		if (!hour || !minute) {
+			return { valid: false, message: 'Time is required' };
+		}
+
+		if (!isValidTime(hour as string, minute as string)) {
+			return { valid: false, message: 'Invalid time' };
+		}
 	}
 
 	return { valid: true, message: '' };

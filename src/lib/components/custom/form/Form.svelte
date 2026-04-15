@@ -81,7 +81,6 @@
 			state = 'END';
 		} else {
 			isSubmitting = true;
-			console.log('subbmitting for real');
 
 			const res = await fetch('/api/submit-form', {
 				method: 'POST',
@@ -126,73 +125,102 @@
 			item = items[currentItem] as TScaleItem;
 		}
 	}
+
+	function textItem(i: TFormItem): TTextItem {
+		return i as TTextItem;
+	}
+	function choicesItem(i: TFormItem): TChoicesItem {
+		return i as TChoicesItem;
+	}
+	function scaleItem(i: TFormItem): TScaleItem {
+		return i as TScaleItem;
+	}
+	function dateItem(i: TFormItem): TDateItem {
+		return i as TDateItem;
+	}
+	function timeItem(i: TFormItem): TTimeItem {
+		return i as TTimeItem;
+	}
+	function gridItem(i: TFormItem): TGridItem {
+		return i as TGridItem;
+	}
 </script>
 
-<div class="flex h-full w-full flex-col justify-between space-y-4">
-	{#if state === 'WELCOME'}
-		<div class="flex w-full flex-col items-center">
-			<h1 class="text-center text-2xl font-bold">{info.title}</h1>
-			<p class="text-center text-sm text-gray-500">{info.description}</p>
-		</div>
-	{:else if state === 'FORM'}
-		<FormProgress totalPages={items.length} {currentItem} />
-		{#key currentItem}
-			{#if item.displayData.image}
-				<img
-					src={`/api/proxy-image?url=${item.displayData.image.src}`}
-					alt="form pic"
-					class="w-full object-contain"
-				/>
-			{/if}
-			{#if item.displayData.title}
-				<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
-			{/if}
-			{#if item.displayData.description}
-				<p class="text-sm text-gray-500">{item.displayData.description}</p>
-			{/if}
-			{#if items[currentItem].type === TEXT_QUESTION_ITEM}
-				<TextInput item={items[currentItem]} />
-			{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
-				<ParagraphInput item={items[currentItem]} />
-			{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
-				<RadioGroup item={items[currentItem]} />
-			{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
-				<CheckboxGroup item={items[currentItem]} />
-			{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
-				<Dropdown item={items[currentItem]} />
-			{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
-				<SliderInput item={items[currentItem]} />
-			{:else if items[currentItem].type === DATE_QUESTION_ITEM}
-				<DateInput item={items[currentItem]} />
-			{:else if items[currentItem].type === TIME_QUESTION_ITEM}
-				<TimeInput item={items[currentItem]} />
-			{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
-				<RadioGrid item={items[currentItem]} />
-			{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
-				<CheckboxGrid item={items[currentItem]} />
-			{/if}
-			{#if errorMessage}
-				<p class="text-red-500">{errorMessage}</p>
-			{/if}
-		{/key}
-	{:else if state === 'END'}
-		<div class="flex w-full flex-col items-center">
-			<h1 class="text-center text-2xl font-bold">Thank you for your Time</h1>
-			<p class="text-center text-sm text-gray-500">Your reposonses were successfully transmitted</p>
+<div class="flex h-full min-h-0 w-full flex-col">
+	<div class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-6">
+		{#if state === 'WELCOME'}
+			<div class="flex flex-1 flex-col items-center justify-center gap-2 px-1 text-center">
+				<h1 class="text-2xl font-bold">{info.title}</h1>
+				<p class="text-sm text-muted-foreground">{info.description}</p>
+			</div>
+		{:else if state === 'FORM'}
+			<div class="flex flex-col gap-6">
+				<FormProgress totalPages={items.length} {currentItem} />
+				{#key currentItem}
+					<div class="flex flex-col gap-2">
+						{#if item.displayData.image}
+							<img
+								src={`/api/proxy-image?url=${item.displayData.image.src}`}
+								alt="form pic"
+								class="w-full object-contain"
+							/>
+						{/if}
+						{#if item.displayData.title}
+							<h1 class="text-2xl font-bold">{item.displayData.title}</h1>
+						{/if}
+						{#if item.displayData.description}
+							<p class="text-sm text-muted-foreground">{item.displayData.description}</p>
+						{/if}
+					</div>
+					<div class="mt-4 flex flex-col gap-3">
+						{#if items[currentItem].type === TEXT_QUESTION_ITEM}
+							<TextInput item={textItem(item)} />
+						{:else if items[currentItem].type === PARAGRAPH_QUESTION_ITEM}
+							<ParagraphInput item={textItem(item)} />
+						{:else if items[currentItem].type === RADIO_QUESTION_ITEM}
+							<RadioGroup item={choicesItem(item)} />
+						{:else if items[currentItem].type === CHECKBOX_QUESTION_ITEM}
+							<CheckboxGroup item={choicesItem(item)} />
+						{:else if items[currentItem].type === DROPDOWN_QUESTION_ITEM}
+							<Dropdown item={choicesItem(item)} />
+						{:else if items[currentItem].type === SCALE_QUESTION_ITEM}
+							<SliderInput item={scaleItem(item)} />
+						{:else if items[currentItem].type === DATE_QUESTION_ITEM}
+							<DateInput item={dateItem(item)} />
+						{:else if items[currentItem].type === TIME_QUESTION_ITEM}
+							<TimeInput item={timeItem(item)} />
+						{:else if items[currentItem].type === RADIO_GRID_QUESTION_ITEM}
+							<RadioGrid item={gridItem(item)} />
+						{:else if items[currentItem].type === CHECKBOX_GRID_QUESTION_ITEM}
+							<CheckboxGrid item={gridItem(item)} />
+						{/if}
+						{#if errorMessage}
+							<p class="text-sm text-destructive">{errorMessage}</p>
+						{/if}
+					</div>
+				{/key}
+			</div>
+		{:else if state === 'END'}
+			<div class="flex flex-1 flex-col items-center justify-center gap-2 text-center">
+				<h1 class="text-2xl font-bold">Thank you for your Time</h1>
+				<p class="text-sm text-muted-foreground">Your reposonses were successfully transmitted</p>
 
-			{#if isPreview}
-				<p class="">Responsed are not send to Google in Preview Mode</p>
-			{/if}
-		</div>
-	{/if}
+				{#if isPreview}
+					<p class="text-sm text-muted-foreground">Responsed are not send to Google in Preview Mode</p>
+				{/if}
+			</div>
+		{/if}
+	</div>
 
-	<FormControls
-		{state}
-		{isPreview}
-		totalPages={items.length}
-		{currentItem}
-		{handleOnNext}
-		{handleOnPrevious}
-		{handleOnSubmit}
-	/>
+	<div class="shrink-0 border-t border-border pt-4">
+		<FormControls
+			{state}
+			{isPreview}
+			totalPages={items.length}
+			{currentItem}
+			{handleOnNext}
+			{handleOnPrevious}
+			{handleOnSubmit}
+		/>
+	</div>
 </div>

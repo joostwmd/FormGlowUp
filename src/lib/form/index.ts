@@ -8,6 +8,7 @@ import {
 import type { TGoogleFormAPIResponse } from './utils/google-api/types';
 import { constructUserEmailItem, mergeQuestionItemsData } from './utils/helpers';
 import { constructQuestionItemsDataFromHTML } from './utils/html-parsing';
+import { PUBLIC_BASE_URL } from '$env/static/public';
 
 export async function fetchFormData(
 	fetch: any,
@@ -16,7 +17,7 @@ export async function fetchFormData(
 ): Promise<{ success: boolean; data?: TGETFormResponse }> {
 	const accessToken = await getAccessTokens(userId);
 
-	const res = await fetch('/api/get-form', {
+	const res = await fetch(`${PUBLIC_BASE_URL}/api/get-form`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -25,6 +26,7 @@ export async function fetchFormData(
 	});
 
 	const data = await res.json();
+
 	if (data.error) {
 		return {
 			success: false

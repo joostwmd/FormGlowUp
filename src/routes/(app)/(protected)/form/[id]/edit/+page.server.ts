@@ -1,4 +1,4 @@
-import { getFormById, updateForm } from '$lib/firebase/utils.js';
+import { getFormForUser, updateForm } from '$lib/firebase/utils.js';
 import { constructFormData, fetchFormData } from '$lib/form';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -9,9 +9,16 @@ import {
 	checkIfFormIsSupported
 } from '$lib/form/utils/form-creation-validation';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
+	const session = await locals.auth();
+	const userId = session?.user?.id;
 	const uid = params.id;
-	const formDoc = (await getFormById(uid)) as TForm;
+
+	if (!userId) {
+		return { status: 401 };
+	}
+
+	const formDoc = (await getFormForUser(userId, uid)) as TForm;
 
 	if (!formDoc) {
 		return {

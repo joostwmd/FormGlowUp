@@ -105,6 +105,8 @@ async function handleCreateForm(fetch: any, userId: string, editUrl: string) {
 			}
 		}
 	} else {
+		console.log('fetchRes', fetchRes);
+		console.log('fetchRes.data', fetchRes.data);
 		return { success: false, message: 'Failed to update form' };
 	}
 }

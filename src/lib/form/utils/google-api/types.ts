@@ -51,7 +51,12 @@ export type TGoogleFormItemAPIData = {
 		| typeof GOOGLE_API_TEXT_ITEM
 		| typeof GOOGLE_API_IMAGE_ITEM
 		| typeof GOOGLE_API_VIDEO_ITEM
-		| typeof GOOGLE_API_FILE_UPLOAD_QUESTION;
+		| typeof GOOGLE_API_FILE_UPLOAD_QUESTION
+		| typeof GOOGLE_API_ROW_QUESTION
+		| typeof GOOGLE_API_TEXT_QUESTION
+		| typeof GOOGLE_API_SCALE_QUESTION
+		| typeof GOOGLE_API_DATE_QUESTION
+		| typeof GOOGLE_API_TIME_QUESTION;
 
 	questionItem?: TGoogleFormQuestionItem;
 	questionGroupItem?: TGoogleFormQuestionGroupItem;
