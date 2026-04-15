@@ -26,6 +26,6 @@
 			<Avatar.Fallback>{session.user.name[0]}</Avatar.Fallback>
 		</Avatar.Root>
 	{:else}
-		<Button on:click={() => goto('/signin')}>SignIn</Button>
+		<Button on:click={() => goto('/signin')}>Sign in</Button>
 	{/if}
 </div>
